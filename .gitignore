@@ -30,3 +30,6 @@ google-services.json
 # OS files
 .DS_Store
 Thumbs.db
+
+# Claude Code personal settings (machine-specific)
+.claude/settings.local.json
