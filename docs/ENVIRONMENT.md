@@ -21,12 +21,12 @@ Everything below was observed directly unless marked *estimate*.
 |---|---|---|
 | Git | ✅ Installed — 2.56.0.windows.1 | Global identity set: "Talha Ather" / talhaather.freelance@gmail.com |
 | JDK | ✅ Installed (JAVA_HOME fixed 2026-10-15) | Oracle JDK 17.0.12 at `C:\java`. `JAVA_HOME` (user variable) was `C:\java\bin` (wrong); changed to `C:\java` on 2026-10-15. `java` is not on PATH (not required). |
-| Android Studio | ✅ Installed 2026-10-15 | 2026.2.1.8 via winget, at `C:\Program Files\Android\Android Studio` (build 262.9437.185.2621.16467767). Setup wizard not yet completed. |
-| Android SDK | ❌ Not installed | `%LOCALAPPDATA%\Android\Sdk` does not exist; `ANDROID_HOME` unset. |
-| adb (Android Debug Bridge) | ❌ Not available | Comes with the SDK. |
-| Gradle | Not installed globally | Not needed — each project ships its own Gradle Wrapper (`gradlew.bat`). |
-| Android emulator / AVDs | ❌ None | `%USERPROFILE%\.android\avd` does not exist. |
-| Connected Android device | ❌ Cannot check | No adb yet. |
+| Android Studio | ✅ Installed 2026-10-15 | 2026.2.1.8 via winget, at `C:\Program Files\Android\Android Studio` (build 262.9437.185.2621.16467767). Setup wizard completed. |
+| Android SDK | ✅ Installed | `%LOCALAPPDATA%\Android\Sdk`: platform android-37.0, build-tools 36.0.0, platform-tools, emulator, system image android-37.0 google_apis_playstore x86_64. `ANDROID_HOME` unset (not needed; `local.properties` points to the SDK). |
+| adb (Android Debug Bridge) | ✅ Available | `%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe` (not on PATH). |
+| Gradle | Not installed globally | Not needed. The project ships its own Gradle Wrapper (`gradlew.bat`, Gradle 9.6.0). |
+| Android emulator / AVDs | ⚠️ Cannot run | No AVD created; `emulator -accel-check` reports the hypervisor driver is not installed (KI-003). |
+| Connected Android device | ✅ Verified | Test phone: Samsung Galaxy A72 (SM-A725F), Android 14 (API 34), One UI 6.1. Detected by adb over USB (needs a data cable; Samsung USB driver present). |
 
 Note: a `Microsoft.NET.Sdk.Android.Manifest` entry exists in the registry. That belongs to .NET/MAUI tooling, not to the Android SDK we need; it can be ignored.
 
