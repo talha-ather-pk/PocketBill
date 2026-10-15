@@ -20,6 +20,7 @@ An offline-first Android app that helps freelancers create professional invoices
 | [USER_PROBLEMS.md](docs/USER_PROBLEMS.md) | User problems: evidence vs assumptions |
 | [PERSONAS.md](docs/PERSONAS.md) | Target users (primary, secondary, not targeted) |
 | [DIFFERENTIATION.md](docs/DIFFERENTIATION.md) | PocketBill's claims checked against competitors |
+| [VALIDATION_PLAN.md](docs/VALIDATION_PLAN.md) | 7-day plan: interviews, pitch test, usability test |
 
 ## Setting up your computer
 

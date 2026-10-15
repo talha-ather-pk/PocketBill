@@ -19,7 +19,7 @@ Status values: Not started · In progress · Blocked · Implemented · Verified
 | P1-T02 | Organize user problems (evidence vs hypothesis) → `USER_PROBLEMS.md` | Implemented: updated for D-007; awaiting founder review |
 | P1-T03 | Primary + secondary persona → `PERSONAS.md` | Implemented: awaiting founder review |
 | P1-T04 | Test differentiation claims against competitors → `DIFFERENTIATION.md` | Implemented: awaiting founder review |
-| P1-T05 | 7-day validation plan (interviews, prototype, usability script) | Not started |
+| P1-T05 | 7-day validation plan (interviews, prototype, usability script) → `VALIDATION_PLAN.md` | Implemented: plan written; founder to run it |
 | P1-T06 | MVP specification → `MVP_SPEC.md` | Not started |
 
 Phase 1 research can run in parallel with Phase 0 setup, because it does not need Android Studio.

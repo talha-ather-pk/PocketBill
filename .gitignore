@@ -33,3 +33,6 @@ Thumbs.db
 
 # Claude Code personal settings (machine-specific)
 .claude/settings.local.json
+
+# Raw user-research notes: personal data, never commit (repo is public, D-006)
+research-private/
