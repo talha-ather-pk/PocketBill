@@ -63,16 +63,37 @@ The founder reported these as verified on Google Play. **They replace the third-
 
 | App (as listed) | Developer | Rating | Installs | Monetization | Reported complaints (founder summary) | Confidence |
 |---|---|---|---|---|---|---|
-| Saldo: Bill & Invoice Maker | Saldo Apps Inc. | 4.7★ | 1,000,000+ | Free tier limited to **3 documents**; subscription ~**$14.99/month** | Occasional sync glitches; **data loss when restoring a backup** | Medium |
-| JobFLEX | "Building Science Academy LLC / Gizwood" (two names given) | 3.4★–4.2★ (range given) | 100,000+ | Subscription tiers up to ~$15/month; works offline; aimed at contractors | Features locked behind paid tiers; sync delays | Low |
+| Saldo: Bill & Invoice Maker (`com.simple.invoice.maker`) | "S/A Saldo Apps" (round 2; round 1 said "Saldo Apps Inc.") | 4.7★ | 1,000,000+ | Free tier limited to **3 documents**; subscription ~**$14.99/month** | Occasional sync glitches; **data loss when restoring a backup**. Verbatim reviews below. | Medium |
+| Invoice Maker & Estimating App (`com.jobflex.android`) | JobFLEX (round 2; round 1 gave two other names) | ~3.4★ | 100,000+ | Subscription tiers up to ~$15/month; works offline; aimed at contractors | **Support unreachable / app appears abandoned**. Verbatim reviews below. | Medium (round 2 replaces the round-1 range and developer names) |
 | Invoice Maker & Estimate Maker | Wow Invoice LLC | 4.7★ | 100,000+ | Free with in-app purchases | **Intrusive full-screen ads**; export limits on free tier | Medium |
+
+### Verbatim Play Store reviews (founder pass, round 2, supplied 2026-10-15)
+
+Copied by the founder from the Play listings. Quotes are as supplied and end where the founder's excerpt ended ("...").
+
+**Caveat: every review here is from 2020–2022, so 3.5–6 years old.** They show what went wrong *then*. They are not "most recent" reviews and don't prove these problems still exist today.
+
+**Saldo (`com.simple.invoice.maker`)**
+- 1★, 2022-03-15: *"Horrible. It is a great app when it works. Quite often it just deletes information. Contact them and they ask if you backed up. I did but some glitch deletes it. There only response is sorry but try this other app we are working on..."*
+- 1★, 2021-04-07: *"UPDATE! 4/2/21-ALL OF MY INFO HAS DISAPPEARED. 1/16/21-I've been using this app for a while now and it worked fine until yesterday. I'm able to create the invoice but when I go to send it just spins. I uninstalled and reinstalled hoping that would work, it didnt and it erased all of my invoices..."*
+
+**JobFLEX (`com.jobflex.android`)**
+- 1★, 2021-01-30: *"Is anyone else having issues with Job flex software? I can't access the app, I can't access their website, I've left voice-mails, I've sent emails, all to no response or luck. I've never had any issues before. It's like they just disappeared."*
+- 1★, 2020-07-14: *"No support for over a year. Did not respond to multiple emails, or phone calls (get the answering service every time). Was a good app to the actual customer support for the first six or seven months and then nothing..."*
+
+**What these show**
+- **Data loss is now evidence on Android, not just iOS.** Both Saldo reviews describe invoices disappearing, even with a backup made, and after a reinstall. This is the strongest pattern so far (O3 → **Medium-High**). For PocketBill it argues for: data that survives app updates, a restore that is tested, and never deleting data during reinstall or sign-out flows.
+- **Abandoned apps strand users.** The JobFLEX reviews ("It's like they just disappeared") match the tracker's last-update date of 2020-06-03. Users of an app that depends on its developer's servers lose access when the developer stops running them. This supports offline-first with **user-owned export/backup files**, so users keep their data even if PocketBill stops. That is a hypothesis about what users value, not yet evidence.
+- **Support responsiveness** appears in both apps' complaints. That is relevant later (P8, support plan).
 
 ### What this resolves
 | Earlier open question | Resolution |
 |---|---|
 | Saldo developer: "CA Publishing / BillGo" vs Saldo Apps Inc. | Play listing developer is **Saldo Apps Inc.**, matching the iOS evidence (section 4). The "CA Publishing / BillGo" name in the older table is probably a different app. |
 | Wow Invoice rating: 4.5★ (tracker) vs ~4.8–4.9★ (older table) | **4.7★** on Play per this pass. Ratings drift over time; use this figure. |
-| JobFLEX installs: 50,000+ vs 100K | **100,000+** per this pass, matching the tracker. Whether the app is still updated (tracker: last update 2020-06-03) is **still unverified**. |
+| JobFLEX installs: 50,000+ vs 100K | **100,000+** per this pass, matching the tracker. |
+| Is JobFLEX still maintained? | **Probably not.** Reviews from 2020–2021 report no support and an unreachable website, consistent with the tracker's last update of 2020-06-03. The listing's current "Updated on" date was not recorded. |
+| JobFLEX rating range and developer names | Round 2: developer **JobFLEX**, ~3.4★. |
 
 ### What it adds to the evidence
 - **Data loss on backup/restore** now appears for Saldo on **both iOS (verbatim reviews, section 4) and Android (founder summary)**. That strengthens O3: reliable local storage and a trustworthy backup/restore are worth treating as core.
@@ -81,9 +102,9 @@ The founder reported these as verified on Google Play. **They replace the third-
 - Pricing anchor: the subscription apps here sit around **$15/month**. That is a reference point for P7 (monetization), not a recommendation.
 
 ### Still missing for P1-T01
-- Zoho Invoice's Play listing (rating, installs, offline behaviour on Android).
-- Play links and 2–3 verbatim recent 1–2★ reviews per app, with dates.
-- One exact JobFLEX listing: a single developer name and rating, plus its last-updated date.
+- **Wow Invoice:** Play link and verbatim dated 1–2★ reviews.
+- **Zoho Invoice:** Play listing (rating, installs, offline behaviour on Android).
+- **Recent reviews (2025–2026)** for any app, to show whether the 2020–2022 problems are still current.
 - Not yet researched: Invoice Simple, Invoice2go, and the others listed in section 5.
 
 ## Founder-supplied competitor table (2026-10-15), mixed sources, unverified

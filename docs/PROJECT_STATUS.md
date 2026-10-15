@@ -15,7 +15,7 @@ _Last updated: 2026-10-15_
 | P0-T03 | Create the Android project | **Verified** | Builds, unit tests pass, installed and launched on Galaxy A72 (Android 14); all 4 tabs open with no crash (2026-10-15). |
 | P0-T04 | Git and recovery practices | **Verified** | Local repo on `main`; `.gitignore`/`.gitattributes`; README "Saving your work". Pushed to https://github.com/talha-ather-pk/PocketBill. Repo made **public** 2026-10-15 at the founder's request (D-006). |
 
-Later phases: see [ROADMAP.md](ROADMAP.md). **P1-T01 (market research) is in progress**: Claude's first pass plus the founder's Play Store pass round 1 (3 apps) are in MARKET_RESEARCH.md. Still missing: Zoho on Play, verbatim dated reviews, one exact JobFLEX listing.
+Later phases: see [ROADMAP.md](ROADMAP.md). **P1-T01 (market research) is in progress**: Saldo and JobFLEX have Play links and verbatim dated reviews (all 2020–2022); Wow Invoice has metrics only. Still missing: Wow reviews, Zoho on Play, any 2025–2026 reviews.
 
 ## Failed tasks
 
