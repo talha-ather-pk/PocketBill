@@ -21,7 +21,7 @@ Each problem gets two separate ratings, because "this happens" and "this matters
 |---|---|---|---|---|
 | UP-01 | **Invoices disappear**: data lost after a glitch, a reinstall, a failed sync, or even a restore from backup | **Moderate–Strong.** 2 verbatim dated Android reviews (Saldo, 2021-04-07 and 2022-03-15), several verbatim iOS reviews (Saldo, undated), and a founder summary of restore failures. The same pattern appears on two platforms. *But nothing newer than 2022.* | Saldo Play and iOS reviews | Local-first storage, data that survives app updates, backup/restore with a **tested** restore, and a check that nothing is ever deleted on reinstall. Make this a core MVP feature (P4-T12) and test it (P5). |
 | UP-02 | **Cloud sync delays**: changes take time to appear, especially tax records | **Moderate.** 1 verbatim 2026 review (Zoho), plus founder summaries for Saldo ("sync glitches") and JobFLEX ("sync delays"). | Zoho, Saldo, JobFLEX | Local-first means the user's own data needs no sync. Whether users would **switch** apps for that is unknown. |
-| UP-03 | **PDFs break for non-Latin scripts**: Bengali text shows as empty boxes (□) | **Moderate.** 1 verbatim, recent review (Wow Invoice, 2026-07-20). It is very specific and technically plausible. | Wow Invoice | Render any script the user can type, including right-to-left (Urdu, Arabic). Added to the PDF test matrix ([TEST_PLAN.md](TEST_PLAN.md)). Cheap to get right and easy to demonstrate. |
+| UP-03 | **PDFs break for non-Latin scripts**: Bengali text shows as empty boxes (□) | **Moderate.** 1 verbatim, recent review (Wow Invoice, 2026-07-20). It is very specific and technically plausible. | Wow Invoice | **Deprioritized by D-007** (English-only invoices). MVP: render accented Latin names and currency symbols (€ £ ₹ ₦…) correctly. Full non-Latin and right-to-left scripts are a nice-to-have. |
 | UP-04 | **The app or its company disappears**: support unreachable, website down, app no longer maintained | **Moderate, but old.** 2 verbatim reviews (JobFLEX, 2020-07-14 and 2021-01-30), consistent with a tracker showing no update since 2020. Saldo's support reportedly redirected a user to "this other app". | JobFLEX, Saldo | Users' data must not depend on PocketBill's servers: plain export and backup files the user keeps. A real support channel is a later task (P9-T03). |
 | UP-05 | **Free tier is too limited**: a hard cap (Saldo: 3 documents) or exports locked behind payment | **Weak–Moderate.** The **limits are facts** from listings (Saldo 3 documents; Wow export limits). **User frustration is reported only in founder summaries**, with no verbatim review yet. | Saldo, Wow Invoice, older founder table | Never paywall creating or exporting a basic invoice (already a principle in H1). The free-tier design is decided in P6-T01. |
 | UP-06 | **Intrusive ads** while creating documents | **Weak.** Founder summary for Wow Invoice only; no verbatim review. | Wow Invoice | No ads in the editor or in PDFs (P6-T03). |
@@ -39,16 +39,17 @@ These are central to PocketBill's idea, but **no user has been heard saying them
 | A-03 | **Tracking who has paid** is a real pain point. | It is one of PocketBill's 3 core promises. | Interviews: "How do you know who still owes you money right now?" |
 | A-04 | **No account / works offline** is valued, not just tolerated. | It is a candidate differentiator, but several competitors already claim it (O1). | Interviews plus prototype: does anyone mention it unprompted? |
 | A-05 | Users find subscriptions of about **$15/month** too expensive. | It shapes pricing. We only know competitors charge this; no complaint about the price was found. | Interviews: what do they pay for tools now; would they pay once vs monthly? |
-| A-06 | The target users write invoices in **Urdu, Hindi, Bengali or Arabic**, or mix scripts. | It decides how much weight UP-03 gets. | Interviews: what language are their invoices in, and for which clients? |
+| A-06 | ~~The target users write invoices in Urdu, Hindi, Bengali or Arabic, or mix scripts.~~ | **Resolved by founder decision D-007:** global freelancers, English-only invoices. | Not needed. Interviews should still note any client names or currencies that need special characters. |
+| A-07 | Global freelancers bill clients in **more than one currency**. | It decides whether multi-currency belongs in the MVP. | Interviews: which currencies have they invoiced in during the last 6 months? |
 
 ## Ranking for the MVP (current view)
 
 Based on evidence strength × fit with an offline-first app × cost to get right:
 
 1. **UP-01, data never lost.** Strongest evidence, and it is the core promise of a local-first app. A failure here would be fatal to trust.
-2. **UP-03, any-script PDFs.** Recent evidence, a cheap fix, and it is testable. A good early quality signal.
-3. **UP-08 + UP-05, correct totals and a usable free tier.** Basic trust and fairness. The evidence is weak, but the cost of getting them wrong is high.
-4. **UP-02 and UP-04, no sync and user-owned data.** These come almost free with the local-first design. Treat them as marketing claims only after P1-T04 checks competitors.
+2. **UP-08 + UP-05, correct totals and a usable free tier.** Basic trust and fairness. The evidence is weak, but the cost of getting them wrong is high.
+3. **UP-02 and UP-04, no sync and user-owned data.** These come almost free with the local-first design. Treat them as marketing claims only after P1-T04 checks competitors.
+4. **UP-03, reduced to accented names and currency symbols** (D-007). Full non-Latin scripts are a nice-to-have.
 5. **UP-06 and UP-07, ads and billing.** Decide in Phase 6.
 
 **Key takeaway:** the evidence says competitors fail users in ways a careful local-first app could avoid. It does **not** yet say that freelancers will switch. A-01 to A-03 are the riskiest unknowns, and P1-T05 should target them first.

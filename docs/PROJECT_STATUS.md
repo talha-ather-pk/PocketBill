@@ -15,7 +15,7 @@ _Last updated: 2026-10-15_
 | P0-T03 | Create the Android project | **Verified** | Builds, unit tests pass, installed and launched on Galaxy A72 (Android 14); all 4 tabs open with no crash (2026-10-15). |
 | P0-T04 | Git and recovery practices | **Verified** | Local repo on `main`; `.gitignore`/`.gitattributes`; README "Saving your work". Pushed to https://github.com/talha-ather-pk/PocketBill. Repo made **public** 2026-10-15 at the founder's request (D-006). |
 
-**Phase 1 progress:** P1-T01 market research **complete** (4 apps with Play data and verbatim reviews; gaps listed in MARKET_RESEARCH.md). P1-T02 user problems **drafted** in [USER_PROBLEMS.md](USER_PROBLEMS.md), awaiting founder review. Later phases: see [ROADMAP.md](ROADMAP.md).
+**Phase 1 progress:** P1-T01 market research **complete**. P1-T02 [USER_PROBLEMS.md](USER_PROBLEMS.md), P1-T03 [PERSONAS.md](PERSONAS.md) and P1-T04 [DIFFERENTIATION.md](DIFFERENTIATION.md) **drafted**, awaiting founder review. Target market set by D-007 (global freelancers, English-only invoices). Later phases: see [ROADMAP.md](ROADMAP.md).
 
 ## Failed tasks
 
@@ -43,15 +43,15 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 ## Exact next action
 
 **Phase 0 is complete.** Next is Phase 1 (market validation):
-1. Founder: review USER_PROBLEMS.md (P1-T02). Do the rankings and the A-01…A-06 assumptions match what you know about freelancers?
-2. Claude: P1-T03 (primary and secondary persona), built from USER_PROBLEMS.md.
+1. Founder: review PERSONAS.md and DIFFERENTIATION.md. Key questions: is the riskiest assumption A-02 (invoicing from a phone) right, and does the positioning against Zoho make sense?
+2. Claude: P1-T05 (7-day validation plan: interview script, prototype, usability test), targeting A-01, A-02, A-03 and A-04.
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 1. P1-T01 done; P1-T02 drafted (USER_PROBLEMS.md). Next: P1-T03 personas.
+Phase 0 complete (all tasks verified). Current phase: Phase 1. P1-T01 done; P1-T02 to P1-T04 drafted (USER_PROBLEMS, PERSONAS, DIFFERENTIATION). Next: P1-T05 validation plan.
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```

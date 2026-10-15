@@ -8,6 +8,12 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-007 — Target market and invoice language
+- **Context:** P1-T02 asked which freelancers PocketBill targets and what language they invoice in (assumption A-06), because that sets the priority of non-Latin PDF support (UP-03).
+- **Decision:** Target **global freelancers who invoice exclusively in English**. Full non-Latin script support in PDFs (Urdu, Arabic, Bengali, Hindi, right-to-left) is a **nice-to-have**, not an MVP requirement.
+- **Still required in the MVP:** English invoices for global clients routinely contain **accented Latin names** (José, Müller, Øresund) and **currency symbols** (€ £ ¥ ₹ ₦ ₱ ₨). PDFs must render these correctly. That needs only the Latin-1/Latin Extended range and common currency symbols, so it costs little.
+- **Status:** Accepted by founder 2026-10-15.
+
 ## D-006 — Repository is public
 - **Context:** The founder wants anyone with the link to see the code and propose changes.
 - **Decision:** The GitHub repo is **public**. Anyone can view or fork it and open pull requests. Only the founder can change `main`, by merging. The founder chose to keep the commit email (`talhaather.freelance@gmail.com`) visible in the history.

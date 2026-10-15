@@ -16,9 +16,9 @@ Status values: Not started · In progress · Blocked · Implemented · Verified
 | ID | Task | Status |
 |---|---|---|
 | P1-T01 | Research competitors (sourced, dated) → `MARKET_RESEARCH.md` | Verified (founder-collected Play data, 4 apps; known gaps listed) |
-| P1-T02 | Organize user problems (evidence vs hypothesis) → `USER_PROBLEMS.md` | Implemented: awaiting founder review |
-| P1-T03 | Primary + secondary persona | Not started |
-| P1-T04 | Test differentiation claims against competitors | Not started |
+| P1-T02 | Organize user problems (evidence vs hypothesis) → `USER_PROBLEMS.md` | Implemented: updated for D-007; awaiting founder review |
+| P1-T03 | Primary + secondary persona → `PERSONAS.md` | Implemented: awaiting founder review |
+| P1-T04 | Test differentiation claims against competitors → `DIFFERENTIATION.md` | Implemented: awaiting founder review |
 | P1-T05 | 7-day validation plan (interviews, prototype, usability script) | Not started |
 | P1-T06 | MVP specification → `MVP_SPEC.md` | Not started |
 

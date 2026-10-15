@@ -18,6 +18,8 @@ An offline-first Android app that helps freelancers create professional invoices
 | [RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) | Google Play release steps |
 | [MARKET_RESEARCH.md](docs/MARKET_RESEARCH.md) | Competitor and user research |
 | [USER_PROBLEMS.md](docs/USER_PROBLEMS.md) | User problems: evidence vs assumptions |
+| [PERSONAS.md](docs/PERSONAS.md) | Target users (primary, secondary, not targeted) |
+| [DIFFERENTIATION.md](docs/DIFFERENTIATION.md) | PocketBill's claims checked against competitors |
 
 ## Setting up your computer
 
