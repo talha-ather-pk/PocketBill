@@ -1,6 +1,6 @@
 # Market Research
 
-**Status: P1-T01 first pass (2026-10-15). Partial.** Gathered with web search and page fetches by Claude Code. No apps were installed or tested.
+**Status: P1-T01 in progress (2026-10-15).** First pass by Claude Code (web search and page fetches), plus the founder's first Play Store pass covering 3 apps. No apps were installed or tested.
 
 ## Research limitations (read first)
 
@@ -54,7 +54,41 @@ Confidence levels: **High** = official source or several agreeing sources · **M
 
 None of these observations proves demand for PocketBill. They feed P1-T02 (problems) and P1-T04 (differentiation).
 
+## Founder Play Store pass, round 1 (supplied 2026-10-15)
+
+The founder reported these as verified on Google Play. **They replace the third-party tracker figures above where they differ**, because a live listing is a better source than a tracker. Limitations:
+- No Play links or exact check dates were given. The date below is the day the data was supplied.
+- The complaint columns are the **founder's summaries of reviews**, not verbatim quotes with dates. They show recurring themes but cannot be quoted.
+- **JobFLEX:** a rating *range* and two developer names cannot both come from one listing, so this row is **Low** confidence until one exact listing is recorded.
+
+| App (as listed) | Developer | Rating | Installs | Monetization | Reported complaints (founder summary) | Confidence |
+|---|---|---|---|---|---|---|
+| Saldo: Bill & Invoice Maker | Saldo Apps Inc. | 4.7★ | 1,000,000+ | Free tier limited to **3 documents**; subscription ~**$14.99/month** | Occasional sync glitches; **data loss when restoring a backup** | Medium |
+| JobFLEX | "Building Science Academy LLC / Gizwood" (two names given) | 3.4★–4.2★ (range given) | 100,000+ | Subscription tiers up to ~$15/month; works offline; aimed at contractors | Features locked behind paid tiers; sync delays | Low |
+| Invoice Maker & Estimate Maker | Wow Invoice LLC | 4.7★ | 100,000+ | Free with in-app purchases | **Intrusive full-screen ads**; export limits on free tier | Medium |
+
+### What this resolves
+| Earlier open question | Resolution |
+|---|---|
+| Saldo developer: "CA Publishing / BillGo" vs Saldo Apps Inc. | Play listing developer is **Saldo Apps Inc.**, matching the iOS evidence (section 4). The "CA Publishing / BillGo" name in the older table is probably a different app. |
+| Wow Invoice rating: 4.5★ (tracker) vs ~4.8–4.9★ (older table) | **4.7★** on Play per this pass. Ratings drift over time; use this figure. |
+| JobFLEX installs: 50,000+ vs 100K | **100,000+** per this pass, matching the tracker. Whether the app is still updated (tracker: last update 2020-06-03) is **still unverified**. |
+
+### What it adds to the evidence
+- **Data loss on backup/restore** now appears for Saldo on **both iOS (verbatim reviews, section 4) and Android (founder summary)**. That strengthens O3: reliable local storage and a trustworthy backup/restore are worth treating as core.
+- **Hard free-tier caps** (Saldo: 3 documents) and **paywalled exports** (Wow) support H1, now Medium rather than Low.
+- **Intrusive ads** (Wow) support H2, now Medium.
+- Pricing anchor: the subscription apps here sit around **$15/month**. That is a reference point for P7 (monetization), not a recommendation.
+
+### Still missing for P1-T01
+- Zoho Invoice's Play listing (rating, installs, offline behaviour on Android).
+- Play links and 2–3 verbatim recent 1–2★ reviews per app, with dates.
+- One exact JobFLEX listing: a single developer name and rating, plus its last-updated date.
+- Not yet researched: Invoice Simple, Invoice2go, and the others listed in section 5.
+
 ## Founder-supplied competitor table (2026-10-15), mixed sources, unverified
+
+*Partly superseded by "Founder Play Store pass, round 1" above.*
 
 The founder supplied this table and said its sources are **mixed**: some rows were checked on Google Play and some came from elsewhere. It is not yet known which rows are which. **Treat every cell as Low confidence** until it is re-checked against a live Play Store listing. Ranges such as "~3.3★ – 4.7★" and rows combining two apps cannot come from a single listing.
 
