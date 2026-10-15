@@ -15,7 +15,7 @@ _Last updated: 2026-10-15_
 | P0-T03 | Create the Android project | **Verified** | Builds, unit tests pass, installed and launched on Galaxy A72 (Android 14); all 4 tabs open with no crash (2026-10-15). |
 | P0-T04 | Git and recovery practices | **Verified** | Local repo on `main`; `.gitignore`/`.gitattributes`; README "Saving your work". Pushed to https://github.com/talha-ather-pk/PocketBill. Repo made **public** 2026-10-15 at the founder's request (D-006). |
 
-Later phases: see [ROADMAP.md](ROADMAP.md). **P1-T01 (market research) is in progress**: Saldo and JobFLEX have Play links and verbatim dated reviews (all 2020–2022); Wow Invoice has metrics only. Still missing: Wow reviews, Zoho on Play, any 2025–2026 reviews.
+**Phase 1 progress:** P1-T01 market research **complete** (4 apps with Play data and verbatim reviews; gaps listed in MARKET_RESEARCH.md). P1-T02 user problems **drafted** in [USER_PROBLEMS.md](USER_PROBLEMS.md), awaiting founder review. Later phases: see [ROADMAP.md](ROADMAP.md).
 
 ## Failed tasks
 
@@ -43,15 +43,15 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 ## Exact next action
 
 **Phase 0 is complete.** Next is Phase 1 (market validation):
-1. Founder: do the manual Google Play Store pass for P1-T01 (see MARKET_RESEARCH.md).
-2. Claude: P1-T02 (organize user problems: evidence vs hypothesis).
+1. Founder: review USER_PROBLEMS.md (P1-T02). Do the rankings and the A-01…A-06 assumptions match what you know about freelancers?
+2. Claude: P1-T03 (primary and secondary persona), built from USER_PROBLEMS.md.
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 1. Next: P1-T01 manual Play Store pass, then P1-T02.
+Phase 0 complete (all tasks verified). Current phase: Phase 1. P1-T01 done; P1-T02 drafted (USER_PROBLEMS.md). Next: P1-T03 personas.
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```

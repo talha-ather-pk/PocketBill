@@ -1,6 +1,6 @@
 # Market Research
 
-**Status: P1-T01 in progress (2026-10-15).** First pass by Claude Code (web search and page fetches), plus the founder's first Play Store pass covering 3 apps. No apps were installed or tested.
+**Status: P1-T01 complete (2026-10-15)**, with known gaps listed under "Known gaps". Sources: a first pass by Claude Code (web search and page fetches) plus three rounds of the founder's Play Store checks (Saldo, JobFLEX, Wow Invoice, Zoho Invoice). No apps were installed or tested.
 
 ## Research limitations (read first)
 
@@ -84,7 +84,23 @@ Copied by the founder from the Play listings. Quotes are as supplied and end whe
 **What these show**
 - **Data loss is now evidence on Android, not just iOS.** Both Saldo reviews describe invoices disappearing, even with a backup made, and after a reinstall. This is the strongest pattern so far (O3 → **Medium-High**). For PocketBill it argues for: data that survives app updates, a restore that is tested, and never deleting data during reinstall or sign-out flows.
 - **Abandoned apps strand users.** The JobFLEX reviews ("It's like they just disappeared") match the tracker's last-update date of 2020-06-03. Users of an app that depends on its developer's servers lose access when the developer stops running them. This supports offline-first with **user-owned export/backup files**, so users keep their data even if PocketBill stops. That is a hypothesis about what users value, not yet evidence.
-- **Support responsiveness** appears in both apps' complaints. That is relevant later (P8, support plan).
+- **Support responsiveness** appears in both apps' complaints. That is relevant later (P9-T03, feedback and support process).
+
+### Founder pass, round 3 (supplied 2026-10-15): Wow Invoice and Zoho Invoice
+
+| App | Play link | Developer | Rating | Installs | Confidence |
+|---|---|---|---|---|---|
+| Invoice Maker & Estimate Maker | [com.wow.invoice](https://play.google.com/store/apps/details?id=com.wow.invoice) | Wow Invoice LLC | 4.7★ | 100,000+ | Medium |
+| Zoho Invoice | [com.zoho.invoice](https://play.google.com/store/apps/details?id=com.zoho.invoice) | Zoho Corporation | 4.7★ | 1,000,000+ | Medium |
+
+Recent reviews (star rating not stated; supplied as negative reviews):
+- **Wow Invoice, 2026-07-20:** *"When I create an invoice in Bengali, the PDF shows square boxes (□) instead of Bengali text. Please add proper Unicode font support in PDF generation."*
+- **Zoho Invoice, 2026 (exact date not given):** *"Sometimes after updating it will take some time to reflect. Disappointed with tax record updates taking too long and sync delays."*
+
+**What these show**
+- **Non-Latin text breaking in PDFs is a current problem (2026).** A user writing in Bengali got empty boxes instead of letters. For PocketBill's likely markets (for example Urdu, Hindi, Bengali and Arabic speakers), PDFs must render **any script the user can type**, including right-to-left text. This is a concrete, testable requirement for P4-T08 (PDF generation): add PDF test cases in Urdu (right-to-left), Bengali, Hindi and Arabic, and include a missing-font fallback check.
+- **Cloud sync delay is a current complaint about the strongest free competitor (Zoho, 2026).** A local-first app has no sync step for the user's own data. Whether users would *switch* for that is still a hypothesis.
+- Zoho's offline behaviour on Android is still only sourced from an undated help article (section 1).
 
 ### What this resolves
 | Earlier open question | Resolution |
@@ -99,13 +115,13 @@ Copied by the founder from the Play listings. Quotes are as supplied and end whe
 - **Data loss on backup/restore** now appears for Saldo on **both iOS (verbatim reviews, section 4) and Android (founder summary)**. That strengthens O3: reliable local storage and a trustworthy backup/restore are worth treating as core.
 - **Hard free-tier caps** (Saldo: 3 documents) and **paywalled exports** (Wow) support H1, now Medium rather than Low.
 - **Intrusive ads** (Wow) support H2, now Medium.
-- Pricing anchor: the subscription apps here sit around **$15/month**. That is a reference point for P7 (monetization), not a recommendation.
+- Pricing anchor: the subscription apps here sit around **$15/month**. That is a reference point for Phase 6 (monetization), not a recommendation.
 
-### Still missing for P1-T01
-- **Wow Invoice:** Play link and verbatim dated 1–2★ reviews.
-- **Zoho Invoice:** Play listing (rating, installs, offline behaviour on Android).
-- **Recent reviews (2025–2026)** for any app, to show whether the 2020–2022 problems are still current.
-- Not yet researched: Invoice Simple, Invoice2go, and the others listed in section 5.
+### Known gaps (accepted when P1-T01 closed, 2026-10-15)
+- Only **one or two reviews per app**. That is enough to show themes exist, not how common they are.
+- The data-loss reviews (Saldo) are from 2021–2022. No 2025–2026 review yet confirms data loss is still happening.
+- Zoho's offline behaviour on Android has not been tested.
+- Not researched: Invoice Simple, Invoice2go, and the others in section 5. Revisit in P1-T04 if differentiation depends on them.
 
 ## Founder-supplied competitor table (2026-10-15), mixed sources, unverified
 

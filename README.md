@@ -17,6 +17,7 @@ An offline-first Android app that helps freelancers create professional invoices
 | [KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md) | Open problems |
 | [RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) | Google Play release steps |
 | [MARKET_RESEARCH.md](docs/MARKET_RESEARCH.md) | Competitor and user research |
+| [USER_PROBLEMS.md](docs/USER_PROBLEMS.md) | User problems: evidence vs assumptions |
 
 ## Setting up your computer
 
