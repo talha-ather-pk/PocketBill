@@ -21,6 +21,8 @@ An offline-first Android app that helps freelancers create professional invoices
 | [PERSONAS.md](docs/PERSONAS.md) | Target users (primary, secondary, not targeted) |
 | [DIFFERENTIATION.md](docs/DIFFERENTIATION.md) | PocketBill's claims checked against competitors |
 | [VALIDATION_PLAN.md](docs/VALIDATION_PLAN.md) | 7-day plan: interviews, pitch test, usability test |
+| [VALIDATION_RESULTS.md](docs/VALIDATION_RESULTS.md) | What validation found (anonymized) |
+| [MVP_SPEC.md](docs/MVP_SPEC.md) | MVP scope, screens, Room schema, money rules, PDF, backup |
 
 ## Setting up your computer
 

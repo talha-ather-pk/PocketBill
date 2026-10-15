@@ -8,6 +8,12 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-008 — Proceed to MVP specification
+- **Context:** VALIDATION_PLAN.md says to proceed to P1-T06 only if A-02 (mobile invoicing) and A-01 (pain) are supported.
+- **Decision:** The founder reports validation complete, with strong demand for offline-first, ad-free, account-free invoicing and A-02 supported "for quick tasks". Proceed to P1-T06.
+- **Caveat:** The per-participant tally and counts are not yet recorded ([VALIDATION_RESULTS.md](VALIDATION_RESULTS.md)). "Quick tasks" needs clarifying, because whether people *create* invoices on the phone, or only check and send them, changes MVP priorities.
+- **Status:** Accepted by founder 2026-10-15.
+
 ## D-007 — Target market and invoice language
 - **Context:** P1-T02 asked which freelancers PocketBill targets and what language they invoice in (assumption A-06), because that sets the priority of non-Latin PDF support (UP-03).
 - **Decision:** Target **global freelancers who invoice exclusively in English**. Full non-Latin script support in PDFs (Urdu, Arabic, Bengali, Hindi, right-to-left) is a **nice-to-have**, not an MVP requirement.
