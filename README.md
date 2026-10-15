@@ -60,7 +60,8 @@ Git keeps a history of every saved version (a "commit"), so you can always go ba
 - **Save a version:** `git add -A` then `git commit -m "Short description of the change"`
 - **See history:** `git log --oneline`
 - **Undo uncommitted changes to one file:** `git restore path\to\file`
-- **Back up off this laptop:** `git push` (once the private GitHub repo is set up, see D-001)
+- **Back up off this laptop:** `git push` (sends commits to the private repo https://github.com/talha-ather-pk/PocketBill)
+- **Recover on a new computer:** `git clone https://github.com/talha-ather-pk/PocketBill.git`
 
 Rules:
 - Commit after every task that works. Never commit something that doesn't build.

@@ -13,7 +13,7 @@ _Last updated: 2026-10-15_
 | P0-T01 | Inspect the environment | **Verified** | Results in [ENVIRONMENT.md](ENVIRONMENT.md). Inspection commands were actually run on this machine. |
 | P0-T02 | Recommend the technology stack | In progress | Official versions researched (DECISIONS D-005); finalize after the template project builds. |
 | P0-T03 | Create the Android project | In progress | Project files exist; `assembleDebug` + unit tests **pass** (2026-10-15). Launch on a device not yet verified. |
-| P0-T04 | Git and recovery practices | In progress | Local repo on `main` with commits; `.gitignore`/`.gitattributes` in place; README "Saving your work". Off-site backup (private GitHub repo, D-001) waits on founder approval. |
+| P0-T04 | Git and recovery practices | **Verified** | Local repo on `main`; `.gitignore`/`.gitattributes`; README "Saving your work". Pushed to private repo https://github.com/talha-ather-pk/PocketBill (visibility confirmed PRIVATE). |
 
 Later phases: see [ROADMAP.md](ROADMAP.md). **P1-T01 (market research) is in progress**: first pass in MARKET_RESEARCH.md; Google Play pages could not be read automatically, so the founder needs to do a manual Play Store pass.
 
@@ -41,8 +41,8 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 ## Exact next action
 
-1. Founder: get the phone detected (KI-004) and approve or decline creating a private GitHub repo for backup.
-2. Then Claude: install and launch the app (`gradlew installDebug`), finish P0-T03, finalize P0-T02 (D-005), and push to GitHub to finish P0-T04.
+1. Founder: get the phone detected (KI-004).
+2. Then Claude: install and launch the app (`gradlew installDebug`), finish P0-T03, and finalize P0-T02 (D-005).
 
 ## Resume prompt for a new Claude session
 

@@ -6,7 +6,7 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Context:** The project currently lives in `C:\Users\DELL\OneDrive\Desktop\invocie app`, which OneDrive syncs. Android/Gradle builds generate thousands of changing files; OneDrive sync often locks them and breaks builds.
 - **Options:** (a) keep it in OneDrive; (b) move to `C:\dev\PocketBill` and use Git + GitHub (private repo) for backup.
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
-- **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty.
+- **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
 ## D-004 — Primary test device
 - **Decision:** Use the founder's physical Android phone (USB debugging) as the main test device. An emulator is secondary because this laptop's CPU is slow for emulation.
