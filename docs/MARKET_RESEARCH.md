@@ -1,0 +1,91 @@
+# Market Research
+
+**Status: P1-T01 first pass (2026-10-15). Partial.** Gathered with web search and page fetches by Claude Code. No apps were installed or tested.
+
+## Research limitations (read first)
+
+- **Google Play pages could not be read directly.** Fetching `play.google.com/store/apps/details?...` returned no usable content, so ratings and install counts below come from **third-party trackers** (AppPricingLab). These may be outdated.
+- Several official pricing pages blocked automated access (Invoice Simple returned 403; one Zoho pricing URL returned 404). A review-analysis report (Kimola) returned 410 (removed).
+- Review quotes come from **JustUseApp**, which mirrors **Apple App Store** reviews. They show iOS users' experiences with an app that may also exist on Android; they are **not Google Play reviews**.
+- **Next step to close the gaps:** the founder opens Google Play on their phone, looks at the apps listed below, and records rating, installs, price, "Contains ads", and the 1–2★ reviews sorted by "Most recent" in the spreadsheet template at the end of this file. This is a 30–45 minute manual task.
+
+Confidence levels: **High** = official source or several agreeing sources · **Medium** = one reputable third-party source · **Low** = single unverified source, or conflicting sources.
+
+## Competitors
+
+### 1. Zoho Invoice (Zoho Corporation)
+- **Price:** Free. Zoho's own pages say it is free ("forever free") with no ads. **High:** [zoho.com/us/invoice/pricing](https://www.zoho.com/us/invoice/pricing/) (from search snippet), [free-version PDF](https://www.zoho.com/invoice/migration/zoho-invoice-free-version-details.pdf).
+- **Android app:** Yes, listed on Zoho's mobile apps page. **High:** [zoho.com/us/invoice/mobile-apps](https://www.zoho.com/us/invoice/mobile-apps/).
+- **Offline:** A Zoho help article says Zoho Invoice cannot be used offline and needs an internet connection. The article is undated, so this may have changed. **Medium:** [zoho.com/us/invoice/kb/general/zoho-invoice-offline.html](https://www.zoho.com/us/invoice/kb/general/zoho-invoice-offline.html).
+- **Requires account:** Yes (cloud product). *Inferred from the product design, not separately verified.* **Medium.**
+- **Free-plan limits:** Third-party sites disagree; one claims a 5-client cap. **Low:** [temperstack.com](https://www.temperstack.com/plans/zoho-invoice/), [costbench.com](https://costbench.com/software/invoicing/zoho-invoice/free-plan).
+- **Implication:** PocketBill cannot compete with Zoho on price. If there is room to compete, it is offline use, no account, and simplicity. That is a **hypothesis**.
+
+### 2. Invoice Maker & Estimate Maker (Wow Invoice LLC), package `com.wow.invoice`
+- 4.5★, 2.5K reviews, 100K installs; free with in-app purchases ("Pro plans", prices not shown); last updated 2026-02-28. **Medium:** [AppPricingLab](https://www.apppricinglab.com/app/google_play/com.wow.invoice).
+- Features listed: PDF export, customer management, logo, e-signature, tax and discount, multiple currencies and date formats, recovery of deleted invoices. Offline use is not mentioned.
+
+### 3. Invoice Maker & Estimating App (JobFLEX), package `com.jobflex.android`
+- 3.4★, 1.0K reviews, 100K installs; free with in-app purchases; **last updated 2020-06-03** (appears unmaintained). **Medium:** [AppPricingLab](https://www.apppricinglab.com/app/google_play/com.jobflex.android).
+- Says "No Internet Required". Includes estimates, invoices, clients, e-signature, and PDF. Aimed at contractors (field work) rather than freelancers.
+
+### 4. Invoice Maker・Billing App (Saldo Apps Inc.), iOS review evidence
+- Overall 4.8/5 on the App Store per JustUseApp. **Medium:** [JustUseApp reviews](https://justuseapp.com/en/app/1447239633/invoice-maker-billing-app/reviews).
+- Negative themes in reviews (verbatim quotes, dates not shown on the source page):
+  - Data loss: *"I have lost my invoices now 2 times due to InvoiceMakerBillingApp not syncing and saving my data."*
+  - Lost financial records: *"I lost my data & money even I don't remember how much money my Customers owed me"*
+  - Billing errors: *"We were charged for the yearly AND the lifetime."*
+  - Support: *"I have tirelessly emailed their support ( the only way to contact the by the way)"*
+  - Errors: *"constantly telling me "Something went wrong""*
+
+### 5. Other apps seen, not yet researched
+- Apple App Store listings that market **offline use, no login, or a one-time purchase**: "Offline Invoice: Paper Invoice" (one-time purchase, no subscription, no login) and "Invoices, Quotes & Estimates" (offline, no account) ([link](https://apps.apple.com/us/app/id6756224960), [link](https://apps.apple.com/us/app/-/id6756826568)). **Android availability not verified.**
+- Not yet researched: Invoice Simple, Invoice2go, InvoiceFlow, Pocket Invoice, QuickQuote (from the master prompt list). Each needs its exact developer and Play listing confirmed first.
+
+## Early observations
+
+| # | Observation | Type | Confidence |
+|---|---|---|---|
+| O1 | "Offline", "no account", and "one-time purchase" are **already claimed by several existing apps**. PocketBill cannot claim them as unique. | Evidence | Medium |
+| O2 | A strong free option (Zoho Invoice) exists, but it is cloud-based and needs an account. | Evidence | High (free) / Medium (online-only) |
+| O3 | Reviews repeatedly mention **lost invoices** after logout, reinstall, sync failure, or a lapsed subscription. Reliable local storage plus user-controlled backup may matter to users. | Evidence (iOS reviews, one app) + hypothesis that it matters to PocketBill's users | Medium |
+| O4 | **Billing confusion** (double charges, plans changing from one-time to subscription) damages trust. Transparent, stable pricing may be a differentiator. | Evidence (one app) + hypothesis | Low–Medium |
+| O5 | Invoice-maker apps in the top-grossing Business charts are mostly free downloads with in-app purchases. | Evidence (tracker ranks) | Medium |
+
+None of these observations proves demand for PocketBill. They feed P1-T02 (problems) and P1-T04 (differentiation).
+
+## Founder-supplied competitor table (2026-10-15), mixed sources, unverified
+
+The founder supplied this table and said its sources are **mixed**: some rows were checked on Google Play and some came from elsewhere. It is not yet known which rows are which. **Treat every cell as Low confidence** until it is re-checked against a live Play Store listing. Ranges such as "~3.3★ – 4.7★" and rows combining two apps cannot come from a single listing.
+
+| App | Rating | Installs | Monetization | Ads? | Reported 1–2★ complaints |
+|---|---|---|---|---|---|
+| Zoho Invoice | ~4.7–4.8★ | 1,000,000+ | Free | No | Web dashboard sync delays; multi-user/access caps on free plan |
+| Invoice Maker・Billing App ("CA Publishing / BillGo") | ~3.3–4.7★ | 10K+ to 5M+ | Free + IAP $4.99–29.99 | Yes | Hard paywall after a few free invoices; PDF logo permission and layout export bugs |
+| JobFLEX | ~3.4–4.2★ | 50,000+ | Trial, $8–15/mo subscription | No | Photo attachments/line items paywalled; tax calculation inconsistencies in exports |
+| Wow Invoice | ~4.8–4.9★ | 100,000+ | Free + IAP $3.49–19.99 | Yes | Intrusive pop-up ads during quote creation; CSV/data export limited without premium |
+| Offline Invoice: Paper Invoice / Invoice+ | ~4.5–5.0★ | 10,000+ | Free / one-time IAP | No | Limited cloud backup; no payment-gateway integration |
+| Invoices, Quotes & Estimates ("FlowBill / CodeEra") | ~4.2–4.6★ | 10K+ to 100K+ | Free + IAP / subscription | Yes | Inaccurate AI parsing for custom tax rules; mandatory login/cloud account |
+
+### Conflicts with earlier sources (must resolve before relying on either)
+
+| App | This table says | Earlier source says |
+|---|---|---|
+| JobFLEX | 50,000+ installs; $8–15/mo | 100K installs, last updated **2020-06-03** (AppPricingLab). If that update date is right, the app may be unmaintained. |
+| Wow Invoice | ~4.8–4.9★ | 4.5★ from 2.5K reviews (AppPricingLab, last updated 2026-02-28) |
+| Invoice Maker・Billing App | Developer "CA Publishing / BillGo" | Saldo Apps Inc. (JustUseApp, iOS). **These may be different apps with similar names.** |
+| Invoices, Quotes & Estimates | Mandatory login/cloud account | Its App Store listing says it works offline with no account required. **These may be different apps or platforms.** |
+
+### What the table adds, if confirmed (hypotheses for P1-T02)
+- H1: **Paywalls after a few free invoices** and **paywalled exports** frustrate users. This supports PocketBill's rule of never paywalling basic invoice export.
+- H2: **Intrusive ads during document creation** are disliked. This supports keeping ads out of the editor and out of PDFs (master prompt P6-T03).
+- H3: **Tax calculation inconsistencies** hurt trust. This supports tested, explicit money and tax rules (P3-T03).
+- H4: Offline one-time-purchase apps are criticized for **limited backup**. This supports making backup and restore a core MVP feature (P4-T12).
+
+### To verify (founder, on phone)
+For each row: open the exact Play listing and record the developer name exactly as shown, the single rating, the install band, the "Contains ads" label, and 3 recent 1–2★ reviews. Note which rows you already checked directly so they can be marked Medium/High.
+
+## Founder spreadsheet template (for the manual Play Store pass)
+
+| App | Developer | Play link | Date checked | Rating | Installs | Contains ads? | Price / IAP | Offline? | Account required? | Quotes/estimates? | Backup? | Top 3 complaints (1–2★, most recent) | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|

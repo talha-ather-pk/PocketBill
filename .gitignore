@@ -1,0 +1,32 @@
+# Gradle and build outputs
+.gradle/
+build/
+**/build/
+.kotlin/
+
+# Local machine configuration (contains your SDK path)
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Signing keys and secrets: NEVER commit these
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+*.p12
+*.pem
+google-services.json
+
+# Generated app packages
+*.apk
+*.aab
+
+# OS files
+.DS_Store
+Thumbs.db

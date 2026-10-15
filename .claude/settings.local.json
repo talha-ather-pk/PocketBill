@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell([Environment]::GetEnvironmentVariable\\('JAVA_HOME','User'\\); Get-ChildItem \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platforms\",\"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\build-tools\" | Select-Object -ExpandProperty FullName; Test-Path \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\\\\bin\\\\java.exe\")",
+      "PowerShell(cd C:\\\\dev\\\\PocketBill; $env:JAVA_HOME='C:\\\\java'; .\\\\gradlew.bat assembleDebug testDebugUnitTest --console=plain 2>&1 | Select-Object -Last 60)",
+      "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" devices -l)",
+      "PowerShell($adb=\"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\"; & $adb kill-server; & $adb start-server; & $adb devices -l; Get-PnpDevice -PresentOnly | Where-Object { $_.FriendlyName -match 'android|adb|phone|mtp|samsung|xiaomi|oppo|vivo|pixel|motorola|realme|oneplus|infinix|tecno|huawei' -or $_.Class -match 'WPD|AndroidUsbDeviceClass' } | Select-Object Status,Class,FriendlyName,InstanceId | Format-Table -AutoSize | Out-String -Width 250)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}
