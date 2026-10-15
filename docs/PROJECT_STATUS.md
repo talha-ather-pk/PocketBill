@@ -11,7 +11,7 @@ _Last updated: 2026-10-15_
 | Task | Name | Status | Notes |
 |---|---|---|---|
 | P0-T01 | Inspect the environment | **Verified** | Results in [ENVIRONMENT.md](ENVIRONMENT.md). Inspection commands were actually run on this machine. |
-| P0-T02 | Recommend the technology stack | In progress | Official versions researched (DECISIONS D-005); finalize after the template project builds. |
+| P0-T02 | Recommend the technology stack | **Verified** | Toolchain versions confirmed by a successful build (D-005). Room 2.8.5 still proposed; confirmed in P4-T03. |
 | P0-T03 | Create the Android project | In progress | Project files exist; `assembleDebug` + unit tests **pass** (2026-10-15). Launch on a device not yet verified. |
 | P0-T04 | Git and recovery practices | **Verified** | Local repo on `main`; `.gitignore`/`.gitattributes`; README "Saving your work". Pushed to https://github.com/talha-ather-pk/PocketBill. Repo made **public** 2026-10-15 at the founder's request (D-006). |
 
@@ -42,14 +42,15 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 ## Exact next action
 
 1. Founder: get the phone detected (KI-004).
-2. Then Claude: install and launch the app (`gradlew installDebug`), finish P0-T03, and finalize P0-T02 (D-005).
+2. Then Claude: install and launch the app (`gradlew installDebug`) to finish P0-T03, which is the last Phase 0 task.
+   (Emulator fallback is not available: `emulator -accel-check` reports the hypervisor driver is not installed, KI-003.)
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Current phase: Phase 0. P0-T01 verified. P0-T02 in progress (see DECISIONS D-005). P0-T03: project builds and unit tests pass; launch on the phone still to verify.
+Current phase: Phase 0. P0-T01, P0-T02, P0-T04 verified. P0-T03: project builds and unit tests pass; launch on the phone still to verify.
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```

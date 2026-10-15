@@ -40,4 +40,16 @@ Checked against official pages on 2026-10-15:
 
 - **Proposed Room choice: Room 2.8.5.** It is still actively maintained, nearly all tutorials and Android docs use its API (which helps a beginner), and PocketBill does not need Kotlin Multiplatform. We can revisit Room 3 before the first release, because changing persistence libraries after users have data is riskier.
 - **Proposed project-creation method:** create the project with Android Studio's built-in "Empty Activity" (Compose) template instead of hand-writing Gradle files. The template ships Kotlin, Compose compiler, and AGP versions that Google has already tested together, which avoids guessing Kotlin and KSP versions. Claude then inspects the generated version catalog (`gradle/libs.versions.toml`) and records the exact versions here.
-- **Status:** Proposed — finalize after the template project is generated and builds.
+- **Outcome (2026-10-15):** The project was not generated from the Android Studio template. Its Gradle files were written directly, using the versions above. The build verified them: `gradlew assembleDebug testDebugUnitTest` → BUILD SUCCESSFUL. Versions in use (`gradle/libs.versions.toml`):
+
+  | Component | Version |
+  |---|---|
+  | Gradle | 9.6.0 |
+  | Android Gradle Plugin | 9.4.0 |
+  | Kotlin + Compose compiler plugin | 2.4.21 |
+  | JDK | 17 (`C:\java`, 17.0.12) |
+  | compileSdk / targetSdk / minSdk | 37 / 37 / 26 |
+  | Compose BOM | 2026.09.00 → resolved ui 1.12.1, material3 1.4.0 (confirmed from the Gradle cache; matches the mapping above) |
+  | core-ktx / lifecycle / activity-compose / navigation-compose | 1.19.1 / 2.11.0 / 1.13.0 / 2.10.2 |
+  | JUnit | 4.13.2 |
+- **Status:** Toolchain versions **verified** by a successful build. The Room 2.8.5 choice remains *proposed*. It will be confirmed (with KSP version) when Room is added in P4-T03.
