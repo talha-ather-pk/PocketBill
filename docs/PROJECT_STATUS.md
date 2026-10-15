@@ -44,14 +44,14 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 **Phase 0 is complete.** Next is Phase 1 (market validation):
 1. Founder: run the 7-day validation plan (VALIDATION_PLAN.md). Day 1 is to send ~40 outreach messages and confirm the decision thresholds. Raw notes go in `research-private/` (git-ignored).
-2. Claude (when asked): build the clickable phone prototype for the usability test; after Day 6, help tally results and write VALIDATION_RESULTS.md. No Phase 4 engineering until A-02 and A-01 are supported.
+2. Prototype is built (https://claude.ai/artifact/Uv6we4zAj9HssR9cLHk2A4; share it from its Share menu before Day 3). Claude: after Day 6, help tally results and write VALIDATION_RESULTS.md. No Phase 4 engineering until A-02 and A-01 are supported.
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 1. P1-T01 done; P1-T02 to P1-T04 drafted (USER_PROBLEMS, PERSONAS, DIFFERENTIATION). P1-T05 plan written; founder is running the 7-day validation. Next: prototype, then results and P1-T06.
+Phase 0 complete (all tasks verified). Current phase: Phase 1. P1-T01 done; P1-T02 to P1-T04 drafted (USER_PROBLEMS, PERSONAS, DIFFERENTIATION). P1-T05 plan written; founder is running the 7-day validation. Prototype built. Next: results (VALIDATION_RESULTS.md), then P1-T06.
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```

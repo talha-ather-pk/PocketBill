@@ -114,10 +114,17 @@ Record the ranking and the *reason*, word for word if possible.
 
 **Purpose:** see whether someone can complete the core flow on a phone **without help**, and where they hesitate. This is not a test of the visual design.
 
-**Format, cheapest first:**
-1. **Clickable phone mockup.** Claude can build this as a web page that opens on any phone browser, with no app install. *Recommended.*
-2. Figma (free) clickable prototype.
-3. Paper sketches, photographed and shown over video.
+**Built (2026-10-15):** a clickable phone prototype that runs in any phone browser.
+- **Link:** https://claude.ai/artifact/Uv6we4zAj9HssR9cLHk2A4. It is **private** until you share it from the page's **Share** menu, so do that before Day 3.
+- **Source:** [`prototype/pocketbill-prototype.html`](../prototype/pocketbill-prototype.html), with fake data only.
+
+**Facilitator notes**
+- It opens with 3 example invoices (USD overdue, GBP unpaid, CAD paid), so Home shows a realistic "Outstanding" total.
+- **Defaults are deliberate:** new invoices start in **USD** with payment due in **30 days**. T1 asks for **EUR** and **14 days**, so watch whether people notice and change both.
+- **Settings → Session log** records every screen, save, share and payment mark, with minutes since reset. At the end of the test, ask the participant to open Settings and screenshot it (or read it out).
+- **Settings → Reset prototype** (tap twice) restores the example data and clears the log **on that phone**. Do it before each participant. Each person's browser keeps their own copy, so you never see their changes and they never see anyone else's.
+- Nothing is uploaded, sent or saved as a file. Share and Save show a "Prototype" message instead.
+- **Not covered by the prototype:** switching between devices, backups, and getting real PDFs to clients. Interview questions 4–6 cover how people work across devices.
 
 **The screens to include:**
 1. Home: outstanding total, recent invoices, a **Create invoice** button.
