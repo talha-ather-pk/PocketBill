@@ -2,7 +2,7 @@
 
 An offline-first Android app that helps freelancers create professional invoices, export them as PDFs, share them with clients, and track who has paid.
 
-**Current status:** Phase 0, setting up the environment. No app code exists yet. See [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md).
+**Current status:** Phase 0. The app skeleton builds and its tests pass. See [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md).
 
 ## Project documents
 
@@ -45,4 +45,24 @@ Success looks like this: the "Welcome to Android Studio" window appears, and the
 
 ## Building the app
 
-Instructions will be added in P0-T03, once the project exists.
+In PowerShell, from `C:\dev\PocketBill`:
+
+- Build and run the tests: `.\gradlew.bat assembleDebug testDebugUnitTest`
+- Install on the connected phone: `.\gradlew.bat installDebug`
+
+Success looks like this: the output ends with `BUILD SUCCESSFUL`. The first build is slow (about 10 minutes) because it downloads tools. Later builds are faster.
+
+## Saving your work (Git)
+
+Git keeps a history of every saved version (a "commit"), so you can always go back.
+
+- **See what changed:** `git status`
+- **Save a version:** `git add -A` then `git commit -m "Short description of the change"`
+- **See history:** `git log --oneline`
+- **Undo uncommitted changes to one file:** `git restore path\to\file`
+- **Back up off this laptop:** `git push` (once the private GitHub repo is set up, see D-001)
+
+Rules:
+- Commit after every task that works. Never commit something that doesn't build.
+- Never commit signing keys (`*.jks`, `*.keystore`) or `local.properties`. `.gitignore` already blocks them.
+- Don't keep this folder in OneDrive (see D-001). GitHub is the backup.

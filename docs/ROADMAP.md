@@ -10,7 +10,7 @@ Status values: Not started · In progress · Blocked · Implemented · Verified
 | P0-T01 | Inspect the environment | Verified |
 | P0-T02 | Recommend the technology stack (verify current versions) | In progress |
 | P0-T03 | Create the Android project (compile + launch) | In progress — builds and tests pass; launch on device pending |
-| P0-T04 | Git and recovery practices | Not started |
+| P0-T04 | Git and recovery practices | In progress: local repo done; GitHub backup pending |
 
 ## Phase 1 — Market validation and product definition
 | ID | Task | Status |

@@ -13,7 +13,7 @@ _Last updated: 2026-10-15_
 | P0-T01 | Inspect the environment | **Verified** | Results in [ENVIRONMENT.md](ENVIRONMENT.md). Inspection commands were actually run on this machine. |
 | P0-T02 | Recommend the technology stack | In progress | Official versions researched (DECISIONS D-005); finalize after the template project builds. |
 | P0-T03 | Create the Android project | In progress | Project files exist; `assembleDebug` + unit tests **pass** (2026-10-15). Launch on a device not yet verified. |
-| P0-T04 | Git and recovery practices | Not started | Git is installed; repo will be initialized together with P0-T03. |
+| P0-T04 | Git and recovery practices | In progress | Local repo on `main` with commits; `.gitignore`/`.gitattributes` in place; README "Saving your work". Off-site backup (private GitHub repo, D-001) waits on founder approval. |
 
 Later phases: see [ROADMAP.md](ROADMAP.md). **P1-T01 (market research) is in progress**: first pass in MARKET_RESEARCH.md; Google Play pages could not be read automatically, so the founder needs to do a manual Play Store pass.
 
@@ -23,7 +23,7 @@ None.
 
 ## Blocked tasks
 
-- **P0-T03 (launch step only)** — no device connected (`adb devices` empty). Needs the phone plugged in with USB debugging on.
+- **P0-T03 (launch step only)**: the phone was plugged in, but Windows does not detect it (no USB device; `adb devices` empty). Likely a charge-only cable or the phone's USB mode. See KI-004.
 
 ## Important decisions
 
@@ -41,8 +41,8 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 ## Exact next action
 
-1. Founder: plug in the phone with USB debugging on (README step 3) and tap **Allow** on the phone.
-2. Then Claude: install and launch the app (`gradlew installDebug`), finish P0-T03, finalize P0-T02 (D-005), and start P0-T04 (git init + first commit).
+1. Founder: get the phone detected (KI-004) and approve or decline creating a private GitHub repo for backup.
+2. Then Claude: install and launch the app (`gradlew installDebug`), finish P0-T03, finalize P0-T02 (D-005), and push to GitHub to finish P0-T04.
 
 ## Resume prompt for a new Claude session
 
