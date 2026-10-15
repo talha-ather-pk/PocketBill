@@ -13,7 +13,7 @@ _Last updated: 2026-10-15_
 | P0-T01 | Inspect the environment | **Verified** | Results in [ENVIRONMENT.md](ENVIRONMENT.md). Inspection commands were actually run on this machine. |
 | P0-T02 | Recommend the technology stack | In progress | Official versions researched (DECISIONS D-005); finalize after the template project builds. |
 | P0-T03 | Create the Android project | In progress | Project files exist; `assembleDebug` + unit tests **pass** (2026-10-15). Launch on a device not yet verified. |
-| P0-T04 | Git and recovery practices | **Verified** | Local repo on `main`; `.gitignore`/`.gitattributes`; README "Saving your work". Pushed to private repo https://github.com/talha-ather-pk/PocketBill (visibility confirmed PRIVATE). |
+| P0-T04 | Git and recovery practices | **Verified** | Local repo on `main`; `.gitignore`/`.gitattributes`; README "Saving your work". Pushed to https://github.com/talha-ather-pk/PocketBill. Repo made **public** 2026-10-15 at the founder's request (D-006). |
 
 Later phases: see [ROADMAP.md](ROADMAP.md). **P1-T01 (market research) is in progress**: first pass in MARKET_RESEARCH.md; Google Play pages could not be read automatically, so the founder needs to do a manual Play Store pass.
 

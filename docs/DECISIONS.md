@@ -8,6 +8,12 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-006 — Repository is public
+- **Context:** The founder wants anyone with the link to see the code and propose changes.
+- **Decision:** The GitHub repo is **public**. Anyone can view or fork it and open pull requests. Only the founder can change `main`, by merging. The founder chose to keep the commit email (`talhaather.freelance@gmail.com`) visible in the history.
+- **Consequences:** Never commit secrets (signing keys, API keys, `local.properties`), because anything pushed is world-readable and may be copied even if deleted later. There is no licence file yet, so by default others may view the code but not legally reuse it.
+- **Status:** Accepted 2026-10-15. Visibility confirmed PUBLIC via `gh repo view`.
+
 ## D-004 — Primary test device
 - **Decision:** Use the founder's physical Android phone (USB debugging) as the main test device. An emulator is secondary because this laptop's CPU is slow for emulation.
 - **Status:** Accepted 2026-10-15.
