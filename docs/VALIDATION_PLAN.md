@@ -114,7 +114,7 @@ Record the ranking and the *reason*, word for word if possible.
 
 **Purpose:** see whether someone can complete the core flow on a phone **without help**, and where they hesitate. This is not a test of the visual design.
 
-**Built (2026-10-15):** a clickable phone prototype that runs in any phone browser.
+**Built (2026-10-15):** a clickable phone prototype that runs in any phone browser. **Dry-run by the founder on a Galaxy A72:** T1–T5 and the session log work.
 - **Link:** https://claude.ai/artifact/Uv6we4zAj9HssR9cLHk2A4. It is **private** until you share it from the page's **Share** menu, so do that before Day 3.
 - **Source:** [`prototype/pocketbill-prototype.html`](../prototype/pocketbill-prototype.html), with fake data only.
 
