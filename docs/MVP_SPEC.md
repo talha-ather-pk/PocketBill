@@ -121,7 +121,7 @@ Room 2.8.5 with KSP (D-005; the KSP version is confirmed against Kotlin 2.4.21 i
 | address | String | Multi-line |
 | taxId | String? | |
 | paymentInstructions | String | Printed on every invoice |
-| logoPath | String? | Private app file (F-14) |
+| logoFile | String? | Private app file, content-named so old invoices keep their logo (F-14; DATA_MODEL 5.3) |
 | defaultCurrency | String | ISO 4217 |
 | defaultTermsDays | Int | e.g. 14 |
 | defaultTaxRateBp | Int | 0 = no tax |

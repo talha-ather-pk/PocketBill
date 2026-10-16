@@ -45,7 +45,8 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 1. Founder: run P1-T07, the phone-creation check (VALIDATION_PLAN.md, last section). Pass mark: >= 3 of 6 create a real invoice on the phone. **No Phase 4 feature code until it passes** (D-010).
 2. Founder: review UX_SPEC.md section 1 (P2-T01 navigation) and DATA_MODEL.md (P3-T01 Room schema).
-3. Claude, in parallel with P1-T07: P2-T04 sending redesign (fixes T3 friction) and P3-T02 snapshots and numbering, then P2-T02 Home and P2-T03 editor.
+3. Founder: review UX_SPEC.md section 4 (P2-T04 sending) and DATA_MODEL.md section 5 (P3-T02 numbering and frozen details).
+4. Claude: update the prototype with the new send design for a 2–3 participant T3 re-check (UX_SPEC 4); then P2-T03 editor (fast creation, D-010) and P2-T02 Home.
 
 ## Resume prompt for a new Claude session
 
