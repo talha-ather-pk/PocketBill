@@ -46,12 +46,11 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 ## Exact next action
 
-**P1-T07 passed (2026-10-16): 5 of 6 created a real invoice on the phone in 42–55 s.** The D-010 gate is open, so Phase 4 can start.
+**P1-T07 passed (2026-10-16): 5 of 6 created a real invoice on the phone in 42–55 s.** The D-010 gate is open, so Phase 4 can start. T3 re-check accepted at 5 of 6 (D-013).
 
-1. Founder: decide on the T3 sending result. 5 of 6 sent unaided in under 30 s, but the rule needed all of them. The failure was P-e, who also gave up on creation. Either (a) accept it and treat P-e's difficulty as general, or (b) ask P-e what went wrong in T3 before calling sending solved. Doesn't block P4-T01.
-2. Founder: review the design drafts (UX_SPEC 1–8, DATA_MODEL 1–7, ARCHITECTURE).
-3. P4-T01 app shell is **built and unit tested** (57/57). Founder: connect the phone so Claude can install it and check the tabs, the bottom bar hiding on the editor placeholder, and dark mode.
-4. Claude: then P4-T03 Room persistence (DATA_MODEL 1–5, 7).
+1. Founder: review the design drafts (UX_SPEC 1–8, DATA_MODEL 1–7, ARCHITECTURE).
+2. P4-T01 app shell is **built and unit tested** (57/57). Founder: connect the phone so Claude can install it and check the tabs, the bottom bar hiding on the editor placeholder, and dark mode.
+3. Claude: then P4-T03 Room persistence (DATA_MODEL 1–5, 7).
 
 ## Resume prompt for a new Claude session
 
