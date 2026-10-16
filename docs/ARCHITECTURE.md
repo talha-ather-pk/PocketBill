@@ -1,6 +1,6 @@
 # Architecture
 
-**Status: draft. No code exists yet.** Finalized in Phase 3. The direction below is proposed (see DECISIONS D-003).
+**Status: draft.** An app skeleton exists (navigation and theme only). Finalized in Phase 3: the data layer is detailed in [DATA_MODEL.md](DATA_MODEL.md) and navigation in [UX_SPEC.md](UX_SPEC.md). The direction below is proposed (see DECISIONS D-003).
 
 ## Intended shape
 

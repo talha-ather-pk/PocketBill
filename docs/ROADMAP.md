@@ -26,10 +26,10 @@ Status values: Not started · In progress · Blocked · Implemented · Verified
 Phase 1 research can run in parallel with Phase 0 setup, because it does not need Android Studio.
 
 ## Phase 2 — Product design and UX
-P2-T01 Navigation · P2-T02 Home · P2-T03 Invoice editor · P2-T04 PDF preview/sharing · P2-T05 History & statuses · P2-T06 Client management · P2-T07 Accessibility & localization · P2-T08 Design tokens — all Not started.
+P2-T01 Navigation (`UX_SPEC.md`: draft, awaiting review) · P2-T02 Home · P2-T03 Invoice editor · P2-T04 PDF preview/sharing · P2-T05 History & statuses · P2-T06 Client management · P2-T07 Accessibility & localization · P2-T08 Design tokens — all Not started.
 
 ## Phase 3 — Data model and architecture
-P3-T01 Room schema · P3-T02 Historical snapshots & numbering · P3-T03 Money representation & rounding · P3-T04 Layer responsibilities · P3-T05 Migrations — all Not started.
+P3-T01 Room schema (`DATA_MODEL.md`: draft, awaiting review) · P3-T02 Historical snapshots & numbering · P3-T03 Money representation & rounding · P3-T04 Layer responsibilities · P3-T05 Migrations — all Not started.
 
 ## Phase 4 — MVP implementation
 P4-T01 App shell · P4-T02 Calculations (tested) · P4-T03 Room persistence · P4-T04 Business profile/settings · P4-T05 Clients · P4-T06 Invoice editor · P4-T07 Numbering & dates · P4-T08 PDF generation · P4-T09 PDF save/share · P4-T10 Status tracking · P4-T11 History & search · P4-T12 Backup & restore · P4-T13 Empty/loading/error states · P4-T14 Permissions & manifest review — all Not started.

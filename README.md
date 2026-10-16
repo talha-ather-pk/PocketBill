@@ -23,6 +23,8 @@ An offline-first Android app that helps freelancers create professional invoices
 | [VALIDATION_PLAN.md](docs/VALIDATION_PLAN.md) | 7-day plan: interviews, pitch test, usability test |
 | [VALIDATION_RESULTS.md](docs/VALIDATION_RESULTS.md) | What validation found (anonymized) |
 | [MVP_SPEC.md](docs/MVP_SPEC.md) | MVP scope, screens, Room schema, money rules, PDF, backup |
+| [UX_SPEC.md](docs/UX_SPEC.md) | Phase 2 design: navigation and screens |
+| [DATA_MODEL.md](docs/DATA_MODEL.md) | Phase 3: Room schema, invariants, transactions, queries |
 
 ## Setting up your computer
 
