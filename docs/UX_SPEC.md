@@ -602,7 +602,7 @@ The app's language is **English only** (D-007), but freelancers and their client
 | **Dates in the app** | Same format. Lists drop the year when it's the current year. | `30 Oct` |
 | **Relative dates** | In the app only, **never** on a PDF or in an email | "Overdue 8 days", "edited 2 h ago", "yesterday" |
 | **"Today"** | The phone's local calendar date. Stored dates are calendar days, so they don't shift with time zones (DATA_MODEL 1). | — |
-| **Money** | English digit grouping and decimal point, with the currency's own decimals. Dollars are labelled where they could be confused: US `$`, Canada `CA$`, Australia `A$`. Currencies without a common symbol show their code. | `€1,200.00` · `$1,200.00` · `CA$1,200.00` · `¥4,500` · `PKR 1,200.00` |
+| **Money** | English digit grouping and decimal point, with the currency's own decimals. Dollars are labelled where they could be confused: US `$`, Canada `CA$`, Australia `A$`. Currencies without a common symbol show their code, followed by a no-break space so code and number never split across lines. Symbols come from PocketBill's own table (DATA_MODEL 6.2), not the phone. | `€1,200.00` · `$1,200.00` · `CA$1,200.00` · `¥4,500` · `PKR 1,200.00` |
 | **Money typed in** | `.` or `,` accepted as the decimal point. Shown with the currency's decimals after leaving the field (UX_SPEC 3). | `450,5` → `450.50` |
 | **Quantities** | Up to 3 decimals, with trailing zeros dropped | `1.5`, `2`, `0.25` |
 | **Percentages** | Up to 2 decimals, trailing zeros dropped | `7.5%`, `20%` |

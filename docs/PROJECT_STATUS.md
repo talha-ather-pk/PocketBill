@@ -37,6 +37,7 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 | 2026-10-15 | JAVA_HOME fixed to `C:\java`; docs moved to `C:\dev\PocketBill` | Read back env var; listed copied files |
 | 2026-10-15 | `winget install Google.AndroidStudio` (v2026.2.1.8 found) **failed, exit 65**: package licence agreement not accepted | Nothing was installed. |
 | 2026-10-15 | Founder accepted the licence; Android Studio 2026.2.1.8 installed (exit 0); `studio64.exe` present | winget output plus file check. SDK not installed yet. |
+| 2026-10-16 | P4-T02 money code: `gradlew testDebugUnitTest` → BUILD SUCCESSFUL, 47/47 tests (45 new) | Test XML reports read back by Claude Code |
 | 2026-10-15 | Clickable prototype: tasks T1–T5 and the session log work; reset afterwards | Founder dry run on Galaxy A72 (phone browser) |
 | 2026-10-15 | `gradlew installDebug` on SM-A725F (Android 14); app launched, MainActivity resumed, Home/Invoices/Clients/Settings tabs tapped, same process, empty crash log | adb install + `am start`, `input tap`, screenshots, `logcat -b crash` |
 | 2026-10-15 | SDK installed (platform android-37.0, build-tools 36.0.0). `gradlew assembleDebug testDebugUnitTest` → BUILD SUCCESSFUL (Gradle 9.6.0, AGP 9.4.0, Kotlin 2.4.21); `app-debug.apk` produced | Command run by Claude Code with `JAVA_HOME=C:\java` |
@@ -48,7 +49,7 @@ Phases 2 and 3 are fully drafted. Phase 4 (building features) waits for **P1-T07
 1. Founder: keep P1-T07 running (VALIDATION_PLAN.md, "Follow-up: phone-creation check"). Pass mark: >= 3 of 6 create a real invoice on the phone.
 2. Founder: run the T3 sending re-check with 2–3 participants (VALIDATION_PLAN.md, "Follow-up: sending re-check").
 3. Founder: review the drafts: UX_SPEC.md sections 1–8, DATA_MODEL.md sections 1–7, ARCHITECTURE.md.
-4. Claude: when P1-T07 passes, start Phase 4 with P4-T01 (app shell: tokens, navigation, AppContainer) and P4-T02 (money and calculations, DATA_MODEL 6). If the founder agrees, P4-T02 can start before P1-T07 finishes, because the money code is needed whatever P1-T07 decides.
+4. Claude: P4-T02 money code is **done and unit tested** (D-012). When P1-T07 passes, continue Phase 4 with P4-T01 (app shell: tokens, navigation, AppContainer), then P4-T03 (Room persistence).
 
 ## Resume prompt for a new Claude session
 

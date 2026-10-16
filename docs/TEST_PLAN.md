@@ -1,6 +1,6 @@
 # Test Plan
 
-**Status: early. One unit test class exists (`TopLevelDestinationTest`); full coverage is planned for Phase 5.**
+**Status: early.** Money code (P4-T02) is unit tested; full coverage is planned for Phase 5.
 
 Verification levels used in this project (stated explicitly for every result):
 Implemented · Compiled · Unit tested · Instrumentation tested · Tested on emulator · Tested on physical device · Manually reviewed · Not tested
@@ -16,4 +16,8 @@ Planned coverage (detailed in Phase 5):
 
 ## Results
 
-None yet.
+| Date | What | Level | Result |
+|---|---|---|---|
+| 2026-10-16 | `domain/money` (P4-T02): calculator C-1 to C-14, parser (DATA_MODEL 6.3), formatter incl. locale independence, currency table vs JDK ISO 4217 data, property tests (232,000 random cases), domain purity check | Unit tested (computer, JDK 17) | **47 of 47 tests pass** (45 new + 2 existing), `gradlew testDebugUnitTest` |
+
+Not yet checked on the phone: formatting runs the same pure-Kotlin code on Android, but an instrumented check on the Galaxy A72 is still to be added (P5-T01).

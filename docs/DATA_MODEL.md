@@ -6,7 +6,7 @@ _Started 2026-10-16. Refines [MVP_SPEC.md](MVP_SPEC.md) section 4 and is authori
 |---|---|---|
 | P3-T01 Room schema | 1–4 | Draft, awaiting founder review |
 | P3-T02 Historical snapshots & numbering | 5 | Draft, awaiting founder review |
-| P3-T03 Money representation & rounding | 6 | Draft, awaiting founder review |
+| P3-T03 Money representation & rounding | 6 | Draft; **implemented in P4-T02** (`domain/money`, 45 unit tests pass) |
 | P3-T04 Layer responsibilities | ARCHITECTURE.md | Draft, awaiting founder review |
 | P3-T05 Migrations | 7 | Draft, awaiting founder review |
 
@@ -327,7 +327,7 @@ _Authoritative. It replaces MVP_SPEC section 5 and keeps all its rules._ Code: t
 | **M-7** Exchange rates never | PocketBill never converts between currencies (UX_SPEC 2, 7.2). |
 
 ### 6.2 Supported currencies
-A **fixed list in code**, with decimal places written out from ISO 4217 rather than read from the phone's Java data, which differs between Android versions:
+A **fixed list in code** (`CurrencyCode`), with decimal places (ISO 4217) **and display symbols** (Unicode CLDR, US English) written out rather than read from the phone's Java or ICU data. That data differs between Android versions, and between Android and the computer that runs the tests:
 
 | Decimals | Currencies (MVP list) |
 |---|---|
@@ -358,7 +358,7 @@ One parser handles prices, discount amounts and quantities. Spaces, currency sym
 **Changing an invoice's currency** keeps the numbers as typed (450.00 EUR becomes 450.00 USD, with **no conversion**). If a price has more decimals than the new currency allows (JPY), that field shows the decimals error until fixed.
 
 ### 6.4 Calculation order and rounding
-Rounding is **half-up** (0.5 goes up) to the invoice currency's minor unit. All amounts are non-negative, so this equals "round half away from zero". Multiplications are done in `BigDecimal` and checked against M-6 before converting back to `Long`.
+Rounding is **half-up** (0.5 goes up) to the invoice currency's minor unit. All amounts are non-negative, so this equals "round half away from zero". Multiplications use exact integer maths (`BigInteger`), with half-up division computed as ⌊(2n + d) ÷ 2d⌋, and are checked against M-6 before converting back to `Long`.
 
 1. **Line amount** = round(quantityMilli × unitPriceMinor ÷ 1000)
 2. **Subtotal** = sum of line amounts (each already rounded)
@@ -391,7 +391,7 @@ Expected values were computed independently (2026-10-16) with exact integer math
 
 **Parsing:** every row of the 6.3 table, plus each currency decimal group (0, 2, 3).
 
-**Formatting** (UX_SPEC 7.2): `€1,200.00`, `$1,200.00`, `CA$1,200.00`, `A$1,200.00`, `¥4,500`, `KWD 2.500`, `PKR 1,200.00`. Output must be identical with the phone set to English, German, French and Japanese, proving the formatter ignores the phone's locale.
+**Formatting** (UX_SPEC 7.2): `€1,200.00`, `$1,200.00`, `CA$1,200.00`, `A$1,200.00`, `¥4,500`, `KWD 2.500`, `PKR 1,200.00` (a no-break space follows a letter code). The formatter does its own digit grouping instead of using `java.text.NumberFormat`, whose output differs between Android and the desktop JVM. Output must be identical with the phone set to English, German, French and Japanese, proving the formatter ignores the phone's locale.
 
 **Property tests** (many random inputs): total = subtotal − discount + tax; total ≥ 0; the stored totals equal a fresh recalculation (I-7); parse(format(x)) = x for every currency.
 

@@ -8,6 +8,12 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-012 — Start the money code (P4-T02) before P1-T07 finishes
+- **Context:** D-010 holds Phase 4 feature code until the P1-T07 phone-creation check passes.
+- **Decision:** Exception for **P4-T02 (money and calculations)** only. It's pure Kotlin with no screens, it's needed whatever P1-T07 decides (including a laptop companion), and it's fully testable on the computer.
+- **Still held:** all other Phase 4 tasks wait for P1-T07.
+- **Status:** Accepted by founder 2026-10-16.
+
 ## D-011 — No invoice activity log in the MVP
 - **Context:** UX_SPEC 5 asked whether to record every send and status change, which needs a new `invoice_event` table that is cheapest to add before P4-T03.
 - **Decision:** No. Invoice history shows only what existing columns hold: issued date, last sent (date and app), and paid date.
