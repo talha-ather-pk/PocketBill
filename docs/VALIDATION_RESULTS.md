@@ -47,45 +47,52 @@ The founder decided to proceed to P1-T06 (MVP specification) on the basis of thi
 
 ## P1-T07 phone-creation check (gate for Phase 4, D-010)
 
-**Status (2026-10-16): in progress. 2 of 6 participants reported. Sessions are still running.**
+**Status (2026-10-16): complete, all 6 reported. PASSED: 5 of 6 created a real invoice on the phone (pass mark ≥ 3).**
 
-Known so far (founder-reported):
-- Follow-up messages sent to the 6 phone-using participants (2026-10-16).
-- The browser prototype works for the test. The founder dry-ran it on a Galaxy A72 (T1–T5 and the session log). Version 3 carries over participants' earlier data.
+Founder-reported from the participants' session logs. Only P-a's and P-b's feedback was given word for word; the others are the founder's summaries.
 
-| Measure | Result | Pass mark |
-|---|---|---|
-| Completed a real invoice on the phone | **2 so far** (P-a, P-b); 4 not yet reported | **≥ 3 of 6** |
-| Gave up / didn't try | 0 so far; 4 not yet reported | — |
-| Time from "Create invoice" to PDF preview (from session logs) | P-a: 48 s · P-b: 50 s. Others not yet reported. | Target ≤ 60 s for a repeat client, ≤ 2 min for a new client (UX_SPEC 3) |
-| Phone vs laptop: one-line answers | P-a, P-b (below) | — |
-| **Verdict** | **Pending** | — |
-
-Per participant (codes only; details stay in `research-private/`):
-
-| Participant | Completed? | Time | Phone or laptop, and why |
+| Participant | Created invoice? | Creation time | Feedback |
 |---|---|---|---|
-| P-a | **Yes** | **48 s** | "Much faster than expected on a mobile screen, though typing items takes a bit of focus." |
-| P-b | **Yes** | **50 s** | "Fairly straightforward, though finding the currency dropdown took a quick glance." |
-| P-c | Not yet reported | Not yet reported | Not yet reported |
-| P-d | Not yet reported | Not yet reported | Not yet reported |
-| P-e | Not yet reported | Not yet reported | Not yet reported |
-| P-f | Not yet reported | Not yet reported | Not yet reported |
+| P-a | **Yes** | 48 s | "Much faster than expected on a mobile screen, though typing items takes a bit of focus." |
+| P-b | **Yes** | 50 s | "Fairly straightforward, though finding the currency dropdown took a quick glance." |
+| P-c | **Yes** | 55 s | *Summary:* was looking for the tax rate field |
+| P-d | **Yes** | 42 s | *Summary:* fast layout; live totals work well |
+| P-e | **Gave up** | stopped at 120 s | *Summary:* unsure whether line items were saved automatically |
+| P-f | **Yes** | 51 s | *Summary:* adding a client felt very natural |
 
-**Window:** two weeks from 2026-10-16 (until **2026-10-30**), or until 6 responses, whichever comes first (VALIDATION_PLAN.md).
+| Measure | Result | Pass mark | Verdict |
+|---|---|---|---|
+| Created a real invoice on the phone | **5 of 6** | ≥ 3 of 6 | ✅ **Passed** |
+| Creation time (those who finished) | 42–55 s; median 50 s | ≤ 60 s repeat client, ≤ 2 min new client (UX_SPEC 3) | ✅ All 5 under 60 s (existing or new client not reported) |
+| Gave up | 1 (P-e) | — | See findings |
 
-**Notes on P-a (2026-10-16):** creation took 48 s. That is under both targets (60 s for a repeat client, 2 min for a new one), but whether P-a used an existing or a new client wasn't reported. Their comment that **typing items takes focus** supports the preset suggestions planned in UX_SPEC 3 (F-18), which the prototype doesn't have yet.
+**What this means:** the D-010 gate is passed, so Phase 4 can start as specified. Five people built a real invoice on the phone in under a minute, which supports the phone-first decision. What P1-T07 does **not** show is whether they'll keep choosing the phone over the laptop in daily use. Only P-b's comment speaks to that directly.
 
-**Notes on P-b (2026-10-16):** creation took 50 s, under both targets (existing or new client not reported). Their comment that **finding the currency dropdown took a glance** fits the editor design in UX_SPEC 3: the real editor prefills the client's usual currency and always shows it in words in the summary line, so it is visible without searching. The prototype has neither.
+**Findings for the design** (each is already covered in UX_SPEC 3; the prototype lacks it):
+| Finding | Who | Covered by |
+|---|---|---|
+| Typing items takes focus | P-a | Preset suggestions (F-18) |
+| Currency control took a moment to find | P-b | Currency prefilled from the client and always shown in words on the summary line |
+| Looked for the tax field | P-c | Tax shown on the summary line ("No tax" / "20% tax") |
+| Unsure whether items were saved; gave up | P-e | The "Draft saved" indicator and autosave. **Make it clearly visible**: this was the one failure. |
 
 ## T3 sending re-check (UX_SPEC 4)
 
-**Status (2026-10-16): 2 participants reported (P-a, P-b). The 2–3 participant minimum is reached; both passed.** The prototype has had the new sending design since 2026-10-16 (version 2, same link).
+**Status (2026-10-16): complete, 6 tested. Pass mark NOT met as written: 5 of 6 sent unaided in under 30 s; the rule required all of them.**
 
-| Measure | Result | Pass mark |
-|---|---|---|
-| Participants tested | 2 so far (P-a, P-b) | 2–3 |
-| Completed T3 unaided in under 30 s | P-a: **yes, 22 s** · P-b: **yes, 25 s**; both without help | All of them |
-| Gave the new client an email in T1 | P-a, P-b: not reported | — |
-| Where they expected the send button | P-a, P-b: not reported | — |
-| **Verdict** | **Passed on the minimum sample (2 of 2 under 30 s, no help).** A third participant, ideally one who struggled with T3 originally, would make it firmer. Whether P-a or P-b struggled before isn't recorded. | — |
+| Participant | T3 time | Help needed? | Under 30 s unaided? |
+|---|---|---|---|
+| P-a | 22 s | No | ✅ |
+| P-b | 25 s | No | ✅ |
+| P-c | 21 s | No | ✅ |
+| P-d | 19 s | No | ✅ |
+| P-e | 38 s | **Yes** | ❌ |
+| P-f | 26 s | No | ✅ |
+
+| Measure | Result | Pass mark | Verdict |
+|---|---|---|---|
+| Sent unaided in under 30 s | **5 of 6** (median 22 s) | All tested participants | ❌ **Not met as written** |
+| Gave the new client an email in T1 | Not reported | — | — |
+| Where they expected the send button | Not reported | — | — |
+
+**What this means:** sending is much better than in the original test, where T3 caused the most friction: 5 of 6 now finish in about 20 seconds without help. The one failure is P-e, the same participant who gave up on creating the invoice. What went wrong for P-e in T3 isn't recorded. Before treating sending as solved, the founder should decide whether P-e's difficulty was specific to sending or general (see PROJECT_STATUS.md). The earlier "passed on the minimum sample" note (2 of 2) is replaced by this result.

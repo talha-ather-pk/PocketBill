@@ -37,6 +37,7 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 | 2026-10-15 | JAVA_HOME fixed to `C:\java`; docs moved to `C:\dev\PocketBill` | Read back env var; listed copied files |
 | 2026-10-15 | `winget install Google.AndroidStudio` (v2026.2.1.8 found) **failed, exit 65**: package licence agreement not accepted | Nothing was installed. |
 | 2026-10-15 | Founder accepted the licence; Android Studio 2026.2.1.8 installed (exit 0); `studio64.exe` present | winget output plus file check. SDK not installed yet. |
+| 2026-10-16 | P1-T07 phone-creation check: 5 of 6 participants created a real invoice on the phone (42–55 s); T3 re-check 5 of 6 under 30 s unaided | Founder-reported from participants' session logs |
 | 2026-10-16 | P4-T02 money code: `gradlew testDebugUnitTest` → BUILD SUCCESSFUL, 47/47 tests (45 new) | Test XML reports read back by Claude Code |
 | 2026-10-15 | Clickable prototype: tasks T1–T5 and the session log work; reset afterwards | Founder dry run on Galaxy A72 (phone browser) |
 | 2026-10-15 | `gradlew installDebug` on SM-A725F (Android 14); app launched, MainActivity resumed, Home/Invoices/Clients/Settings tabs tapped, same process, empty crash log | adb install + `am start`, `input tap`, screenshots, `logcat -b crash` |
@@ -44,19 +45,18 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 ## Exact next action
 
-Phases 2 and 3 are fully drafted. Phase 4 (building features) waits for **P1-T07** (D-010).
+**P1-T07 passed (2026-10-16): 5 of 6 created a real invoice on the phone in 42–55 s.** The D-010 gate is open, so Phase 4 can start.
 
-1. Founder: keep P1-T07 running (VALIDATION_PLAN.md, "Follow-up: phone-creation check"). Pass mark: >= 3 of 6 create a real invoice on the phone.
-2. Founder: run the T3 sending re-check with 2–3 participants (VALIDATION_PLAN.md, "Follow-up: sending re-check").
-3. Founder: review the drafts: UX_SPEC.md sections 1–8, DATA_MODEL.md sections 1–7, ARCHITECTURE.md.
-4. Claude: P4-T02 money code is **done and unit tested** (D-012). When P1-T07 passes, continue Phase 4 with P4-T01 (app shell: tokens, navigation, AppContainer), then P4-T03 (Room persistence).
+1. Founder: decide on the T3 sending result. 5 of 6 sent unaided in under 30 s, but the rule needed all of them. The failure was P-e, who also gave up on creation. Either (a) accept it and treat P-e's difficulty as general, or (b) ask P-e what went wrong in T3 before calling sending solved. Doesn't block P4-T01.
+2. Founder: review the design drafts (UX_SPEC 1–8, DATA_MODEL 1–7, ARCHITECTURE).
+3. Claude: P4-T01 app shell (design tokens, navigation routes, AppContainer, kotlinx.serialization), then P4-T03 Room persistence. P4-T02 money code is already done.
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phases 2 and 3 drafted (UX_SPEC, DATA_MODEL, ARCHITECTURE), awaiting founder review. Phase 4 waits for P1-T07 (D-010). Decisions up to D-011.
+Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). Next: P4-T01 app shell. Decisions up to D-012.
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```

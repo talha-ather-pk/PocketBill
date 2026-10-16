@@ -304,7 +304,7 @@ Completely empty extra items are dropped silently. On success: number assigned (
 
 ### Autosave (drafts)
 - Saves 500 ms after the last change, and immediately when the app goes to the background.
-- The top bar shows "Draft saved" quietly. If saving fails (very rare: a full disk), it shows "Couldn't save. Your changes are kept on screen" and retries.
+- The top bar shows **"Draft saved"** with a check mark after each save, and **"Saving…"** while typing. P1-T07: the one participant who gave up (P-e) wasn't sure items were being saved, so this must be clearly visible, not faint. TalkBack announces "Draft saved" once per pause, not on every keystroke. If saving fails (very rare: a full disk), it shows "Couldn't save. Your changes are kept on screen" and retries.
 - A draft is created only once something has been entered. Opening New and pressing Back leaves no empty draft.
 - **Delete draft** (⋮ menu) removes it, with Undo.
 
