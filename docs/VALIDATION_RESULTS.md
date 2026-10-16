@@ -76,8 +76,6 @@ Per participant (codes only; details stay in `research-private/`):
 
 **Notes on P-a (2026-10-16):** creation took 48 s. That is under both targets (60 s for a repeat client, 2 min for a new one), but whether P-a used an existing or a new client wasn't reported. Their comment that **typing items takes focus** supports the preset suggestions planned in UX_SPEC 3 (F-18), which the prototype doesn't have yet.
 
-**Pending confirmation:** a second set of figures was supplied for P-a (45 s, T3 in 20 s, different feedback), together with P-b and P-c. It's not recorded here until the founder confirms it, because it conflicts with the P-a figures above, and one comment ("one-tap recent client chips") describes a feature the prototype doesn't have.
-
 ## T3 sending re-check (UX_SPEC 4)
 
 **Status (2026-10-16): 1 participant reported (P-a).** The prototype has had the new sending design since 2026-10-16 (version 2, same link).
