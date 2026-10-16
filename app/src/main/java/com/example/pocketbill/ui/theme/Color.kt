@@ -1,11 +1,86 @@
 package com.example.pocketbill.ui.theme
 
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-// Provisional palette: restrained navy for a business-document feel. Finalized in task P2-T08.
-internal val Navy40 = Color(0xFF1F4E79)
-internal val Navy80 = Color(0xFFA6C8FF)
-internal val Slate40 = Color(0xFF52606D)
-internal val Slate80 = Color(0xFFBAC8D6)
-internal val Teal40 = Color(0xFF006A60)
-internal val Teal80 = Color(0xFF6FD8C8)
+// Colour tokens from UX_SPEC.md section 8.1. Every role is set explicitly so no Material default
+// (purple) tones leak in. ThemeContrastTest checks the text and border pairs against WCAG AA.
+
+internal val LightColors = lightColorScheme(
+    primary = Color(0xFF1F4E79),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFD6E4F7),
+    onPrimaryContainer = Color(0xFF0D2C4A),
+    inversePrimary = Color(0xFFA6C8FF),
+    secondary = Color(0xFF52606D),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFD9E2EC),
+    onSecondaryContainer = Color(0xFF1B2733),
+    tertiary = Color(0xFF006A60),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFC9EFE8),
+    onTertiaryContainer = Color(0xFF00201C),
+    background = Color(0xFFF6F8FB),
+    onBackground = Color(0xFF16212E),
+    surface = Color(0xFFFFFFFF),
+    onSurface = Color(0xFF16212E),
+    surfaceVariant = Color(0xFFE3E9F1),
+    onSurfaceVariant = Color(0xFF566476),
+    surfaceTint = Color(0xFF1F4E79),
+    inverseSurface = Color(0xFF2B3440),
+    inverseOnSurface = Color(0xFFEDF1F6),
+    error = Color(0xFFB3261E),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFBE1DE),
+    onErrorContainer = Color(0xFF5C1610),
+    outline = Color(0xFF7D8A99),
+    outlineVariant = Color(0xFFD6DEE8),
+    scrim = Color(0xFF000000),
+    surfaceBright = Color(0xFFF6F8FB),
+    surfaceDim = Color(0xFFD8DEE6),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFF2F5F9),
+    surfaceContainer = Color(0xFFECF0F5),
+    surfaceContainerHigh = Color(0xFFE6EBF1),
+    surfaceContainerHighest = Color(0xFFE0E6ED),
+)
+
+internal val DarkColors = darkColorScheme(
+    primary = Color(0xFFA6C8FF),
+    onPrimary = Color(0xFF0B2A47),
+    primaryContainer = Color(0xFF26486C),
+    onPrimaryContainer = Color(0xFFD6E4F7),
+    inversePrimary = Color(0xFF1F4E79),
+    secondary = Color(0xFFBAC8D6),
+    onSecondary = Color(0xFF243140),
+    secondaryContainer = Color(0xFF3A4855),
+    onSecondaryContainer = Color(0xFFD9E2EC),
+    tertiary = Color(0xFF6FD8C8),
+    onTertiary = Color(0xFF003731),
+    tertiaryContainer = Color(0xFF005048),
+    onTertiaryContainer = Color(0xFFC9EFE8),
+    background = Color(0xFF0F1318),
+    onBackground = Color(0xFFE3E9F0),
+    surface = Color(0xFF171D24),
+    onSurface = Color(0xFFE3E9F0),
+    surfaceVariant = Color(0xFF26303B),
+    onSurfaceVariant = Color(0xFF9EABBA),
+    surfaceTint = Color(0xFFA6C8FF),
+    inverseSurface = Color(0xFFE3E9F0),
+    inverseOnSurface = Color(0xFF2B3440),
+    error = Color(0xFFFFB4AB),
+    onError = Color(0xFF690005),
+    errorContainer = Color(0xFF4A1D19),
+    onErrorContainer = Color(0xFFFFDAD6),
+    outline = Color(0xFF6B7785),
+    outlineVariant = Color(0xFF2D3743),
+    scrim = Color(0xFF000000),
+    surfaceBright = Color(0xFF343C47),
+    surfaceDim = Color(0xFF0F1318),
+    surfaceContainerLowest = Color(0xFF0A0D11),
+    surfaceContainerLow = Color(0xFF14191F),
+    surfaceContainer = Color(0xFF181E25),
+    surfaceContainerHigh = Color(0xFF222932),
+    surfaceContainerHighest = Color(0xFF2C343E),
+)

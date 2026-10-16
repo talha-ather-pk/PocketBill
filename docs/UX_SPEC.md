@@ -11,7 +11,7 @@ _Started 2026-10-16. Implements the screens in [MVP_SPEC.md](MVP_SPEC.md) sectio
 | P2-T05 History & statuses | 5 | Draft, awaiting founder review |
 | P2-T06 Client management | 6 | Draft, awaiting founder review |
 | P2-T07 Accessibility & formatting | 7 | Draft, awaiting founder review |
-| P2-T08 Design tokens | 8 | Draft, awaiting founder review |
+| P2-T08 Design tokens | 8 | Draft; **implemented in P4-T01** (`ui/theme/`) |
 
 ---
 
@@ -624,7 +624,7 @@ The app's language is **English only** (D-007), but freelancers and their client
 Tokens are the named colours, type styles, shapes and spacing that every screen uses, so the whole app stays consistent and can be changed in one place. They build on the provisional navy theme already in the app (`ui/theme/Color.kt`). The Android code for them is written in P4-T01.
 
 ### 8.1 Colour
-**Base:** Material 3 colour roles generated from the seed colour **Navy #1F4E79**, using Material Theme Builder in P4-T01. Dynamic (wallpaper) colour stays off, so the app looks the same on every phone. Dark mode follows the phone's setting; there's no in-app switch in the MVP.
+**Base:** Material 3 colour roles built around **Navy #1F4E79**. *Implemented in P4-T01 by setting every role by hand* (`ui/theme/Color.kt`) rather than generating them with Material Theme Builder, a web tool that couldn't be run from the build. Every role is set, so no Material default (purple) tones appear, and `ThemeContrastTest` checks every text and border pair against WCAG AA on each build. Dynamic (wallpaper) colour stays off, so the app looks the same on every phone. Dark mode follows the phone's setting; there's no in-app switch in the MVP.
 
 **Key roles** (the values the prototype uses; the generated scheme must stay within ±5% of these contrasts):
 | Role | Light | Dark | Used for |

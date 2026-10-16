@@ -8,6 +8,12 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-013 — Accept the T3 sending re-check at 5 of 6
+- **Context:** The T3 re-check rule needed every tested participant to send unaided in under 30 s. 5 of 6 did. P-e needed help (38 s) and had also given up on creating the invoice (120 s) (VALIDATION_RESULTS.md).
+- **Decision:** Accept the result. P-e's difficulty looks general rather than specific to sending, since they struggled with both tasks. Respond to P-e's stated confusion (unsure items were saved) by making the editor's "Saving…" / "Draft saved ✓" indicator a prominent requirement (UX_SPEC 3).
+- **Note:** P-e did attempt T3 (38 s, with help), so this rests on P-e struggling overall, not on P-e skipping the send step.
+- **Status:** Accepted by founder 2026-10-16.
+
 ## D-012 — Start the money code (P4-T02) before P1-T07 finishes
 - **Context:** D-010 holds Phase 4 feature code until the P1-T07 phone-creation check passes.
 - **Decision:** Exception for **P4-T02 (money and calculations)** only. It's pure Kotlin with no screens, it's needed whatever P1-T07 decides (including a laptop companion), and it's fully testable on the computer.

@@ -37,6 +37,7 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 | 2026-10-15 | JAVA_HOME fixed to `C:\java`; docs moved to `C:\dev\PocketBill` | Read back env var; listed copied files |
 | 2026-10-15 | `winget install Google.AndroidStudio` (v2026.2.1.8 found) **failed, exit 65**: package licence agreement not accepted | Nothing was installed. |
 | 2026-10-15 | Founder accepted the licence; Android Studio 2026.2.1.8 installed (exit 0); `studio64.exe` present | winget output plus file check. SDK not installed yet. |
+| 2026-10-16 | P4-T01 app shell: `gradlew assembleDebug testDebugUnitTest` → BUILD SUCCESSFUL, 57/57 tests, no compiler warnings | Test XML reports + Gradle problems report read back by Claude Code |
 | 2026-10-16 | P1-T07 phone-creation check: 5 of 6 participants created a real invoice on the phone (42–55 s); T3 re-check 5 of 6 under 30 s unaided | Founder-reported from participants' session logs |
 | 2026-10-16 | P4-T02 money code: `gradlew testDebugUnitTest` → BUILD SUCCESSFUL, 47/47 tests (45 new) | Test XML reports read back by Claude Code |
 | 2026-10-15 | Clickable prototype: tasks T1–T5 and the session log work; reset afterwards | Founder dry run on Galaxy A72 (phone browser) |
@@ -49,14 +50,15 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 1. Founder: decide on the T3 sending result. 5 of 6 sent unaided in under 30 s, but the rule needed all of them. The failure was P-e, who also gave up on creation. Either (a) accept it and treat P-e's difficulty as general, or (b) ask P-e what went wrong in T3 before calling sending solved. Doesn't block P4-T01.
 2. Founder: review the design drafts (UX_SPEC 1–8, DATA_MODEL 1–7, ARCHITECTURE).
-3. Claude: P4-T01 app shell (design tokens, navigation routes, AppContainer, kotlinx.serialization), then P4-T03 Room persistence. P4-T02 money code is already done.
+3. P4-T01 app shell is **built and unit tested** (57/57). Founder: connect the phone so Claude can install it and check the tabs, the bottom bar hiding on the editor placeholder, and dark mode.
+4. Claude: then P4-T03 Room persistence (DATA_MODEL 1–5, 7).
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). Next: P4-T01 app shell. Decisions up to D-012.
+Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 app shell built (57 tests); on-phone check pending. Next: P4-T03 Room. Decisions up to D-013.
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```

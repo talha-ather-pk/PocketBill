@@ -18,5 +18,21 @@
     <string name="settings_placeholder_title">Settings</string>
     <string name="settings_placeholder_body">Your business details and default currency will go here.</string>
 
-    <string name="not_built_yet">The invoice editor is not built yet.</string>
+    <!-- Screens whose routes exist but whose content comes in a later Phase 4 task -->
+    <string name="placeholder_body">This screen is coming in a later build step.</string>
+    <string name="title_setup">Set up your business</string>
+    <string name="title_invoice">Invoice</string>
+    <string name="title_new_invoice">New invoice</string>
+    <string name="title_pdf_preview">PDF preview</string>
+    <string name="title_client">Client</string>
+    <string name="title_client_editor">Client details</string>
+    <string name="title_business_profile">Business profile</string>
+    <string name="title_presets">Saved items</string>
+    <string name="title_backup">Backup and restore</string>
+    <string name="title_restore">Restore backup</string>
+
+    <!-- Draft autosave status (UX_SPEC 3) -->
+    <string name="save_status_saving">Saving…</string>
+    <string name="save_status_saved">Draft saved</string>
+    <string name="save_status_failed">Couldn\'t save. Your changes are kept on screen.</string>
 </resources>
