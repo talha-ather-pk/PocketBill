@@ -47,7 +47,7 @@ The founder decided to proceed to P1-T06 (MVP specification) on the basis of thi
 
 ## P1-T07 phone-creation check (gate for Phase 4, D-010)
 
-**Status (2026-10-16): in progress. 1 of 6 participants reported. Sessions are still running.**
+**Status (2026-10-16): in progress. 2 of 6 participants reported. Sessions are still running.**
 
 Known so far (founder-reported):
 - Follow-up messages sent to the 6 phone-using participants (2026-10-16).
@@ -55,10 +55,10 @@ Known so far (founder-reported):
 
 | Measure | Result | Pass mark |
 |---|---|---|
-| Completed a real invoice on the phone | **1 so far** (P-a); 5 not yet reported | **≥ 3 of 6** |
-| Gave up / didn't try | 0 so far; 5 not yet reported | — |
-| Time from "Create invoice" to PDF preview (from session logs) | P-a: 48 s. Others not yet reported. | Target ≤ 60 s for a repeat client, ≤ 2 min for a new client (UX_SPEC 3) |
-| Phone vs laptop: one-line answers | P-a only (below) | — |
+| Completed a real invoice on the phone | **2 so far** (P-a, P-b); 4 not yet reported | **≥ 3 of 6** |
+| Gave up / didn't try | 0 so far; 4 not yet reported | — |
+| Time from "Create invoice" to PDF preview (from session logs) | P-a: 48 s · P-b: 50 s. Others not yet reported. | Target ≤ 60 s for a repeat client, ≤ 2 min for a new client (UX_SPEC 3) |
+| Phone vs laptop: one-line answers | P-a, P-b (below) | — |
 | **Verdict** | **Pending** | — |
 
 Per participant (codes only; details stay in `research-private/`):
@@ -66,7 +66,7 @@ Per participant (codes only; details stay in `research-private/`):
 | Participant | Completed? | Time | Phone or laptop, and why |
 |---|---|---|---|
 | P-a | **Yes** | **48 s** | "Much faster than expected on a mobile screen, though typing items takes a bit of focus." |
-| P-b | Not yet reported | Not yet reported | Not yet reported |
+| P-b | **Yes** | **50 s** | "Fairly straightforward, though finding the currency dropdown took a quick glance." |
 | P-c | Not yet reported | Not yet reported | Not yet reported |
 | P-d | Not yet reported | Not yet reported | Not yet reported |
 | P-e | Not yet reported | Not yet reported | Not yet reported |
@@ -76,14 +76,16 @@ Per participant (codes only; details stay in `research-private/`):
 
 **Notes on P-a (2026-10-16):** creation took 48 s. That is under both targets (60 s for a repeat client, 2 min for a new one), but whether P-a used an existing or a new client wasn't reported. Their comment that **typing items takes focus** supports the preset suggestions planned in UX_SPEC 3 (F-18), which the prototype doesn't have yet.
 
+**Notes on P-b (2026-10-16):** creation took 50 s, under both targets (existing or new client not reported). Their comment that **finding the currency dropdown took a glance** fits the editor design in UX_SPEC 3: the real editor prefills the client's usual currency and always shows it in words in the summary line, so it is visible without searching. The prototype has neither.
+
 ## T3 sending re-check (UX_SPEC 4)
 
-**Status (2026-10-16): 1 participant reported (P-a).** The prototype has had the new sending design since 2026-10-16 (version 2, same link).
+**Status (2026-10-16): 2 participants reported (P-a, P-b). The 2–3 participant minimum is reached; both passed.** The prototype has had the new sending design since 2026-10-16 (version 2, same link).
 
 | Measure | Result | Pass mark |
 |---|---|---|
-| Participants tested | 1 so far (P-a) | 2–3 |
-| Completed T3 unaided in under 30 s | P-a: **yes, 22 s**, no help | All of them |
-| Gave the new client an email in T1 | P-a: not reported | — |
-| Where they expected the send button | P-a: not reported | — |
-| **Verdict** | **Pending** | — |
+| Participants tested | 2 so far (P-a, P-b) | 2–3 |
+| Completed T3 unaided in under 30 s | P-a: **yes, 22 s** · P-b: **yes, 25 s**; both without help | All of them |
+| Gave the new client an email in T1 | P-a, P-b: not reported | — |
+| Where they expected the send button | P-a, P-b: not reported | — |
+| **Verdict** | **Passed on the minimum sample (2 of 2 under 30 s, no help).** A third participant, ideally one who struggled with T3 originally, would make it firmer. Whether P-a or P-b struggled before isn't recorded. | — |
