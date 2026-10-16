@@ -186,6 +186,8 @@ Presets are saved from a line item ("Save as preset") or in Settings. *All table
 
 ## 5. Calculation rules (pure Kotlin, unit tested)
 
+> **Superseded by [DATA_MODEL.md](DATA_MODEL.md) section 6 (P3-T03),** which keeps these rules and adds limits, parsing, the currency table and the full test list. Where the two differ, DATA_MODEL wins.
+
 1. **Line amount** = quantity × unit price, rounded **half-up** to the currency's minor unit.
    `amountMinor = roundHalfUp(quantityMilli × unitPriceMinor / 1000)`
 2. **Subtotal** = sum of line amounts.

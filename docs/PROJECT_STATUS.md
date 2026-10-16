@@ -43,19 +43,19 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 ## Exact next action
 
-1. Founder: run P1-T07, the phone-creation check (VALIDATION_PLAN.md, "Follow-up: phone-creation check"). Pass mark: >= 3 of 6 create a real invoice on the phone. **No Phase 4 feature code until it passes** (D-010).
-2. Founder: review UX_SPEC.md section 1 (P2-T01 navigation) and DATA_MODEL.md (P3-T01 Room schema).
-3. Founder: review UX_SPEC.md section 4 (P2-T04 sending) and DATA_MODEL.md section 5 (P3-T02 numbering and frozen details).
-4. Founder: run the T3 sending re-check with 2–3 participants (VALIDATION_PLAN.md, "Follow-up: sending re-check"). The prototype is updated (version 3, same link).
-5. Founder: review UX_SPEC.md sections 2, 3, 5–8 (Home, editor, history & statuses, clients, accessibility & formatting, design tokens). Activity log decided: none in the MVP (D-011).
-6. Claude: Phase 3: P3-T03 money rules (move from MVP_SPEC 5 into DATA_MODEL with the full test list), P3-T04 layer responsibilities, P3-T05 migrations.
+Phases 2 and 3 are fully drafted. Phase 4 (building features) waits for **P1-T07** (D-010).
+
+1. Founder: keep P1-T07 running (VALIDATION_PLAN.md, "Follow-up: phone-creation check"). Pass mark: >= 3 of 6 create a real invoice on the phone.
+2. Founder: run the T3 sending re-check with 2–3 participants (VALIDATION_PLAN.md, "Follow-up: sending re-check").
+3. Founder: review the drafts: UX_SPEC.md sections 1–8, DATA_MODEL.md sections 1–7, ARCHITECTURE.md.
+4. Claude: when P1-T07 passes, start Phase 4 with P4-T01 (app shell: tokens, navigation, AppContainer) and P4-T02 (money and calculations, DATA_MODEL 6). If the founder agrees, P4-T02 can start before P1-T07 finishes, because the money code is needed whatever P1-T07 decides.
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 2 + 3 (design and data model) in parallel with P1-T07 (founder phone-creation check, gates Phase 4; D-010). MVP_SPEC.md draft 2 is the scope.
+Phase 0 complete (all tasks verified). Current phase: Phases 2 and 3 drafted (UX_SPEC, DATA_MODEL, ARCHITECTURE), awaiting founder review. Phase 4 waits for P1-T07 (D-010). Decisions up to D-011.
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```

@@ -29,7 +29,7 @@ Phase 1 research can run in parallel with Phase 0 setup, because it does not nee
 P2-T01 Navigation (`UX_SPEC.md`: draft, awaiting review) · P2-T02 Home (`UX_SPEC.md` 2: draft) · P2-T03 Invoice editor (`UX_SPEC.md` 3: draft, awaiting review) · P2-T04 Sending (`UX_SPEC.md` 4: draft, awaiting review) · P2-T05 History & statuses (`UX_SPEC.md` 5: draft) · P2-T06 Clients (`UX_SPEC.md` 6: draft) · P2-T07 Accessibility & formatting (`UX_SPEC.md` 7: draft) · P2-T08 Design tokens (`UX_SPEC.md` 8: draft). **All Phase 2 tasks drafted; awaiting founder review.**
 
 ## Phase 3 — Data model and architecture
-P3-T01 Room schema (`DATA_MODEL.md`: draft, awaiting review) · P3-T02 Snapshots & numbering (`DATA_MODEL.md` 5: draft, awaiting review) · P3-T03 Money representation & rounding · P3-T04 Layer responsibilities · P3-T05 Migrations — others Not started.
+P3-T01 Room schema (`DATA_MODEL.md` 1–4: draft) · P3-T02 Snapshots & numbering (`DATA_MODEL.md` 5: draft) · P3-T03 Money (`DATA_MODEL.md` 6: draft) · P3-T04 Layer responsibilities (`ARCHITECTURE.md`: draft) · P3-T05 Migrations (`DATA_MODEL.md` 7: draft). **All Phase 3 tasks drafted; awaiting founder review.**
 
 ## Phase 4 — MVP implementation
 P4-T01 App shell · P4-T02 Calculations (tested) · P4-T03 Room persistence · P4-T04 Business profile/settings · P4-T05 Clients · P4-T06 Invoice editor · P4-T07 Numbering & dates · P4-T08 PDF generation · P4-T09 PDF save/share · P4-T10 Status tracking · P4-T11 History & search · P4-T12 Backup & restore · P4-T13 Empty/loading/error states · P4-T14 Permissions & manifest review — all Not started.

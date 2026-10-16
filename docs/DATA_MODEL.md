@@ -6,9 +6,9 @@ _Started 2026-10-16. Refines [MVP_SPEC.md](MVP_SPEC.md) section 4 and is authori
 |---|---|---|
 | P3-T01 Room schema | 1–4 | Draft, awaiting founder review |
 | P3-T02 Historical snapshots & numbering | 5 | Draft, awaiting founder review |
-| P3-T03 Money representation & rounding | MVP_SPEC section 5 | Rules written; to be moved here with full test list |
-| P3-T04 Layer responsibilities | ARCHITECTURE.md | Not started |
-| P3-T05 Migrations | 4 (policy) | Policy only |
+| P3-T03 Money representation & rounding | 6 | Draft, awaiting founder review |
+| P3-T04 Layer responsibilities | ARCHITECTURE.md | Draft, awaiting founder review |
+| P3-T05 Migrations | 7 | Draft, awaiting founder review |
 
 ---
 
@@ -202,11 +202,8 @@ Room can't express SQL `CHECK` constraints through annotations, so the **reposit
 
 All read queries return `Flow`, so screens update automatically after any write.
 
-### Migration policy (P3-T05, summary)
-- **Never** `fallbackToDestructiveMigration`.
-- Every schema change bumps the version and gets a `Migration` plus a `MigrationTestHelper` test that opens the previous exported schema with real rows and checks they survive.
-- Every release is tested by installing the old app version and updating to the new one (P5-T05).
-- Backups record their `formatVersion`. Restore accepts older versions (upgrading them in memory) and **refuses newer** ones, with a message to update the app.
+### Migrations
+See section 7 (P3-T05).
 
 ---
 
@@ -311,3 +308,129 @@ Already-sent PDFs can't be changed. After updating, Home shows a dismissible car
 - Numbering: 1,000 issues → unique and strictly increasing; deleting drafts leaves no gap; a voided number is never reissued; a prefix change plus collision skips correctly; a crash during issue (transaction rolled back) leaves no number used.
 - A snapshot with an unknown field still reads; a corrupted snapshot shows the warning and isn't rewritten.
 - Replacing the logo → old invoice PDFs still use the old logo.
+
+---
+
+## 6. Money (P3-T03)
+
+_Authoritative. It replaces MVP_SPEC section 5 and keeps all its rules._ Code: the pure-Kotlin `domain/money` package (ARCHITECTURE.md), unit tested on the computer with no phone needed.
+
+### 6.1 Representation
+| Rule | Detail |
+|---|---|
+| **M-1** Amounts are whole **minor units** in a `Long` | Cents for USD, yen for JPY, fils (1/1000) for KWD. Never `Double` or `Float` anywhere money is stored, calculated or passed around. |
+| **M-2** Each amount travels with its currency | In code: `Money(minor: Long, currency: CurrencyCode)`. Adding amounts in different currencies is an error the code refuses, not a conversion. |
+| **M-3** Quantity is `Long` thousandths | `1500` = 1.5. At most 3 decimal places, must be > 0. |
+| **M-4** Percentages are `Int` basis points | `750` = 7.5%. At most 2 decimal places when typed. |
+| **M-5** No negative amounts | No credit notes in the MVP. Prices ≥ 0; discounts are their own field (F-15). |
+| **M-6** Upper limit | Any single amount (price, line, subtotal, total) ≤ **999,999,999,999,999 minor units** (9,999,999,999,999.99 in a 2-decimal currency). Larger values are refused with "This amount is too large." The limit keeps every amount exact in a JSON backup file too (it is below 2⁵³). Quantity ≤ 999,999.999. |
+| **M-7** Exchange rates never | PocketBill never converts between currencies (UX_SPEC 2, 7.2). |
+
+### 6.2 Supported currencies
+A **fixed list in code**, with decimal places written out from ISO 4217 rather than read from the phone's Java data, which differs between Android versions:
+
+| Decimals | Currencies (MVP list) |
+|---|---|
+| 2 | USD, EUR, GBP, CAD, AUD, NZD, CHF, SEK, NOK, DKK, PLN, CZK, INR, PKR, BDT, LKR, NPR, NGN, KES, GHS, ZAR, EGP, AED, SAR, QAR, PHP, IDR, MYR, SGD, HKD, CNY, THB, TRY, BRL, MXN, ARS, COP |
+| 0 | JPY, KRW, VND, CLP, UGX, ISK |
+| 3 | KWD, BHD, OMR, JOD, TND |
+
+- A unit test checks this table against ISO 4217 (P5-T01).
+- Currencies that ISO lists with decimals but people rarely use with cents (such as IDR) keep their ISO decimals. Users just type whole numbers.
+- More currencies are added by extending the list and its test. No database change is needed.
+
+### 6.3 Reading typed amounts
+One parser handles prices, discount amounts and quantities. Spaces, currency symbols and codes are ignored.
+
+| Typed | Result | Rule |
+|---|---|---|
+| `450` | 450.00 | Whole number |
+| `450.5` / `450,5` | 450.50 | One separator followed by 1–2 digits is the decimal point, whether `.` or `,` |
+| `1,200` | 1,200.00 | A comma followed by **exactly 3** digits is a thousands separator |
+| `1,200.50` | 1,200.50 | Both present: the **last** one is the decimal point |
+| `1.200,50` | 1,200.50 | Same rule, so European-style typing also works |
+| `1.200` | **1.20** | A single dot is always a decimal point (English convention, D-007) |
+| `€ 60` | 60.00 | Symbols and spaces ignored |
+| `10.555` in EUR | **Error**: "EUR allows 2 decimal places." | Too many decimals is refused, **never silently rounded** |
+| `10.5` in JPY | **Error**: "JPY has no decimal places." | Same |
+| `-5`, `abc`, empty | **Error**: "Enter a price, like 450 or 450.00." | |
+
+**Changing an invoice's currency** keeps the numbers as typed (450.00 EUR becomes 450.00 USD, with **no conversion**). If a price has more decimals than the new currency allows (JPY), that field shows the decimals error until fixed.
+
+### 6.4 Calculation order and rounding
+Rounding is **half-up** (0.5 goes up) to the invoice currency's minor unit. All amounts are non-negative, so this equals "round half away from zero". Multiplications are done in `BigDecimal` and checked against M-6 before converting back to `Long`.
+
+1. **Line amount** = round(quantityMilli × unitPriceMinor ÷ 1000)
+2. **Subtotal** = sum of line amounts (each already rounded)
+3. **Discount** = round(subtotal × discountBp ÷ 10,000) for a percentage, or the fixed amount. It is then **capped at the subtotal**.
+4. **Tax** = round((subtotal − discount) × taxBp ÷ 10,000). It is rounded **once**, on the whole invoice, never per line.
+5. **Total** = subtotal − discount + tax
+
+These are stored in the invoice row (`subtotalMinor`, `discountMinor`, `taxMinor`, `totalMinor`) and in each `line_item.amountMinor` on every save (invariant I-7).
+
+### 6.5 Required tests
+Expected values were computed independently (2026-10-16) with exact integer maths before being written here.
+
+**Calculation**
+| # | Case | Input | Expected (minor units → shown) |
+|---|---|---|---|
+| C-1 | Usability task T2 | EUR: 1 × 450.00 + 2 × 60.00 | 57000 → **€570.00** |
+| C-2 | Fractional hours | 1.5 × $85.00 | 12750 → $127.50 |
+| C-3 | Half-up on a line | 1.5 × $0.33 (= 49.5¢) | 50 → $0.50 |
+| C-4 | Half-up at exactly .5 | 1.5 × $0.01 (= 1.5¢) | 2 → $0.02 |
+| C-5 | Rounds down below .5 | 0.125 × $0.01 (= 0.125¢) | 0 → $0.00 |
+| C-6 | Zero-decimal currency | 3 × ¥1,500 | 4500 → ¥4,500 |
+| C-7 | Three-decimal currency | 2 × KWD 1.250 | 2500 → KWD 2.500 |
+| C-8 | Tax once on the subtotal | $33.33 + $33.33 + $33.34 at 7.5% | sub 10000, tax 750, total 10750 → $107.50 |
+| C-9 | Tax half-up | $0.10 at 5% (0.5¢) | tax 1, total 11 → $0.11 |
+| C-10 | Fractional tax rate | $1.00 at 12.5% | tax 13, total 113 → $1.13 |
+| C-11 | Percent discount, then tax | $99.99, 10% off, 20% tax | discount 1000, tax 1800, total 10799 → $107.99 |
+| C-12 | Discount cap | $50.00, $80.00 off | discount 5000, total 0 → $0.00 |
+| C-13 | Over the limit | 999,999.999 × 999,999,999.99 | **Refused** (M-6), no overflow or crash |
+| C-14 | Mixing currencies | Adding € to $ in code | Throws an error (M-2) |
+
+**Parsing:** every row of the 6.3 table, plus each currency decimal group (0, 2, 3).
+
+**Formatting** (UX_SPEC 7.2): `€1,200.00`, `$1,200.00`, `CA$1,200.00`, `A$1,200.00`, `¥4,500`, `KWD 2.500`, `PKR 1,200.00`. Output must be identical with the phone set to English, German, French and Japanese, proving the formatter ignores the phone's locale.
+
+**Property tests** (many random inputs): total = subtotal − discount + tax; total ≥ 0; the stored totals equal a fresh recalculation (I-7); parse(format(x)) = x for every currency.
+
+---
+
+## 7. Database migrations and testing (P3-T05)
+
+Goal: **an app update never loses or corrupts a user's invoices** (UP-01).
+
+### 7.1 Rules
+| # | Rule |
+|---|---|
+| G-1 | **Never** use `fallbackToDestructiveMigration` or any setting that wipes data when a migration is missing. A missing migration should crash in testing, never delete data on a user's phone. |
+| G-2 | Every schema change bumps the database `version` and ships **in the same commit** as its migration and its test. |
+| G-3 | Schemas are exported (`exportSchema = true`), using the Room Gradle plugin's `schemaDirectory("$projectDir/schemas")`. Every version's JSON is committed to Git and **never edited** afterwards. |
+| G-4 | **Additive changes** (a new table, or a new nullable or defaulted column) may use Room's `@AutoMigration`. **Anything else** (rename, type change, split, data rewrite) gets a hand-written `Migration` with its SQL reviewed. Either way it's tested (7.3). |
+| G-5 | A migration also changes what's **in** the rows when needed (e.g. filling a new column from existing data), inside the same migration. |
+| G-6 | **Downgrades aren't supported** (Google Play doesn't downgrade apps). If an older app version meets a newer database, it shows "This data was created by a newer PocketBill. Please update the app." It **never** deletes or rewrites the data. |
+| G-7 | Enum names stored in the database (`ISSUED`, `PERCENT`…) are part of the schema. Renaming one needs a migration (section 1). |
+
+### 7.2 Safety copy before upgrading (Should)
+Before Room opens a database whose stored version is **lower** than the app's, PocketBill copies the database file to app-private storage (`pre-migration-v1.db`) and keeps the latest copy. Comparing the version needs a plain SQLite read of `user_version`, without Room. If a migration ever fails on a user's phone, the app shows a clear message and keeps the copy for support and recovery, instead of crashing in a loop.
+
+### 7.3 Tests for every schema change
+| Test | Where it runs | What it proves |
+|---|---|---|
+| **Migration test** for each step (v1→v2, v2→v3…) with `MigrationTestHelper` | Instrumented test on the Galaxy A72 | Real rows written in the old schema, including every status, accented text, 0- and 3-decimal currencies and snapshots, read back correctly in the new one |
+| **Full-chain test** v1 → latest | Same | A user who skipped several updates is still safe |
+| **Schema check** | Same | Room's validation of the migrated schema passes (it fails the test if the migrated tables don't match the new entities) |
+| **Update test** | Manual, P5-T05 | Install the previous release build, create data, install the new build over it, and check everything is still there |
+
+### 7.4 Backup file versions
+The backup file has its own `formatVersion`, separate from the database version, because not every schema change changes the backup format.
+- Restore accepts **every older** `formatVersion`, upgrading it in memory step by step (v1 → v2 → …) before validating.
+- Restore **refuses a newer** version: "This backup was made by a newer PocketBill. Please update the app first." Nothing is changed.
+- A sample backup file for each `formatVersion` is kept in the test resources and **never edited**. Every release must restore all of them.
+
+### 7.5 Release checklist items (added to RELEASE_CHECKLIST.md)
+- [ ] Database version bumped if any entity changed, and the new schema JSON committed
+- [ ] Migration and full-chain tests pass on the physical phone
+- [ ] Update-over-previous-release test done (7.3)
+- [ ] All sample backup files restore
