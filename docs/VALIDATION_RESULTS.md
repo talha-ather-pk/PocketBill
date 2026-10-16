@@ -42,3 +42,46 @@ _Recorded 2026-10-15._
 ## Decision
 
 The founder decided to proceed to P1-T06 (MVP specification) on the basis of this summary. See DECISIONS.md D-008. Filling in the tally above lets MVP_SPEC.md's priorities be checked against the actual counts.
+
+---
+
+## P1-T07 phone-creation check (gate for Phase 4, D-010)
+
+**Status (2026-10-16): in progress. Sessions are still running. No results reported yet.**
+
+Known so far (founder-reported):
+- Follow-up messages sent to the 6 phone-using participants (2026-10-16).
+- The browser prototype works for the test. The founder dry-ran it on a Galaxy A72 (T1–T5 and the session log). Version 3 carries over participants' earlier data.
+
+| Measure | Result | Pass mark |
+|---|---|---|
+| Completed a real invoice on the phone | Not yet reported | **≥ 3 of 6** |
+| Gave up / didn't try | Not yet reported | — |
+| Time from "Create invoice" to PDF preview (from session logs) | Not yet reported | Target ≤ 60 s for a repeat client, ≤ 2 min for a new client (UX_SPEC 3) |
+| Phone vs laptop: one-line answers | Not yet reported | — |
+| **Verdict** | **Pending** | — |
+
+Per participant (codes only; details stay in `research-private/`):
+
+| Participant | Completed? | Time | Phone or laptop, and why |
+|---|---|---|---|
+| P-a | Not yet reported | Not yet reported | Not yet reported |
+| P-b | Not yet reported | Not yet reported | Not yet reported |
+| P-c | Not yet reported | Not yet reported | Not yet reported |
+| P-d | Not yet reported | Not yet reported | Not yet reported |
+| P-e | Not yet reported | Not yet reported | Not yet reported |
+| P-f | Not yet reported | Not yet reported | Not yet reported |
+
+**Window:** two weeks from 2026-10-16 (until **2026-10-30**), or until 6 responses, whichever comes first (VALIDATION_PLAN.md).
+
+## T3 sending re-check (UX_SPEC 4)
+
+**Status (2026-10-16): not yet reported.** The prototype has had the new sending design since 2026-10-16 (version 2, same link).
+
+| Measure | Result | Pass mark |
+|---|---|---|
+| Participants tested | Not yet reported | 2–3 |
+| Completed T3 unaided in under 30 s | Not yet reported | All of them |
+| Gave the new client an email in T1 | Not yet reported | — |
+| Where they expected the send button | Not yet reported | — |
+| **Verdict** | **Pending** | — |
