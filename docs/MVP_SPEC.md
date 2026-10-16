@@ -215,7 +215,7 @@ Presets are saved from a line item ("Save as preset") or in Settings. *All table
 - **Fonts:** system fonts through `Typeface` with Android's fallback chain. **Acceptance test:** accented Latin text (José, Müller, Øresund, François) and the symbols € £ ¥ ₹ ₦ ₱ ₨ must render with no empty boxes (□) (TEST_PLAN; D-007). If any symbol fails on the test phone, bundle a font that covers it.
 - **Status marks:** a Paid invoice gets a "PAID" stamp and its paid date; a Void invoice gets "VOID". Drafts get a "DRAFT" watermark and can be previewed but not shared without confirmation.
 - **Files:** generated into the app's cache, shared through a `FileProvider` content URI with read permission granted only to the receiving app, and saved with `ACTION_CREATE_DOCUMENT`. **No storage permissions.**
-- **File name:** `INV-0014_Muller-Design-GmbH.pdf` (ASCII-safe; the PDF content keeps the accents).
+- **File name:** `INV-0014_Muller-Design-GmbH.pdf`: ASCII-safe for every email and messaging app, while the PDF content keeps the accents. Accents are stripped (ü→u), letters that have no accent to strip are spelled out (Ø→O, ß→ss, Æ→AE, Ł→L), and everything else becomes `-`.
 - **Performance:** a 50-item invoice generates in under 2 seconds on the Galaxy A72, off the main thread.
 
 ## 7. Backup and restore (data safety, UP-01)

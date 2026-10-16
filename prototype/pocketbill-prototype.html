@@ -164,6 +164,29 @@ button.row:active { background: var(--surface-2); }
 .snack span { flex: 1; }
 .snack button { border: 0; background: transparent; color: var(--primary-soft); font-weight: 700; padding: 8px; }
 
+/* Sending (UX_SPEC section 4) */
+.sendblock { display: flex; flex-direction: column; gap: 6px; }
+.sendblock .btn.text { align-self: center; }
+.sendmeta { font-size: 13px; color: var(--muted); text-align: center; overflow-wrap: anywhere; }
+.sendmeta.sent { color: var(--paid-fg); display: flex; gap: 4px; align-items: center; justify-content: center; font-weight: 500; }
+.sendmeta.sent svg.i { width: 16px; height: 16px; }
+.iconrow { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.iconrow button { border: 1px solid var(--line); background: transparent; border-radius: 12px; min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 13px; font-weight: 500; color: var(--primary); }
+.actions .btn.primary.wide { flex: 2; }
+.mailwrap { position: fixed; inset: 0; z-index: 15; display: flex; justify-content: center; background: var(--scrim); }
+.mail { width: min(440px, 100%); height: 100%; background: var(--surface); display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.mailbar { display: flex; align-items: center; gap: 8px; min-height: 56px; border-bottom: 1px solid var(--line); }
+.mailbar h2 { flex: 1; margin: 0; font-size: 18px; font-weight: 500; }
+.mailnote { font-size: 12px; background: var(--banner-bg); color: var(--banner-fg); padding-block: 6px; }
+.mailbody { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+.mrow { display: flex; gap: 12px; align-items: center; border-bottom: 1px solid var(--line); min-height: 52px; }
+.mrow span { color: var(--muted); width: 60px; font-size: 14px; flex: none; }
+.mrow input { flex: 1; min-width: 0; border: 0; background: transparent; min-height: 48px; }
+.mrow input.invalid { box-shadow: inset 0 -2px 0 var(--error); }
+.attach { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; margin-block: 12px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 14px; max-width: 100%; overflow-wrap: anywhere; }
+.attach svg.i { color: var(--error); }
+.mailbody textarea { flex: 1; min-height: 260px; border: 0; background: transparent; resize: none; line-height: 1.5; padding-block: 4px 16px; }
+
 .loglist { font-size: 13px; display: flex; flex-direction: column; gap: 4px; max-height: 320px; overflow-y: auto; }
 .loglist div { display: grid; grid-template-columns: 52px 1fr; gap: 8px; }
 .loglist time { color: var(--muted); }
@@ -190,7 +213,8 @@ button.row:active { background: var(--surface-2); }
 <script>
 (function () {
   "use strict";
-  var KEY = "pb-proto-v1";
+  var KEY = "pb-proto-v2";
+  var BUSINESS = { name: "Your Studio", pay: "Bank transfer: IBAN GB33 BUKB 2020 1555 5555 55 (example)\nPayPal: hello@yourstudio.example" };
   var DAY = 86400000;
   var CURRENCIES = [["USD", "US dollar"], ["EUR", "Euro"], ["GBP", "British pound"], ["CAD", "Canadian dollar"], ["AUD", "Australian dollar"], ["INR", "Indian rupee"], ["PKR", "Pakistani rupee"], ["NGN", "Nigerian naira"], ["PHP", "Philippine peso"]];
   var DUE = [[0, "On receipt"], [7, "7 days"], [14, "14 days"], [30, "30 days"]];
@@ -205,7 +229,10 @@ button.row:active { background: var(--surface-2); }
     download: "M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z",
     edit: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z",
     check: "M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z",
-    pdf: "M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"
+    pdf: "M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z",
+    mail: "M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z",
+    send: "M2.01 21 23 12 2.01 3 2 10l15 2-15 2z",
+    close: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
   };
   var TABS = [["home", "Home"], ["invoices", "Invoices"], ["clients", "Clients"], ["settings", "Settings"]];
   var SHARE_TARGETS = [["Gmail", "#c5221f"], ["WhatsApp", "#1e8e3e"], ["Outlook", "#0f6cbd"], ["Messages", "#1a73e8"], ["Drive", "#188038"], ["Telegram", "#2a8bc5"], ["Slack", "#611f69"], ["Copy", "#5f6368"]];
@@ -218,7 +245,7 @@ button.row:active { background: var(--surface-2); }
   function seed() {
     var t = today0();
     return {
-      v: 1, startedAt: Date.now(), nextNo: 14, defaultCurrency: "USD",
+      v: 2, startedAt: Date.now(), nextNo: 14, defaultCurrency: "USD",
       clients: [
         { id: "c1", name: "Acme Studio", country: "United States", email: "billing@acmestudio.example" },
         { id: "c2", name: "Lumen Labs Ltd", country: "United Kingdom", email: "accounts@lumenlabs.example" },
@@ -234,7 +261,14 @@ button.row:active { background: var(--surface-2); }
   }
   var state;
   try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) { state = null; }
-  if (!state || state.v !== 1 || !Array.isArray(state.invoices)) state = seed();
+  if (!state) {
+    // Carry over data from version 1 so participants mid-way through P1-T07 keep their invoices and session log
+    try {
+      var old = JSON.parse(localStorage.getItem("pb-proto-v1"));
+      if (old && old.v === 1 && Array.isArray(old.invoices)) { old.v = 2; old.log = (old.log || []).concat([{ t: Date.now(), ev: "Prototype updated to version 2 (new sending design)" }]); state = old; persist(); }
+    } catch (e) { state = null; }
+  }
+  if (!state || state.v !== 2 || !Array.isArray(state.invoices)) state = seed();
   function persist() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable: prototype still works in memory */ } }
 
   function log(ev) {
@@ -256,6 +290,9 @@ button.row:active { background: var(--surface-2); }
     return { sub: sub, tax: tax, total: sub + tax };
   }
   function fmtDate(ms) { return new Date(ms).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
+  function fmtShort(ms) { return new Date(ms).toLocaleDateString("en-GB", { day: "numeric", month: "short" }); }
+  var FOLD = { "Ø": "O", "ø": "o", "ß": "ss", "Æ": "AE", "æ": "ae", "Œ": "OE", "œ": "oe", "Ł": "L", "ł": "l", "Đ": "D", "đ": "d", "Þ": "Th", "þ": "th" };
+  function fileSafe(s) { return String(s).replace(/[ØøßÆæŒœŁłĐđÞþ]/g, function (c) { return FOLD[c]; }).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
   function dueOf(inv) { return inv.issued + inv.dueDays * DAY; }
   function statusOf(inv) { if (inv.status === "paid") return "paid"; return dueOf(inv) < today0() ? "overdue" : "unpaid"; }
   function invNo(n) { return "INV-" + String(n).padStart(4, "0"); }
@@ -359,12 +396,12 @@ button.row:active { background: var(--surface-2); }
         '<div class="card"><div class="dhead"><div><div class="hint">' + invNo(inv.no) + '</div><div style="font-weight:500;font-size:17px">' + esc(cl.name) + '</div><div class="hint">' + esc(cl.country) + "</div></div>" + chip(inv) + "</div>" +
         '<div class="big num" style="font-size:28px;font-weight:500;margin-top:10px">' + money(c.total, inv.currency) + "</div>" +
         '<dl class="kv" style="margin:12px 0 0">' + rows + "</dl></div>" +
-        '<div class="btncol">' +
-        '<button class="btn primary block" data-act="preview" data-id="' + inv.id + '">' + icon("pdf") + "Preview PDF</button>" +
+        '<div class="btncol">' + sendBlock(inv) +
         (s === "paid"
           ? '<button class="btn outline block" data-act="unpay" data-id="' + inv.id + '">Mark as unpaid</button>'
           : '<button class="btn tonal block" data-act="pay" data-id="' + inv.id + '">' + icon("check") + "Mark as paid</button>") +
-        '<button class="btn outline block" data-act="edit" data-id="' + inv.id + '">' + icon("edit") + "Edit invoice</button>" +
+        '<div class="iconrow"><button data-act="preview" data-id="' + inv.id + '">' + icon("pdf") + "Preview</button>" +
+        '<button data-act="edit" data-id="' + inv.id + '">' + icon("edit") + "Edit</button></div>" +
         "</div></div>";
     },
     editor: function () {
@@ -415,9 +452,89 @@ button.row:active { background: var(--surface-2); }
         '<div class="p-foot">Please pay by ' + fmtDate(dueOf(inv)) + ". Thank you for your business.</div>" +
         (inv.status === "paid" ? '<div class="p-stamp">PAID</div>' : "") +
         "</div></div></div>" +
-        '<div class="actions gut"><button class="btn outline" data-act="edit" data-id="' + inv.id + '">' + icon("edit") + 'Edit</button><button class="btn outline" data-act="savepdf" data-id="' + inv.id + '">' + icon("download") + 'Save</button><button class="btn primary" data-act="share" data-id="' + inv.id + '">' + icon("share") + "Share</button></div>";
+        '<div class="actions gut"><button class="btn outline" data-act="edit" data-id="' + inv.id + '">Edit</button><button class="btn outline" data-act="savepdf" data-id="' + inv.id + '">Save</button>' +
+        (cl.email
+          ? '<button class="btn primary wide" data-act="email" data-id="' + inv.id + '">' + icon("mail") + sendLabel(inv) + "</button>"
+          : '<button class="btn primary wide" data-act="share" data-id="' + inv.id + '">' + icon("share") + (inv.lastSentAt ? "Send again…" : "Send…") + "</button>") +
+        "</div>";
     }
   };
+
+  // ---------- Sending (UX_SPEC section 4) ----------
+  function sendLabel(inv) { return inv.status === "paid" ? "Email receipt" : inv.lastSentAt ? "Email again" : "Email to client"; }
+  function sendBlock(inv) {
+    var cl = clientOf(inv), html;
+    if (cl.email) {
+      html = '<button class="btn primary block" data-act="email" data-id="' + inv.id + '">' + icon("mail") + sendLabel(inv) + "</button>" +
+        '<div class="sendmeta">to ' + esc(cl.email) + "</div>";
+    } else {
+      html = '<button class="btn primary block" data-act="share" data-id="' + inv.id + '">' + icon("share") + (inv.lastSentAt ? "Send again…" : "Send…") + "</button>" +
+        '<button class="btn text" data-act="addemail" data-id="' + inv.id + '">Add client email for one-tap sending</button>';
+    }
+    if (inv.lastSentAt) html += '<div class="sendmeta sent">' + icon("check") + "Last sent " + fmtShort(inv.lastSentAt) + " via " + esc(inv.lastSentVia) + "</div>";
+    if (cl.email) html += '<button class="btn text" data-act="share" data-id="' + inv.id + '">Send another way (WhatsApp, …)</button>';
+    return '<div class="sendblock">' + html + "</div>";
+  }
+  function mailBody(inv) {
+    var cl = clientOf(inv), total = money(calc(inv).total, inv.currency);
+    if (inv.status === "paid") return "Hi " + cl.name + ",\n\nThank you for your payment of " + total + ", received on " + fmtDate(inv.paidOn) + ". Your receipt is attached.\n\nThank you,\n" + BUSINESS.name;
+    return "Hi " + cl.name + ",\n\nPlease find attached invoice " + invNo(inv.no) + " for " + total + ", due on " + fmtDate(dueOf(inv)) + ".\n\nPayment details:\n" + BUSINESS.pay + "\n\nThank you,\n" + BUSINESS.name;
+  }
+  function markSent(inv, via) {
+    var prev = { at: inv.lastSentAt, via: inv.lastSentVia };
+    inv.lastSentAt = Date.now(); inv.lastSentVia = via;
+    log("Sent " + invNo(inv.no) + " via " + via);
+    persist(); render(false);
+    return function () { inv.lastSentAt = prev.at; inv.lastSentVia = prev.via; log("Undo sent " + invNo(inv.no)); persist(); render(false); };
+  }
+  function openEmail(inv) {
+    var cl = clientOf(inv);
+    log("Opened email app for " + invNo(inv.no));
+    var subj = (inv.status === "paid" ? "Receipt for invoice " : "Invoice ") + invNo(inv.no) + " from " + BUSINESS.name;
+    var wrap = document.createElement("div");
+    wrap.className = "mailwrap";
+    wrap.innerHTML = '<div class="mail" role="dialog" aria-modal="true" aria-label="Email app (simulated)">' +
+      '<div class="mailbar gut"><button class="icon-btn" data-m="close" aria-label="Discard email">' + icon("close") + '</button><h2>Email app</h2><button class="btn primary" data-m="send">' + icon("send") + "Send</button></div>" +
+      '<div class="mailnote gut">Simulated email app. Nothing is actually sent.</div>' +
+      '<div class="mailbody gut"><label class="mrow"><span>To</span><input id="m-to" type="email" inputmode="email" value="' + esc(cl.email) + '"></label>' +
+      '<label class="mrow"><span>Subject</span><input id="m-subj" value="' + esc(subj) + '"></label>' +
+      '<div class="attach">' + icon("pdf") + "<span>" + invNo(inv.no) + "_" + esc(fileSafe(cl.name)) + ".pdf</span></div>" +
+      '<textarea id="m-body" aria-label="Message">' + esc(mailBody(inv)) + "</textarea></div></div>";
+    wrap.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-m]"); if (!b) return;
+      if (b.getAttribute("data-m") === "close") { wrap.remove(); log("Closed email app without sending"); return; }
+      var to = wrap.querySelector("#m-to");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to.value.trim())) { to.classList.add("invalid"); to.focus(); log("Email send blocked: no valid address"); return; }
+      wrap.remove();
+      var undo = markSent(inv, "Email");
+      toast("Sent to " + cl.name + " by email. (Prototype: nothing was sent.)", undo);
+    });
+    document.getElementById("overlay").appendChild(wrap);
+  }
+  function openAddEmail(inv) {
+    var cl = clientOf(inv);
+    log("Opened Add client email");
+    var wrap = document.createElement("div");
+    wrap.className = "scrim";
+    wrap.innerHTML = '<div class="sheet gut" role="dialog" aria-modal="true" aria-label="Add client email"><div class="grab"></div>' +
+      "<h3>Email for " + esc(cl.name) + "</h3>" +
+      '<div class="field" style="margin-top:12px"><label for="f-addemail">Email address</label><input id="f-addemail" class="input" type="email" inputmode="email" autocomplete="off" placeholder="name@company.com"></div>' +
+      '<div class="hint" id="addemail-err" role="alert" style="color:var(--error);min-height:20px"></div>' +
+      '<div style="display:flex;gap:10px;margin-top:8px"><button class="btn outline" data-m="cancel" style="flex:1">Cancel</button><button class="btn primary" data-m="save" style="flex:1">Save</button></div></div>';
+    wrap.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-m]");
+      if (!b) { if (e.target === wrap) { wrap.remove(); log("Closed Add client email"); } return; }
+      if (b.getAttribute("data-m") === "cancel") { wrap.remove(); log("Closed Add client email"); return; }
+      var v = wrap.querySelector("#f-addemail").value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { wrap.querySelector("#addemail-err").textContent = "Enter an email address like name@company.com."; return; }
+      cl.email = v; wrap.remove();
+      log("Added email for " + cl.name);
+      persist(); render(false);
+      toast("Email saved. You can now email this invoice in one tap.");
+    });
+    document.getElementById("overlay").appendChild(wrap);
+    wrap.querySelector("#f-addemail").focus();
+  }
 
   function titleFor(r) {
     if (r.name === "detail") return invNo(invById(r.params.id).no);
@@ -547,10 +664,9 @@ button.row:active { background: var(--surface-2); }
       if (!b && e.target !== wrap) return;
       wrap.remove();
       var t = b ? b.getAttribute("data-t") : "";
-      if (t) {
-        log("Shared " + invNo(inv.no) + " via " + t);
-        toast(t === "Copy" ? "PDF copied. (Prototype: nothing was copied.)" : "Sent to " + cl.name + " via " + t + ". (Prototype: nothing was sent.)");
-      } else log("Closed share sheet without sharing");
+      if (t === "Copy") { log("Copied PDF for " + invNo(inv.no)); toast("PDF copied. (Prototype: nothing was copied.)"); }
+      else if (t) { var undo = markSent(inv, t); toast("Sent to " + cl.name + " via " + t + ". (Prototype: nothing was sent.)", undo); }
+      else log("Closed share sheet without sharing");
     });
     o.appendChild(wrap);
     var first = wrap.querySelector(".target"); if (first) first.focus();
@@ -595,6 +711,8 @@ button.row:active { background: var(--surface-2); }
         break;
       }
       case "share": openShare(invById(id)); break;
+      case "email": openEmail(invById(id)); break;
+      case "addemail": openAddEmail(invById(id)); break;
       case "savepdf": { var i2 = invById(id); log("Tapped Save PDF for " + invNo(i2.no)); toast("Saved " + invNo(i2.no) + ".pdf to Downloads. (Prototype: no file was created.)"); break; }
       case "due": ui.draft.dueDays = +b.getAttribute("data-v"); render(false); break;
       case "additem": ui.draft.items.push({ d: "", q: "1", p: "" }); render(false); var n = document.getElementById("f-d-" + (ui.draft.items.length - 1)); if (n) n.focus(); break;

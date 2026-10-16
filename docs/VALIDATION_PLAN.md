@@ -214,3 +214,14 @@ _Added 2026-10-16 by decision D-010._ Validation showed that people create invoi
 - **Fail:** before any feature code, reopen D-010's other options (laptop companion, logging invoices made elsewhere, re-interview).
 
 **Window:** two weeks, or until 6 responses, whichever comes first. Phase 2 (design) and Phase 3 (data model) continue in the meantime, because neither depends on the result.
+
+## Follow-up: sending re-check (T3, UX_SPEC section 4)
+
+_Added 2026-10-16._ The prototype (same link) now has the new sending design: **Email to client** as the main button, a simulated email app with everything prefilled, and "Last sent … via …" afterwards.
+
+**Who:** 2–3 of the original participants, ideally ones who struggled with T3.
+**How:** on a short call, have them reset the prototype (Settings → Reset, tap twice), do T1, then read T3 exactly: *"Send the PDF to the client."* Don't help.
+**Pass:** each completes T3 **unaided in under 30 seconds** (time it from the session log). Note anything they say about where they expected the button to be.
+**Also note:** whether anyone gave the new client an email in T1. If not, they'll see **Send…** and "Add client email for one-tap sending" instead. Did they use it?
+
+Participants already doing P1-T07 keep their invoices and session log; the update carries them over and adds a "Prototype updated to version 2" line to the log.
