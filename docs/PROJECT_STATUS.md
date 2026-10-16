@@ -47,8 +47,8 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 2. Founder: review UX_SPEC.md section 1 (P2-T01 navigation) and DATA_MODEL.md (P3-T01 Room schema).
 3. Founder: review UX_SPEC.md section 4 (P2-T04 sending) and DATA_MODEL.md section 5 (P3-T02 numbering and frozen details).
 4. Founder: run the T3 sending re-check with 2–3 participants (VALIDATION_PLAN.md, "Follow-up: sending re-check"). The prototype is updated (version 3, same link).
-5. Founder: review UX_SPEC.md sections 2, 3, 5, 6 (Home, editor, history & statuses, clients). One decision to make: is a full invoice activity log (UX_SPEC 5, a new table) wanted? Decide before P4-T03.
-6. Claude: P2-T07 accessibility & formatting, P2-T08 design tokens, then P3-T03 money rules and P3-T04 layers.
+5. Founder: review UX_SPEC.md sections 2, 3, 5–8 (Home, editor, history & statuses, clients, accessibility & formatting, design tokens). Activity log decided: none in the MVP (D-011).
+6. Claude: Phase 3: P3-T03 money rules (move from MVP_SPEC 5 into DATA_MODEL with the full test list), P3-T04 layer responsibilities, P3-T05 migrations.
 
 ## Resume prompt for a new Claude session
 

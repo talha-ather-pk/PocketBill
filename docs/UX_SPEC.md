@@ -10,8 +10,8 @@ _Started 2026-10-16. Implements the screens in [MVP_SPEC.md](MVP_SPEC.md) sectio
 | P2-T04 Sending (PDF preview / send) | 4 | Draft, awaiting founder review |
 | P2-T05 History & statuses | 5 | Draft, awaiting founder review |
 | P2-T06 Client management | 6 | Draft, awaiting founder review |
-| P2-T07 Accessibility & localization | — | Not started |
-| P2-T08 Design tokens | — | Not started |
+| P2-T07 Accessibility & formatting | 7 | Draft, awaiting founder review |
+| P2-T08 Design tokens | 8 | Draft, awaiting founder review |
 
 ---
 
@@ -504,7 +504,7 @@ Issued      16 Oct 2026
 Last sent   16 Oct 2026 via Gmail
 Paid        23 Oct 2026
 ```
-A full activity log (every send and status change) would need a new `invoice_event` table. It's a **Could**, and it has to be decided before the schema is finalised in P4-T03, because adding it later means a database migration.
+**No full activity log in the MVP (D-011).** Only the latest send and the paid date are kept. Adding a log later means a new table and a database migration.
 
 ---
 
@@ -563,3 +563,145 @@ Deleting is blocked at the database level too (`ON DELETE RESTRICT`, DATA_MODEL 
 
 ### Could (not in the MVP plan)
 **Pick from phone contacts**: Android's contact picker returns one chosen contact **without** the contacts permission, so it would fit the no-permissions rule (MVP_SPEC 8). Worth adding if P1-T07 shows that typing new clients slows people down.
+
+---
+
+## 7. Accessibility and formatting (P2-T07)
+
+### 7.1 Accessibility rules
+**Standard:** WCAG 2.2 level AA wherever it applies to a native app, checked on every screen.
+
+| Area | Rule |
+|---|---|
+| **Contrast** | Text ≥ 4.5:1 (≥ 3:1 for text 18 sp+). Field borders, chip outlines and icons that carry meaning ≥ 3:1. All colours in section 8 were checked against their backgrounds (2026-10-16). |
+| **Touch targets** | ≥ 48 × 48 dp for everything tappable, including chips, ⋮ menus and the ✕ on cards, with ≥ 8 dp between neighbouring targets. |
+| **Text size** | Works up to **200% font size** with no clipped or overlapping text. Text never sits in fixed-height boxes. Client names may shorten with "…"; **amounts and invoice numbers never shorten**: rows wrap to two lines instead. |
+| **Colour alone** | Never the only signal. Statuses have text labels, overdue has a "!" icon, and errors have a message (section 5). |
+| **TalkBack: rows** | Each invoice row reads as **one** announcement: "Müller Design GmbH, invoice INV-0014, 570 euros, unpaid, due 30 October 2026, sent 16 October". |
+| **TalkBack: row actions** | Actions that sighted users reach in two taps are offered as TalkBack **custom actions** on the row ("Mark as paid", "Email", "Duplicate"), so screen-reader users aren't slower. |
+| **TalkBack: money** | Amounts are spoken with the currency's name ("1,200 US dollars"), not the symbol, using `Currency.getDisplayName`. |
+| **TalkBack: structure** | Section titles ("Needs attention", "Items") are marked as headings so users can jump between them. |
+| **Errors** | Announced when shown (`liveRegion`), with focus moved to the first field that needs fixing (UX_SPEC 3). |
+| **Focus order** | Follows the visual order. Sheets and dialogs trap focus until closed, and return it to the button that opened them. |
+| **Motion** | Nothing important is shown only through animation. If the phone's "Remove animations" setting is on, transitions are instant. |
+| **Orientation and size** | Every screen works in portrait and landscape, in split-screen down to 320 dp wide, and on the Galaxy A72 (412 dp). |
+| **Images** | The business logo has a text alternative ("Your Studio logo"). Decorative icons next to text labels are hidden from TalkBack. |
+
+**How it's tested (P5-T03 and P5-T05):**
+- Google's Accessibility Scanner on every screen.
+- A full TalkBack run of tasks T1–T5.
+- Screenshots of every screen at 200% font size.
+- A contrast check whenever a colour token changes.
+
+### 7.2 Formatting rules
+The app's language is **English only** (D-007), but freelancers and their clients are worldwide. So invoices use one consistent, unambiguous English format **whatever the phone's language or region is set to**.
+
+| What | Rule | Example |
+|---|---|---|
+| **Dates on invoices, PDFs and emails** | Day, short English month, year. Never all-number dates: `03/04/2026` means March in the US and April elsewhere. | `30 Oct 2026` |
+| **Dates in the app** | Same format. Lists drop the year when it's the current year. | `30 Oct` |
+| **Relative dates** | In the app only, **never** on a PDF or in an email | "Overdue 8 days", "edited 2 h ago", "yesterday" |
+| **"Today"** | The phone's local calendar date. Stored dates are calendar days, so they don't shift with time zones (DATA_MODEL 1). | — |
+| **Money** | English digit grouping and decimal point, with the currency's own decimals. Dollars are labelled where they could be confused: US `$`, Canada `CA$`, Australia `A$`. Currencies without a common symbol show their code. | `€1,200.00` · `$1,200.00` · `CA$1,200.00` · `¥4,500` · `PKR 1,200.00` |
+| **Money typed in** | `.` or `,` accepted as the decimal point. Shown with the currency's decimals after leaving the field (UX_SPEC 3). | `450,5` → `450.50` |
+| **Quantities** | Up to 3 decimals, with trailing zeros dropped | `1.5`, `2`, `0.25` |
+| **Percentages** | Up to 2 decimals, trailing zeros dropped | `7.5%`, `20%` |
+| **Invoice numbers** | Exactly as issued, never reformatted | `INV-0014` |
+| **Names and text** | Any characters the user types are kept. Accented Latin letters and currency symbols must display correctly in the app and the PDF (D-007). | `Øresund Design ApS` |
+| **File names** | ASCII-only (MVP_SPEC 6) | `INV-0014_Oresund-Design-ApS.pdf` |
+
+**Implementation rules:**
+- **All formatting goes through one formatter module**, so the app, the PDF and the email always agree. It always uses English (US) number rules, never the phone's locale, and is fully unit tested.
+- **No text is written directly in code.** Every piece of UI text lives in `strings.xml`, and counts use Android plural resources ("1 unpaid invoice" / "4 unpaid invoices"). The app is English-only, but this keeps translation possible later at no cost.
+- `android:supportsRtl` stays on (already set in the manifest), so a client name in Arabic or Hebrew at least displays in the right direction, even though right-to-left invoices aren't supported (D-007).
+
+**Could (later):** a date-format choice in Settings (`30 Oct 2026` / `Oct 30, 2026` / `2026-10-30`).
+
+---
+
+## 8. Design tokens (P2-T08)
+
+Tokens are the named colours, type styles, shapes and spacing that every screen uses, so the whole app stays consistent and can be changed in one place. They build on the provisional navy theme already in the app (`ui/theme/Color.kt`). The Android code for them is written in P4-T01.
+
+### 8.1 Colour
+**Base:** Material 3 colour roles generated from the seed colour **Navy #1F4E79**, using Material Theme Builder in P4-T01. Dynamic (wallpaper) colour stays off, so the app looks the same on every phone. Dark mode follows the phone's setting; there's no in-app switch in the MVP.
+
+**Key roles** (the values the prototype uses; the generated scheme must stay within ±5% of these contrasts):
+| Role | Light | Dark | Used for |
+|---|---|---|---|
+| primary | `#1F4E79` | `#A6C8FF` | Main buttons, links, active tab |
+| onPrimary | `#FFFFFF` | `#0B2A47` | Text on main buttons (8.7:1 / 8.6:1) |
+| primaryContainer | `#D6E4F7` | `#26486C` | Tonal buttons, selected chips |
+| background | `#F6F8FB` | `#0F1318` | Screen background |
+| surface | `#FFFFFF` | `#171D24` | Cards, sheets, fields |
+| onSurface | `#16212E` | `#E3E9F0` | Main text |
+| onSurfaceVariant | `#566476` | `#9EABBA` | Secondary text (5.7:1 / 8.0:1) |
+| outline | `#7D8A99` | `#6B7785` | **Field and chip borders** (3.3:1 / 3.7:1, meets the 3:1 rule) |
+| outlineVariant | `#D6DEE8` | `#2D3743` | Decorative dividers and card edges only (not enough contrast for meaning) |
+| error | `#B3261E` | `#FFB4AB` | Field errors |
+
+**Status colours** (custom tokens added alongside Material's):
+| Token | Light (text / fill) | Dark (text / fill) | Contrast L / D |
+|---|---|---|---|
+| status.paid | `#00574E` / `#D5F2EC` | `#7FE0D0` / `#123D38` | 7.2 / 7.7 |
+| status.unpaid | `#3C4A5A` / `#E3E9F1` | `#C3CFDB` / `#26303B` | 7.4 / 8.5 |
+| status.overdue | `#9C2218` / `#FBE1DE` | `#FFB4AB` / `#4A1D19` | 6.4 / 8.4 |
+| status.draft | `#566476` / outline only | `#9EABBA` / outline only | 5.7 / 8.0 |
+| status.void | `#566476` / `#E3E9F1`, number struck through | `#9EABBA` / `#26303B` | 5.7 / 8.0 |
+
+**PDF colours** are fixed and ignore the app theme: PDFs are always white paper and must print well.
+| Token | Value | Contrast on white |
+|---|---|---|
+| pdf.ink | `#1B222B` | 16.0 |
+| pdf.muted | `#5F6B78` | 5.4 |
+| pdf.rule | `#DFE4EA` | decorative lines only |
+| pdf.accent | `#1F4E79` | 8.7 |
+| pdf.stampPaid | `#1A7F5A` | 5.0 |
+| pdf.stampVoid / Draft | `#5F6B78` | 5.4 |
+
+### 8.2 Typography
+**Font:** Roboto, the Android system font. It isn't bundled, so it doesn't make the app bigger, and it covers accented Latin letters and the currency symbols in D-007 (verified in the PDF test, MVP_SPEC 6). **Numbers use tabular figures** (`fontFeatureSettings = "tnum"`), so amounts line up in lists and totals.
+
+| Token (Material 3 role) | Size / line height | Weight | Used for |
+|---|---|---|---|
+| headlineSmall | 24 / 32 sp | Regular | Screen titles on Home ("Your Studio") |
+| titleLarge | 22 / 28 sp | Medium | App bar titles; **the outstanding amounts** and the invoice total on detail |
+| titleMedium | 16 / 24 sp | Medium | Client names in rows; section headings |
+| bodyLarge | 16 / 24 sp | Regular | Field input text, paragraphs |
+| bodyMedium | 14 / 20 sp | Regular | Row second lines, helper text |
+| labelLarge | 14 / 20 sp | Medium | Buttons |
+| labelMedium | 12 / 16 sp | Medium | Status chips, bottom-bar labels |
+
+### 8.3 Shape
+| Token | Corner radius | Used for |
+|---|---|---|
+| shape.small | 8 dp | Chips, status chips, text fields |
+| shape.medium | 16 dp | Cards, lists |
+| shape.large | 20 dp (top corners only) | Bottom sheets |
+| shape.full | Fully round | Buttons, the active-tab indicator |
+
+### 8.4 Spacing and size
+**4 dp grid.** Allowed spacing values: 4 · 8 · 12 · 16 · 24 · 32 dp.
+| Token | Value | Used for |
+|---|---|---|
+| space.screen | 16 dp | Left and right screen margins |
+| space.section | 24 dp | Between sections on a screen |
+| space.item | 12 dp | Between cards or fields in a group |
+| size.touch | 48 dp | Minimum tap target |
+| size.row | 64 dp | Minimum height of an invoice or client row |
+| size.button | 48 dp | Button height |
+
+### 8.5 Elevation, icons and motion
+- **Elevation:** mostly flat. Cards use a 1 dp `outlineVariant` border instead of a shadow. Sheets and dialogs use Material's tonal elevation.
+- **Icons:** Material Symbols, outlined style. Only the icons used are added, as vector drawables (as the four tab icons are today), rather than the large `material-icons-extended` library.
+- **Motion:** Material 3 standard durations and easing. Screen transitions are short fades or slides, and nothing important relies on animation (7.1).
+
+### 8.6 How they're implemented (P4-T01)
+Files in `ui/theme/`:
+- **`Color.kt`**: colour roles plus the status colours, which are provided through a small `StatusColors` object.
+- **`Type.kt`**: the type scale.
+- **`Shape.kt`**: corner shapes.
+- **`Spacing.kt`**: spacing and size values.
+- **`PdfColors.kt`**: separate from the theme, so PDFs never change colour with dark mode.
+
+Screens never use raw colour values, only these tokens.

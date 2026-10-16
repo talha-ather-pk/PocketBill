@@ -8,6 +8,12 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-011 — No invoice activity log in the MVP
+- **Context:** UX_SPEC 5 asked whether to record every send and status change, which needs a new `invoice_event` table that is cheapest to add before P4-T03.
+- **Decision:** No. Invoice history shows only what existing columns hold: issued date, last sent (date and app), and paid date.
+- **Consequence:** Earlier sends and earlier status changes are not kept. Adding a log later needs a database migration (DATA_MODEL 4, migration policy).
+- **Status:** Accepted by founder 2026-10-16.
+
 ## D-010 — Phone-first creation, with a check before building (MVP_SPEC Q-06)
 - **Context:** Validation found that freelancers use phones for status checks, quick edits and re-sending, but **create first invoices on laptops** (Q-01). PocketBill keeps data only on the phone, so invoices made elsewhere never reach it.
 - **Options:** (a) phone-first, making creation fast enough to move to the phone; (b) a laptop companion with account-free sync (about 2× scope); (c) log and track invoices made elsewhere; (d) re-interview first.
