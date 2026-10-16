@@ -8,6 +8,21 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-010 — Phone-first creation, with a check before building (MVP_SPEC Q-06)
+- **Context:** Validation found that freelancers use phones for status checks, quick edits and re-sending, but **create first invoices on laptops** (Q-01). PocketBill keeps data only on the phone, so invoices made elsewhere never reach it.
+- **Options:** (a) phone-first, making creation fast enough to move to the phone; (b) a laptop companion with account-free sync (about 2× scope); (c) log and track invoices made elsewhere; (d) re-interview first.
+- **Decision:** (a). Keep the MVP phone-only and invest in **fast creation**: duplicate invoice, recent clients, line-item presets, prefilled defaults.
+- **Safeguards:**
+  1. **Gate before Phase 4 (P1-T07):** ask the 6 phone-using participants to create their next real invoice in the prototype, and record how many do and how long it takes. Pass mark: **≥ 3 of 6 complete a real invoice on the phone.** If it fails, reopen options (b) to (d) before writing feature code.
+  2. **Sync-ready data model:** Phase 3 gives every record a stable UUID and an update timestamp, so a laptop companion (option b) can be added later without migrating away from the MVP schema.
+- **Status:** Accepted by founder 2026-10-16.
+
+## D-009 — MVP scope answers (MVP_SPEC Q-03, Q-04, Q-05)
+- **Quotes and estimates:** out of the MVP (Q-03).
+- **Android cloud backup** (`android:allowBackup`): stays **off**, to keep the "data stays on your phone" promise strictly (Q-04). Data safety relies on PocketBill's own backup file (MVP_SPEC section 7).
+- **Tax:** one tax rate per invoice is enough for the MVP (Q-05). Multiple tax lines would need a schema migration later.
+- **Status:** Accepted by founder 2026-10-16.
+
 ## D-008 — Proceed to MVP specification
 - **Context:** VALIDATION_PLAN.md says to proceed to P1-T06 only if A-02 (mobile invoicing) and A-01 (pain) are supported.
 - **Decision:** The founder reports validation complete, with strong demand for offline-first, ad-free, account-free invoicing and A-02 supported "for quick tasks". Proceed to P1-T06.

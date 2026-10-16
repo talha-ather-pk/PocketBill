@@ -194,3 +194,23 @@ Surprises:
 - **Interviewing only people who already like you.** Get at least half the participants through strangers or introductions.
 - **Changing the questions halfway.** Answers then can't be compared. Fix only the prototype between days.
 - **Stopping at 3 interviews because the answers feel clear.** Patterns at 3 often reverse by 8.
+
+## Follow-up: phone-creation check (P1-T07, gate for Phase 4)
+
+_Added 2026-10-16 by decision D-010._ Validation showed that people create invoices on laptops. This check finds out whether a fast phone flow changes that.
+
+**Who:** the 6 participants who used phones for quick tasks.
+
+**Ask (message template):**
+> Thanks again for the interview. One small favour: **the next time you need to send a real invoice**, could you first try making it in the prototype on your phone, using the real client and amounts? Nothing leaves your phone. Then send me a screenshot of *Settings → Session log*, and tell me in one line: would you have rather used your laptop, and why?
+
+**Record per person** (in `research-private/`; aggregate counts only in VALIDATION_RESULTS.md):
+- Completed a real invoice on the phone? (yes / gave up / didn't try)
+- Time from "Create invoice" to the PDF preview (from the session log)
+- Their one-line answer about phone vs laptop
+
+**Pass mark (fixed now):** **≥ 3 of 6** complete a real invoice on the phone.
+- **Pass:** Phase 4 can start as specified in MVP_SPEC.md.
+- **Fail:** before any feature code, reopen D-010's other options (laptop companion, logging invoices made elsewhere, re-interview).
+
+**Window:** two weeks, or until 6 responses, whichever comes first. Phase 2 (design) and Phase 3 (data model) continue in the meantime, because neither depends on the result.

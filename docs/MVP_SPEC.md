@@ -1,8 +1,8 @@
 # PocketBill MVP Specification (P1-T06)
 
-_Draft 1, 2026-10-15. Status: **awaiting founder review.** Once approved, it is the scope contract for Phases 2–5; changing it needs a DECISIONS.md entry._
+_Draft 2, 2026-10-16. Status: **all open questions answered (Q-01 to Q-06); D-009, D-010.** Phase 4 also waits for the P1-T07 phone-creation check (D-010). Once approved, it is the scope contract for Phases 2–5; changing it needs a DECISIONS.md entry._
 
-**Inputs:** [PERSONAS.md](PERSONAS.md) (primary: remote freelancer; secondary: side-gig freelancer) · [USER_PROBLEMS.md](USER_PROBLEMS.md) · [DIFFERENTIATION.md](DIFFERENTIATION.md) · [VALIDATION_RESULTS.md](VALIDATION_RESULTS.md) (founder summary, tally pending) · decisions D-003, D-005, D-007, D-008.
+**Inputs:** [PERSONAS.md](PERSONAS.md) (primary: remote freelancer; secondary: side-gig freelancer) · [USER_PROBLEMS.md](USER_PROBLEMS.md) · [DIFFERENTIATION.md](DIFFERENTIATION.md) · [VALIDATION_RESULTS.md](VALIDATION_RESULTS.md) (founder summary, tally pending) · decisions D-003, D-005, D-007, D-008, D-009, D-010.
 
 **Detail lives elsewhere:** exact layouts are set in Phase 2 (P2-T01…T08), and the final schema and money rules in Phase 3 (P3-T01…T05). This spec fixes **what** the MVP does and the rules it must obey. Later phases may refine **how**, but not widen or shrink scope without a decision.
 
@@ -10,7 +10,9 @@ _Draft 1, 2026-10-15. Status: **awaiting founder review.** Once approved, it is 
 
 ## 1. Product promise
 
-> Make a correct, professional invoice in about two minutes on your phone. Free, no ads, no account, works offline. Your data stays on your phone and in backups you control.
+> **Works offline. No sign-up.** Make, send and track professional invoices on your phone. Free, no ads, and your data stays on your phone and in backups you control.
+
+The lead message follows validation: the "offline, no sign-up" pitch ranked #1 (VALIDATION_RESULTS.md).
 
 Each MVP feature traces to a problem or assumption (section 10).
 
@@ -26,7 +28,7 @@ Priorities: **Must** = release blocker · **Should** = in the MVP unless it thre
 | F-03 | **Invoice editor**: client, currency, issue date, payment terms (on receipt / 7 / 14 / 30 / custom days) and due date, line items (description, quantity, unit price), one invoice-level tax rate, notes. Totals update live. |
 | F-04 | **Invoice numbering**: automatic and sequential (`INV-0001`), with the prefix set in F-01. Numbers are unique and never reused. |
 | F-05 | **PDF generation** with Android's built-in `PdfDocument`: A4 by default, US Letter as an option, multi-page when needed. |
-| F-06 | **Save PDF** to a location the user picks (system file picker) and **share PDF** through the system share sheet. |
+| F-06 | **Save PDF** to a location the user picks (system file picker) and **send PDF** through the system share sheet. Sending was the **most friction-heavy task in testing (T3)**, so: a **Send** button is the primary action on the PDF preview *and* on invoice detail; email apps get the client's address, a subject (`Invoice INV-0014 from Your Studio`) and a short message prefilled; and the date it was last sent is recorded and shown ("Sent 16 Oct") so re-sending is one tap. |
 | F-07 | **Status tracking**: Draft → Issued (unpaid) → Paid, with the paid date recorded. "Overdue" is calculated (issued, unpaid, past the due date), not stored. Paid can be undone. |
 | F-08 | **Home**: amount outstanding **per currency**, overdue count, recent invoices, Create invoice. |
 | F-09 | **Invoice list**: filter (All / Draft / Unpaid / Overdue / Paid), search by client name or invoice number. |
@@ -41,12 +43,12 @@ Priorities: **Must** = release blocker · **Should** = in the MVP unless it thre
 | F-14 | **Business logo** on the PDF (picked with the system photo picker, stored privately by the app). | Looks professional, a goal of the primary persona. |
 | F-15 | **Invoice-level discount** (a percentage or a fixed amount). | Common competitor feature; already listed in TEST_PLAN. |
 | F-16 | **Void / cancel** an issued invoice (kept for the record, excluded from outstanding totals). | Keeps numbering honest without deleting issued invoices. |
+| F-18 | **Line-item presets**: saved services with a default price, offered as suggestions while typing a description. | Promoted from Could by D-010. Phone creation must be fast enough to replace the laptop. |
 
 ### Could
 | ID | Feature |
 |---|---|
 | F-17 | A reminder notification on the due date (local, no server). |
-| F-18 | Line-item presets (saved services with a default price). |
 | F-19 | Export a CSV of invoices for an accountant. |
 
 ### Won't (MVP)
@@ -55,9 +57,9 @@ Priorities: **Must** = release blocker · **Should** = in the MVP unless it thre
 | Accounts, sign-in, cloud sync, any server | Core promise; DIFFERENTIATION C1/C2. |
 | **Internet permission** of any kind | The MVP needs none. The absence can be **verified** in the manifest and is a concrete privacy claim. |
 | Ads, in-app purchases, billing | Phase 6, after the core is reliable. Creating and exporting basic invoices will never be paywalled (UP-05). |
-| Quotes and estimates | Not validated yet. Could follow as "convert quote → invoice". See open question Q-03. |
+| Quotes and estimates | Founder decision D-009 (Q-03). Could follow later as "convert quote → invoice". |
 | Partial payments, payment links, online card payments | Need a server or a payment provider (anti-persona). |
-| Multiple tax lines, compound taxes, tax reports | Complexity. One rate per invoice covers the personas. |
+| Multiple tax lines, compound taxes, tax reports | D-009 (Q-05): one rate per invoice is enough for the MVP. |
 | Non-Latin scripts, right-to-left invoices, translated UI | D-007: nice-to-have later. |
 | Multiple businesses or users | Anti-persona (agencies and teams). |
 | Recurring invoices | Not yet requested; F-13 covers repeat clients for now. |
@@ -81,6 +83,9 @@ Priorities: **Must** = release blocker · **Should** = in the MVP unless it thre
 | **Restore confirmation** | Settings → Restore | Shows the counts in the file ("12 clients, 48 invoices, backup from 3 Oct 2026") before replacing data. |
 
 ### Core flow: target ≤ 2 minutes for a repeat client
+
+This flow has to be good enough that people **choose** the phone over their laptop (D-010). Validation found that, today, they don't.
+
 Home → **Create invoice** → choose a recent client → currency, terms and tax prefilled from client or defaults → add item → **Issue & preview** → **Share** → pick an app.
 
 The prototype's usability tasks T1–T5 are the acceptance walk-through for this flow (section 9).
@@ -102,7 +107,8 @@ Room 2.8.5 with KSP (D-005; the KSP version is confirmed against Kotlin 2.4.21 i
 - Dates the user sees (issue, due, paid): `Long` **epoch day** (`LocalDate.toEpochDay()`), so time zones never shift a due date.
 - Audit timestamps: `Long` epoch milliseconds (UTC).
 - Currency: ISO 4217 code `String` (`"EUR"`). Decimal places come from `java.util.Currency.getDefaultFractionDigits()`: JPY 0, USD 2, KWD 3.
-- IDs: `Long` auto-generated primary keys.
+- IDs: `Long` auto-generated primary keys for joins on the device, **plus a `uuid` (String, unique, random UUID v4) on every table**. The UUID is what backup files and any future laptop companion use to identify records (D-010: sync-ready).
+- Every table has `updatedAt`. Drafts deleted by the user are removed outright; the MVP keeps no deletion history ("tombstones"), which a future sync design would add in its own migration.
 
 ### Tables
 
@@ -147,6 +153,7 @@ Room 2.8.5 with KSP (D-005; the KSP version is confirmed against Kotlin 2.4.21 i
 | discountType / discountValue | String? / Long? | F-15: `PERCENT` (bp) or `AMOUNT` (minor units) |
 | notes | String | |
 | subtotalMinor, discountMinor, taxMinor, totalMinor | Long | **Stored** results of section 5, recalculated on every save. They make lists fast and record exactly what the PDF showed |
+| lastSentAt | Long? | Epoch ms of the last Send (F-06); shown on detail and list |
 | fromSnapshot, toSnapshot | String | Business and client details **frozen when issued**, so editing a client later doesn't change old invoices (P3-T02) |
 | createdAt, updatedAt | Long | |
 
@@ -164,6 +171,18 @@ Indexes: `number` (unique), `status`, `clientId`, `dueDate`.
 | amountMinor | Long | Stored result of section 5 |
 
 Index: `invoiceId`.
+
+**`item_preset`** (F-18)
+| Column | Type | Notes |
+|---|---|---|
+| id | Long PK | |
+| description | String | Required, e.g. "Logo design" |
+| unitPriceMinor | Long? | Optional default price |
+| currency | String? | Currency of the default price; the price is offered only when it matches the invoice currency |
+| useCount, lastUsedAt | Int, Long | Sorts suggestions so the most used come first |
+| createdAt, updatedAt | Long | |
+
+Presets are saved from a line item ("Save as preset") or in Settings. *All tables also carry `uuid` and `updatedAt` (see Conventions).*
 
 ## 5. Calculation rules (pure Kotlin, unit tested)
 
@@ -206,7 +225,7 @@ Index: `invoiceId`.
 - **Reminder:** after creating 10 invoices, or 30 days since the last backup, Home shows a dismissible "Back up your invoices" card.
 - **Restore:** pick file → **validate everything first** (format version, required fields, foreign keys, unique numbers, money within range) → show counts → user confirms → **one database transaction** replaces all data. Any failure leaves existing data untouched and says what was wrong.
 - **Safety copy:** before a restore replaces anything, the app writes an automatic pre-restore backup to its private storage. The last one is kept.
-- **Android's own cloud backup** (`allowBackup`): it stays **off** in the MVP until decided (Q-04), because it would copy invoice data to Google servers.
+- **Android's own cloud backup** (`allowBackup`): **off** (D-009, Q-04), so invoice data is never copied to Google servers. The trade-off: a lost or reset phone loses data unless the user made a PocketBill backup, which is why the backup reminder is a Must.
 - **Tests (P5):** a full round trip (backup → wipe → restore → identical data, checked field by field), a corrupted file, a newer `formatVersion`, a file with a duplicate invoice number, and an interrupted restore.
 
 ## 8. Non-functional requirements
@@ -249,16 +268,20 @@ Index: `invoiceId`.
 | UP-05 free-tier caps | Won't (MVP): no paywall on create or export |
 | UP-06 ads | Section 8: no ads |
 | UP-08 wrong tax | F-11, section 5 |
-| A-02 phone, "quick tasks" | ≤ 2-minute flow, F-13 duplicate, recent clients, prefilled defaults, autosaved drafts |
+| A-02 phone, "quick tasks" (check, quick edit, re-send) | F-08/F-09 status at a glance, editing issued invoices, F-06 one-tap re-send with last-sent date |
+| Q-01 creation happens on laptops | D-010: fast phone creation (F-13, F-18), P1-T07 gate, sync-ready schema |
+| T3 send friction | F-06 redesign |
 | A-03 who owes me | F-07, F-08 outstanding per currency, F-09 overdue filter |
 | A-07 multiple currencies | Currency per invoice; outstanding grouped per currency |
 
-## 11. Open questions for the founder
+## 11. Open questions
 
-| ID | Question | Why it matters |
-|---|---|---|
-| Q-01 | **What were the "quick tasks" in A-02?** Did participants *create* invoices on the phone, or mainly check status and resend? | If creation happens on a laptop, F-13 and the editor's speed matter less than F-08/F-09 and sharing, and the platform question comes back. |
-| Q-02 | What were the **tally counts**, the **pitch ranking** and the **usability problems**? | They confirm the Must/Should split and the store-listing message (Phase 8). |
-| Q-03 | Should **quotes/estimates** be in the MVP? The app's working name is "Invoice & Quote Maker". | Adds a document type and a "convert to invoice" flow, roughly +15% scope. |
-| Q-04 | Enable **Android cloud backup** of the database? | Protects against a lost phone (UP-01), but sends data to Google, which conflicts with "data stays on your phone". |
-| Q-05 | Is **one tax rate per invoice** enough for your participants (for example EU VAT, or GST + PST in Canada)? | If not, the schema needs tax lines before version 1, since adding them later means a migration. |
+### Resolved (2026-10-16)
+| ID | Answer |
+|---|---|
+| Q-01 | Phones are mostly used for **status checks, quick edits and re-sending PDFs**; **first invoices are created on laptops**. This raises Q-06. |
+| Q-02 | 8 interviews; 6/8 used phones for quick tasks; "offline, no sign-up" ranked #1; T3 (send) had the most friction. Reflected in section 1 and F-06. |
+| Q-03 | Quotes and estimates are out of the MVP (D-009). |
+| Q-04 | Android cloud backup stays off (D-009). |
+| Q-05 | One tax rate per invoice (D-009). |
+| Q-06 | **Phone-first** (D-010): make creation on the phone fast (F-13 duplicate, F-18 presets, recent clients, prefilled defaults), check it with real users before Phase 4 (P1-T07), and keep the schema sync-ready for a possible laptop companion. |

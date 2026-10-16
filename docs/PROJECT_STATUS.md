@@ -15,7 +15,7 @@ _Last updated: 2026-10-15_
 | P0-T03 | Create the Android project | **Verified** | Builds, unit tests pass, installed and launched on Galaxy A72 (Android 14); all 4 tabs open with no crash (2026-10-15). |
 | P0-T04 | Git and recovery practices | **Verified** | Local repo on `main`; `.gitignore`/`.gitattributes`; README "Saving your work". Pushed to https://github.com/talha-ather-pk/PocketBill. Repo made **public** 2026-10-15 at the founder's request (D-006). |
 
-**Phase 1 progress:** P1-T01 complete. P1-T02 to P1-T04 drafted. P1-T05 validation **done (founder-reported; tally pending)**, see [VALIDATION_RESULTS.md](VALIDATION_RESULTS.md) and D-008. P1-T06 [MVP_SPEC.md](MVP_SPEC.md) **draft 1, awaiting founder review**. Target market: D-007. Later phases: see [ROADMAP.md](ROADMAP.md).
+**Phase 1 progress:** P1-T01 to P1-T06 done or drafted; MVP_SPEC.md **draft 2** with all questions answered (D-009, D-010). Validation results in [VALIDATION_RESULTS.md](VALIDATION_RESULTS.md) (A-02 met as written: 6/8, but creation happens on laptops). **P1-T07 phone-creation check is the gate for Phase 4.** Target market: D-007. Later phases: see [ROADMAP.md](ROADMAP.md).
 
 ## Failed tasks
 
@@ -43,15 +43,15 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 ## Exact next action
 
-1. Founder: review [MVP_SPEC.md](MVP_SPEC.md) and answer open questions Q-01 to Q-05 (section 11). If possible, fill in the tally in VALIDATION_RESULTS.md.
-2. Claude: fold the answers into MVP_SPEC.md (draft 2), then begin Phase 2 (UX design, P2-T01 navigation) and Phase 3 (P3-T03 money rules, P3-T01 Room schema).
+1. Founder: run P1-T07, the phone-creation check (VALIDATION_PLAN.md, last section). Pass mark: >= 3 of 6 create a real invoice on the phone. **No Phase 4 feature code until it passes** (D-010).
+2. Claude, in parallel: Phase 2 design (starting with P2-T01 navigation) and Phase 3 data model (starting with P3-T01 Room schema, sync-ready per D-010).
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 1 (final step). P1-T05 done (founder-reported, D-008); MVP_SPEC.md draft 1 awaits founder review of Q-01..Q-05. Next: Phase 2 UX + Phase 3 data model.
+Phase 0 complete (all tasks verified). Current phase: Phase 2 + 3 (design and data model) in parallel with P1-T07 (founder phone-creation check, gates Phase 4; D-010). MVP_SPEC.md draft 2 is the scope.
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```
