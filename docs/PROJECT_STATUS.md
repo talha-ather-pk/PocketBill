@@ -47,7 +47,8 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 2. Founder: review UX_SPEC.md section 1 (P2-T01 navigation) and DATA_MODEL.md (P3-T01 Room schema).
 3. Founder: review UX_SPEC.md section 4 (P2-T04 sending) and DATA_MODEL.md section 5 (P3-T02 numbering and frozen details).
 4. Founder: run the T3 sending re-check with 2–3 participants (VALIDATION_PLAN.md, "Follow-up: sending re-check"). The prototype is updated (version 3, same link).
-5. Claude: P2-T03 invoice editor (fast creation, D-010), then P2-T02 Home.
+5. Founder: review UX_SPEC.md section 3 (P2-T03 invoice editor).
+6. Claude: P2-T02 Home, then P2-T05 history & statuses and P2-T06 clients.
 
 ## Resume prompt for a new Claude session
 

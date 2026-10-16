@@ -26,7 +26,7 @@ Status values: Not started · In progress · Blocked · Implemented · Verified
 Phase 1 research can run in parallel with Phase 0 setup, because it does not need Android Studio.
 
 ## Phase 2 — Product design and UX
-P2-T01 Navigation (`UX_SPEC.md`: draft, awaiting review) · P2-T02 Home · P2-T03 Invoice editor · P2-T04 Sending (`UX_SPEC.md` 4: draft, awaiting review) · P2-T05 History & statuses · P2-T06 Client management · P2-T07 Accessibility & localization · P2-T08 Design tokens — others Not started.
+P2-T01 Navigation (`UX_SPEC.md`: draft, awaiting review) · P2-T02 Home · P2-T03 Invoice editor (`UX_SPEC.md` 3: draft, awaiting review) · P2-T04 Sending (`UX_SPEC.md` 4: draft, awaiting review) · P2-T05 History & statuses · P2-T06 Client management · P2-T07 Accessibility & localization · P2-T08 Design tokens — others Not started.
 
 ## Phase 3 — Data model and architecture
 P3-T01 Room schema (`DATA_MODEL.md`: draft, awaiting review) · P3-T02 Snapshots & numbering (`DATA_MODEL.md` 5: draft, awaiting review) · P3-T03 Money representation & rounding · P3-T04 Layer responsibilities · P3-T05 Migrations — others Not started.

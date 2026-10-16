@@ -6,7 +6,7 @@ _Started 2026-10-16. Implements the screens in [MVP_SPEC.md](MVP_SPEC.md) sectio
 |---|---|---|
 | P2-T01 Navigation | 1 | Draft, awaiting founder review |
 | P2-T02 Home | — | Not started |
-| P2-T03 Invoice editor | — | Not started |
+| P2-T03 Invoice editor | 3 | Draft, awaiting founder review |
 | P2-T04 Sending (PDF preview / send) | 4 | Draft, awaiting founder review |
 | P2-T05 History & statuses | — | Not started |
 | P2-T06 Client management | — | Not started |
@@ -120,6 +120,137 @@ Drafts show **Issue** instead of Send, and Mark paid is hidden.
 ### To validate
 - Section 4 (P2-T04) defines the sending redesign and its check with 2–3 participants.
 - Whether **recent clients as chips** plus **presets** bring a repeat invoice under 2 minutes is measured by P1-T07.
+
+---
+
+## 3. Invoice editor (P2-T03)
+
+### The goal
+Validation found that people **create invoices on laptops** today (D-010). The editor has to make creating one on the phone fast enough that they'd rather not wait for the laptop. P1-T07 measures whether it works.
+
+**Targets:**
+- **Repeat client: ≤ 60 seconds** from tapping Create to the issued PDF.
+- **New client: ≤ 2 minutes.**
+- **Duplicate last month's invoice: ≤ 20 seconds.**
+
+### Principles
+1. **Defaults do the work.** Picking a client fills in their usual currency, payment terms and tax, taken from their last invoice. New clients get the business defaults (Settings).
+2. **One screen, few fields.** Client and items are always visible. Currency, dates, tax, discount and notes sit in a one-line summary that expands when tapped.
+3. **Nothing is lost.** The draft saves automatically while typing. There is no Save button for drafts and no "discard changes?" dialog.
+4. **Errors appear when issuing, not while typing.** A draft can be incomplete.
+
+### Layout (new invoice)
+
+```
+┌──────────────────────────────────────┐
+│ ←  New invoice          Draft saved ⋮│  ← ⋮ = Delete draft
+├──────────────────────────────────────┤
+│ Client                               │
+│ [Acme Studio] [Lumen Labs] [Harbor…] │  ← recent-client chips (top 3)
+│ [All clients…]  [+ New client]       │
+│                                      │
+│ EUR · Due in 14 days (30 Oct) · No tax ›│ ← summary line; tap to expand
+│                                      │
+│ Items                                │
+│ ┌──────────────────────────────────┐ │
+│ │ Description                      │ │
+│ │ Logo design▏                     │ │
+│ │  ↳ Logo design (preset) €450     │ │  ← preset suggestion while typing
+│ │ Qty [1    ]   Price [450.00] EUR │ │
+│ │                   Line €450.00 ⋮ │ │  ← ⋮ = Remove, Move up/down, Save as preset
+│ └──────────────────────────────────┘ │
+│ + Add item                           │
+│                                      │
+│ Notes (optional)                   › │
+├──────────────────────────────────────┤
+│ Total €450.00          [  Issue  ]   │  ← sticky bar, stays above the keyboard
+└──────────────────────────────────────┘
+```
+
+**Expanded summary line ("Invoice details"):**
+| Field | Default | Control |
+|---|---|---|
+| Currency | Client's last currency → suggestion from the client's country (below) → business default | Searchable list, recent currencies first |
+| Issue date | Today | Date picker |
+| Payment due | Client's last terms → business default | Chips: **On receipt · 7 · 14 · 30 days · Custom date**. The due date is shown next to them ("30 Oct 2026"). |
+| Tax | Client's last rate → business default | Percent field, with "No tax" as a one-tap option |
+| Discount (F-15) | None | Percent or amount |
+
+The summary line always shows the **currency and due date** in words, so a wrong default is visible without expanding it. The currency code also appears beside every price field and in the total.
+
+### Choosing a client
+- **Recent-client chips:** the 3 clients invoiced most recently (`client.lastInvoicedAt`). One tap selects.
+- **All clients…** opens a searchable bottom sheet, with archived clients hidden.
+- **+ New client** opens a short sheet: **Name** (required), **Email** (labelled "for one-tap sending", UX_SPEC 4), **Country** (optional, picked from a list). Save returns to the editor with the client selected.
+- **Currency suggestion from the country:** picking Germany for a new client suggests EUR, and the United Kingdom suggests GBP. It's a suggestion chip ("Use EUR?"), never a silent change, because many freelancers bill foreign clients in USD.
+- A selected client shows as a single row (name and email) with **Change**.
+
+### Line items
+- A new invoice starts with **one empty item**, cursor in the description.
+- **Preset suggestions (F-18)** appear under the description after 2 typed characters: up to 3 matches, most used first. Choosing one fills the description, plus the price if its currency matches the invoice's.
+- **Quantity** defaults to 1. **Price** uses the number keyboard and accepts `.` or `,` as the decimal separator. On leaving the field it's shown with the currency's decimals (`450` → `450.00`; yen shows no decimals).
+- **Line total** updates live.
+- **Item menu (⋮):** Remove, Move up, Move down, Save as preset. No drag-to-reorder in the MVP.
+- **Add item** adds an empty item and moves the cursor to it.
+- Keyboard: Description → Next → Qty → Next → Price → Done. "Done" hides the keyboard so the total and Issue button are visible.
+
+### Issuing
+**Issue** checks (DATA_MODEL invariants I-4 to I-8):
+| Problem | Message (shown at the field, and the field is scrolled to and focused) |
+|---|---|
+| No client | "Choose a client." |
+| An item with no description | "Add a description." |
+| Quantity ≤ 0 or not a number | "Enter a quantity above 0." |
+| Price missing or invalid | "Enter a price, like 450 or 450.00." |
+| Due date before issue date | "The due date can't be before the issue date." |
+| Total is 0 | Not blocked. A confirmation asks: "This invoice totals €0.00. Issue it anyway?" |
+
+Completely empty extra items are dropped silently. On success: number assigned (DATA_MODEL 5.1), then go to **PDF preview**, where **Email to client** is the main action (UX_SPEC 4).
+
+### Other ways into the editor
+| Mode | What's prefilled | Title | Bottom button |
+|---|---|---|---|
+| New | Defaults only | New invoice | Issue |
+| New for client (from client detail) | That client + their defaults | New invoice | Issue |
+| **Duplicate** | Client, currency, items, tax, discount, notes. Dates reset: issue today, due by the same terms. **No number** (N-9). | New invoice · copy of INV-0014 | Issue |
+| Edit draft | Everything as saved | Draft | Issue |
+| **Edit issued (unpaid)** | Everything as saved | Edit INV-0014 | **Save changes** |
+
+**Editing an issued invoice (a "quick edit" from validation):**
+- A banner explains: "Sent on 16 Oct. Saving updates the PDF. The client won't see changes until you send it again." (If never sent: "Saving updates the PDF.")
+- Changes are **not** autosaved, because this is a real document. Back with unsaved changes asks: **Save changes / Discard / Keep editing**. This is the one exception to "no discard dialog".
+- After saving: back to detail with "INV-0014 updated · **Email again**" as a one-tap prompt.
+
+### Autosave (drafts)
+- Saves 500 ms after the last change, and immediately when the app goes to the background.
+- The top bar shows "Draft saved" quietly. If saving fails (very rare: a full disk), it shows "Couldn't save. Your changes are kept on screen" and retries.
+- A draft is created only once something has been entered. Opening New and pressing Back leaves no empty draft.
+- **Delete draft** (⋮ menu) removes it, with Undo.
+
+### Tap budget: repeat client, one preset item
+| Step | Taps |
+|---|---|
+| Home → **Create invoice** | 1 |
+| Client chip | 1 |
+| Description → type 2 letters → preset suggestion | 1 + typing |
+| (price prefilled; terms, currency and tax prefilled from the client) | 0 |
+| **Issue** | 1 |
+| **Email to client** → Send in email app | 2 |
+| **Total** | **6 taps + 2 letters** |
+
+Duplicate: row → ⋮ **Duplicate** → **Issue** → **Email** → Send = **5 taps**, with no typing.
+
+### Accessibility
+- Every field has a visible label (not just a placeholder) and a TalkBack label.
+- Errors are announced when shown (Compose `liveRegion`). The total is announced when it changes after leaving a price field, not on every keystroke.
+- Chips and menu buttons are at least 48 dp.
+
+### Data model
+No new columns. The client's last currency, terms and tax come from a query on their most recent invoice. The country → currency suggestions are a fixed table in code.
+
+### To validate
+- **P1-T07** measures real creation time on the phone against the targets above.
+- In the prototype, the summary line and presets aren't built yet. If P1-T07 shows creation is slow, add them to the prototype next and retest.
 
 ---
 
