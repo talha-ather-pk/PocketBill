@@ -5,11 +5,11 @@ _Started 2026-10-16. Implements the screens in [MVP_SPEC.md](MVP_SPEC.md) sectio
 | Task | Section | Status |
 |---|---|---|
 | P2-T01 Navigation | 1 | Draft, awaiting founder review |
-| P2-T02 Home | — | Not started |
+| P2-T02 Home | 2 | Draft, awaiting founder review |
 | P2-T03 Invoice editor | 3 | Draft, awaiting founder review |
 | P2-T04 Sending (PDF preview / send) | 4 | Draft, awaiting founder review |
-| P2-T05 History & statuses | — | Not started |
-| P2-T06 Client management | — | Not started |
+| P2-T05 History & statuses | 5 | Draft, awaiting founder review |
+| P2-T06 Client management | 6 | Draft, awaiting founder review |
 | P2-T07 Accessibility & localization | — | Not started |
 | P2-T08 Design tokens | — | Not started |
 
@@ -120,6 +120,87 @@ Drafts show **Issue** instead of Send, and Mark paid is hidden.
 ### To validate
 - Section 4 (P2-T04) defines the sending redesign and its check with 2–3 participants.
 - Whether **recent clients as chips** plus **presets** bring a repeat invoice under 2 minutes is measured by P1-T07.
+
+---
+
+## 2. Home (P2-T02)
+
+### The job
+Home answers the validated phone tasks **without a tap** (A-02, A-03): *Who owes me? Is anything overdue? Is there something I started and didn't finish?* It also starts a new invoice in one tap.
+
+### Layout (normal use)
+
+```
+┌──────────────────────────────────────┐
+│ Your Studio                          │
+├──────────────────────────────────────┤
+│ ┌──────────────────────────────────┐ │
+│ │ Outstanding                      │ │  ← tap: Invoices, Unpaid filter
+│ │ $1,200.00                        │ │
+│ │ €570.00                          │ │
+│ │ £800.00                          │ │
+│ │ 4 unpaid invoices                │ │
+│ ├──────────────────────────────────┤ │
+│ │ ! 1 overdue · $1,200.00        › │ │  ← tap: Overdue filter (red row)
+│ └──────────────────────────────────┘ │
+│ ┌──────────────────────────────────┐ │
+│ │  +  Create invoice               │ │  ← filled primary button
+│ └──────────────────────────────────┘ │
+│                                      │
+│ [card: Back up your invoices  ✕]     │  ← at most one card (below)
+│                                      │
+│ Needs attention                      │
+│  Acme Studio · INV-0012              │
+│  Overdue 8 days · $1,200   [Remind]  │
+│  Müller Design · INV-0014            │
+│  Issued, not sent yet      [Email]   │
+│  Lumen Labs · Draft                  │
+│  Started yesterday       [Continue]  │
+│                                      │
+│ Recent                               │
+│  (last 5 invoices, same rows as the  │
+│   Invoices list)                     │
+└──────────────────────────────────────┘
+```
+
+### Outstanding card
+- **One line per currency**, never added together. There are no exchange rates offline, and a converted total would be wrong.
+- Order: the currency with the most unpaid invoices first, then by currency code. Up to 3 lines are shown; more becomes "+2 more currencies", which expands in place.
+- The sub-line counts unpaid invoices. Issued invoices count; drafts and void ones don't.
+- **The overdue row** appears only when something is overdue. It uses the late colour **and** a "!" icon, so colour isn't the only signal.
+- TalkBack reads it as one sentence: "Outstanding: 1,200 US dollars, 570 euros, 800 British pounds. 4 unpaid invoices. 1 overdue."
+
+### Needs attention (up to 3 rows, most urgent first)
+| Order | Shows | Row action (one tap) |
+|---|---|---|
+| 1 | **Overdue** invoices, oldest due date first: "Overdue 8 days" | **Remind**: emails the client using the reminder template (section 4). Without a client email it opens Send…. |
+| 2 | **Issued but never sent** (`lastSentAt` is empty): "Issued, not sent yet" | **Email** (or **Send…**) |
+| 3 | **Drafts**, most recently edited first: "Started yesterday" | **Continue**: opens the editor |
+
+- Tapping the row itself (outside the button) opens invoice detail.
+- "See all (5)" appears when more than 3 items qualify, and opens the matching filter.
+- With nothing to show, the section is hidden. No "all caught up" filler.
+
+### Cards (at most one at a time, under Create invoice)
+| Priority | Card | When | Action |
+|---|---|---|---|
+| 1 | "**Your payment details changed.** 3 unpaid invoices were updated. Send them again?" | After the DATA_MODEL 5.5 update | **Review**: list with Email again on each |
+| 2 | "**Back up your invoices.** Your invoices exist only on this phone." | 10+ invoices since the last backup, or 30 days since it (MVP_SPEC 7) | **Back up now**. ✕ hides it for 7 days. |
+
+### Recent
+The last 5 invoices by last change, using the same row design as the Invoices list (section 5). "See all" opens the Invoices tab.
+
+### Empty and edge states
+| State | What Home shows |
+|---|---|
+| **First use** (no invoices) | No Outstanding card. A welcome block: "Create your first invoice. It takes about a minute." plus **Create invoice**, and one tip: "Add your clients' email addresses to send invoices in one tap." No sample data. |
+| Everything paid | Outstanding card shows "**Nothing outstanding**" and "All invoices are paid." Needs attention hidden. |
+| Only drafts | Outstanding shows "Nothing outstanding". Needs attention shows the drafts. |
+| Loading | Data comes from the phone in well under a second, so no spinner or placeholder. |
+| Pull to refresh | None: the data is always current. |
+
+### Data needed
+Existing queries (DATA_MODEL 4) plus two: issued-but-unsent (`status = 'ISSUED' AND lastSentAt IS NULL`) and recent drafts (`status = 'DRAFT' ORDER BY updatedAt DESC`).
 
 ---
 
@@ -335,6 +416,7 @@ Your Studio
 ```
 - For a paid invoice: subject `Receipt for invoice INV-0014 from Your Studio`, body "Thank you for your payment of €570.00, received on 23 Oct 2026."
 - Names and amounts use the invoice's **frozen details** (DATA_MODEL section 5), so the email matches the PDF.
+- **For an overdue invoice** (used by Home's **Remind** and by Email again on an overdue invoice): subject `Reminder: invoice INV-0014 was due on 30 Oct 2026`, body "Hi Müller Design GmbH, this is a friendly reminder that invoice INV-0014 for €570.00 was due on 30 Oct 2026. I've attached it again for convenience." followed by the payment details. The button reads **Send reminder**.
 - Messaging apps such as WhatsApp ignore the subject and use the body as the caption.
 
 ### Save to device
@@ -349,3 +431,135 @@ Available on PDF preview and under **More** on detail: **Save PDF** opens the sy
 
 ### Data model change
 Adds `invoice.lastSentVia: String?` (the app's label, e.g. "Gmail") next to `lastSentAt` (DATA_MODEL section 1).
+
+---
+
+## 5. Invoice history and statuses (P2-T05)
+
+### Statuses
+| Status | Chip | Meaning | Counts as outstanding? |
+|---|---|---|---|
+| Draft | Outlined, grey: "Draft" | Not issued, no number | No |
+| Unpaid | Neutral: "Unpaid" | Issued, not yet due | Yes |
+| Overdue | Red, with "!": "Overdue" | Issued, unpaid, past the due date (calculated, never stored) | Yes |
+| Paid | Green, with ✓: "Paid" | Payment recorded | No |
+| Void | Grey, number struck through: "Void" | Cancelled; the number stays reserved | No |
+
+Every chip has text, so colour is never the only signal. "Sent" isn't a status. It shows in the row's second line ("Sent 16 Oct") or as "Not sent yet".
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft: Create / Duplicate
+    Draft --> [*]: Delete draft
+    Draft --> Unpaid: Issue (number assigned)
+    Unpaid --> Paid: Mark as paid
+    Paid --> Unpaid: Mark as unpaid
+    Unpaid --> Void: Void (confirm)
+    note right of Unpaid: Shown as Overdue when today is after the due date
+```
+
+### Status actions
+- **Mark as paid** records today immediately (2 taps from any list, as in the prototype). The message reads "INV-0014 marked paid today · **Change date** · **Undo**". Change date opens a date picker for payments recorded late.
+- **Mark as unpaid** (on a paid invoice) clears the paid date, with Undo.
+- **Void** (detail → More): a confirmation explains it: "Void INV-0014? It stays in your records with its number, but no longer counts as owed. This can't be undone after a few seconds." Undo is available for 6 seconds. Paid invoices must be marked unpaid before voiding.
+- **Delete** exists only for drafts (UX_SPEC 3).
+
+### Invoices list
+**Filters** (chips with counts): **All · Unpaid 4 · Overdue 1 · Paid · Drafts 2**. Void invoices appear only under All. The selected filter is remembered while the app is open.
+
+| Filter | Sort | Header line |
+|---|---|---|
+| All | Issue date, newest first, grouped by month ("October 2026") | — |
+| Unpaid | Due date, soonest first | "Unpaid: $1,200.00 · €570.00 · £800.00" |
+| Overdue | Due date, **oldest first** (most urgent on top) | "Overdue: $1,200.00" |
+| Paid | Paid date, newest first, grouped by month | — |
+| Drafts | Last edited, newest first | — |
+
+**Row design** (the same everywhere: Home, Invoices, client detail):
+```
+Müller Design GmbH                 €570.00
+INV-0014 · Due 30 Oct · Sent 16 Oct [Unpaid]
+```
+- The first line is the client name (the frozen one for issued invoices, DATA_MODEL 5.6).
+- The second line changes with status: "Overdue 8 days", "Paid 23 Oct", "Not sent yet", "Draft · edited 2 h ago".
+- Tapping a row opens invoice detail. There are no swipe actions (section 1).
+
+**Search** (app-bar search icon): matches invoice number, client name (current or frozen) and item descriptions. Results ignore the active filter and show a note: "Searching all invoices". Matching is case- and accent-insensitive, so "muller" finds "Müller".
+
+**Empty states:**
+| Filter | Message |
+|---|---|
+| All, nothing yet | "No invoices yet. Invoices you create appear here." + **Create invoice** |
+| Unpaid / Overdue | "Nothing unpaid." / "Nothing overdue." |
+| Paid | "No paid invoices yet. Mark an invoice as paid when the money arrives." |
+| Drafts | "No drafts." |
+| Search | "No invoices match “logo”." |
+
+**Performance:** lists use Paging once there are more than 200 invoices, so 1,000 invoices scroll smoothly on the Galaxy A72 (MVP_SPEC 8).
+
+### Invoice detail: history block
+Below the actions, a short history built from existing columns (no new table):
+```
+Issued      16 Oct 2026
+Last sent   16 Oct 2026 via Gmail
+Paid        23 Oct 2026
+```
+A full activity log (every send and status change) would need a new `invoice_event` table. It's a **Could**, and it has to be decided before the schema is finalised in P4-T03, because adding it later means a database migration.
+
+---
+
+## 6. Clients (P2-T06)
+
+### Clients list (tab)
+```
+┌──────────────────────────────────────┐
+│ Clients                      🔍   +  │
+├──────────────────────────────────────┤
+│ Acme Studio                $1,200.00 │
+│ United States · 1 overdue      owed  │
+│ Harbor & Pine                    —   │
+│ Canada · nothing owed                │
+│ Lumen Labs Ltd               £800.00 │
+│ United Kingdom · 1 unpaid      owed  │
+│ …                                    │
+│ Archived clients (2)               › │
+└──────────────────────────────────────┘
+```
+- Sorted **A–Z**, with a toggle for **Most owed**. Owed amounts are per currency and never added together ("$1,200.00 + €570.00").
+- Search matches name, email and country, ignoring case and accents.
+- **+** opens the client editor. Archived clients are listed separately at the bottom.
+
+### Client detail
+- The name is the title. **Email** (selectable, with a copy button), country, address and tax ID follow.
+- **Owed** per currency, plus counts: "2 unpaid · 1 overdue".
+- **New invoice for this client** is the primary button. It opens the editor with this client and their defaults (UX_SPEC 3).
+- **Edit** and **More** (Archive, or Delete when allowed).
+- Below that, **all of this client's invoices** using the standard rows, newest first.
+
+### Client editor
+| Field | Required | Notes |
+|---|---|---|
+| Name | Yes | |
+| Email | No, but encouraged | Helper text: "Lets you email invoices in one tap." Format checked on save. |
+| Country | No | Chosen from a list. Used for the currency suggestion (UX_SPEC 3). |
+| Address | No | Several lines |
+| Tax ID | No | e.g. a VAT number |
+| Notes | No | Private: never printed on invoices |
+
+Saving a client with unpaid issued invoices shows the "Update unpaid invoices too?" choice (DATA_MODEL 5.4).
+
+**Possible duplicate:** creating a client whose name matches an existing one (ignoring case and accents) asks: "You already have a client called Müller Design GmbH. **Use existing** / **Create new anyway**".
+
+### Archive and delete
+| Client has… | Allowed |
+|---|---|
+| No invoices at all | **Delete** (with confirmation) or Archive |
+| Any invoice, including drafts | **Archive only**. Invoices keep working, and the client disappears from pickers and the list. **Unarchive** from "Archived clients". |
+
+Deleting is blocked at the database level too (`ON DELETE RESTRICT`, DATA_MODEL 1).
+
+### Empty state
+"No clients yet. Clients you add while creating an invoice appear here." + **Add client**.
+
+### Could (not in the MVP plan)
+**Pick from phone contacts**: Android's contact picker returns one chosen contact **without** the contacts permission, so it would fit the no-permissions rule (MVP_SPEC 8). Worth adding if P1-T07 shows that typing new clients slows people down.

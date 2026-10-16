@@ -195,6 +195,9 @@ Room can't express SQL `CHECK` constraints through annotations, so the **reposit
 | Invoice list | Filter by status (Overdue = ISSUED and `dueDate < :today`), search `number LIKE :q OR client.name LIKE :q`, `ORDER BY issueDate DESC, id DESC`, returned as `Flow` and paged if > 200 rows |
 | Client list | Clients not archived, each with an outstanding sum per currency (aggregate join) |
 | Recent clients | `WHERE archived = 0 ORDER BY lastInvoicedAt DESC LIMIT 3` |
+| Home: issued, not sent | `WHERE status = 'ISSUED' AND lastSentAt IS NULL ORDER BY issueDate` (UX_SPEC 2) |
+| Home: drafts | `WHERE status = 'DRAFT' ORDER BY updatedAt DESC LIMIT 3` |
+| Invoice search | Number, client name (current **and** frozen in `toSnapshot`) and `line_item.description`. Case- and accent-insensitive: search on a normalized copy (lower case, accents removed), e.g. a `searchText` column kept up to date on save. Decide the exact approach in P4-T11. |
 | Preset suggestions | `WHERE description LIKE :q || '%' ORDER BY useCount DESC, lastUsedAt DESC LIMIT 5` |
 
 All read queries return `Flow`, so screens update automatically after any write.
