@@ -47,7 +47,7 @@ The founder decided to proceed to P1-T06 (MVP specification) on the basis of thi
 
 ## P1-T07 phone-creation check (gate for Phase 4, D-010)
 
-**Status (2026-10-16): in progress. Sessions are still running. No results reported yet.**
+**Status (2026-10-16): in progress. 1 of 6 participants reported. Sessions are still running.**
 
 Known so far (founder-reported):
 - Follow-up messages sent to the 6 phone-using participants (2026-10-16).
@@ -55,17 +55,17 @@ Known so far (founder-reported):
 
 | Measure | Result | Pass mark |
 |---|---|---|
-| Completed a real invoice on the phone | Not yet reported | **≥ 3 of 6** |
-| Gave up / didn't try | Not yet reported | — |
-| Time from "Create invoice" to PDF preview (from session logs) | Not yet reported | Target ≤ 60 s for a repeat client, ≤ 2 min for a new client (UX_SPEC 3) |
-| Phone vs laptop: one-line answers | Not yet reported | — |
+| Completed a real invoice on the phone | **1 so far** (P-a); 5 not yet reported | **≥ 3 of 6** |
+| Gave up / didn't try | 0 so far; 5 not yet reported | — |
+| Time from "Create invoice" to PDF preview (from session logs) | P-a: 48 s. Others not yet reported. | Target ≤ 60 s for a repeat client, ≤ 2 min for a new client (UX_SPEC 3) |
+| Phone vs laptop: one-line answers | P-a only (below) | — |
 | **Verdict** | **Pending** | — |
 
 Per participant (codes only; details stay in `research-private/`):
 
 | Participant | Completed? | Time | Phone or laptop, and why |
 |---|---|---|---|
-| P-a | Not yet reported | Not yet reported | Not yet reported |
+| P-a | **Yes** | **48 s** | "Much faster than expected on a mobile screen, though typing items takes a bit of focus." |
 | P-b | Not yet reported | Not yet reported | Not yet reported |
 | P-c | Not yet reported | Not yet reported | Not yet reported |
 | P-d | Not yet reported | Not yet reported | Not yet reported |
@@ -74,14 +74,18 @@ Per participant (codes only; details stay in `research-private/`):
 
 **Window:** two weeks from 2026-10-16 (until **2026-10-30**), or until 6 responses, whichever comes first (VALIDATION_PLAN.md).
 
+**Notes on P-a (2026-10-16):** creation took 48 s. That is under both targets (60 s for a repeat client, 2 min for a new one), but whether P-a used an existing or a new client wasn't reported. Their comment that **typing items takes focus** supports the preset suggestions planned in UX_SPEC 3 (F-18), which the prototype doesn't have yet.
+
+**Pending confirmation:** a second set of figures was supplied for P-a (45 s, T3 in 20 s, different feedback), together with P-b and P-c. It's not recorded here until the founder confirms it, because it conflicts with the P-a figures above, and one comment ("one-tap recent client chips") describes a feature the prototype doesn't have.
+
 ## T3 sending re-check (UX_SPEC 4)
 
-**Status (2026-10-16): not yet reported.** The prototype has had the new sending design since 2026-10-16 (version 2, same link).
+**Status (2026-10-16): 1 participant reported (P-a).** The prototype has had the new sending design since 2026-10-16 (version 2, same link).
 
 | Measure | Result | Pass mark |
 |---|---|---|
-| Participants tested | Not yet reported | 2–3 |
-| Completed T3 unaided in under 30 s | Not yet reported | All of them |
-| Gave the new client an email in T1 | Not yet reported | — |
-| Where they expected the send button | Not yet reported | — |
+| Participants tested | 1 so far (P-a) | 2–3 |
+| Completed T3 unaided in under 30 s | P-a: **yes, 22 s**, no help | All of them |
+| Gave the new client an email in T1 | P-a: not reported | — |
+| Where they expected the send button | P-a: not reported | — |
 | **Verdict** | **Pending** | — |
