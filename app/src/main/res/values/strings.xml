@@ -6,10 +6,7 @@
     <string name="nav_clients">Clients</string>
     <string name="nav_settings">Settings</string>
 
-    <string name="home_tagline">Invoices for freelancers</string>
     <string name="home_create_invoice">Create invoice</string>
-    <string name="home_empty_title">No invoices yet</string>
-    <string name="home_empty_body">Your recent invoices and amounts owed will appear here.</string>
 
     <string name="invoices_empty_title">No invoices yet</string>
     <string name="invoices_empty_body">Invoices you create will be listed here.</string>
@@ -289,4 +286,41 @@
     <string name="send_issue_body">This gives the invoice its number, %1$s, and opens your email app.</string>
     <string name="send_issue_body_no_number">This gives the invoice its number and opens your email app.</string>
     <string name="send_draft_incomplete">This draft isn\'t complete yet. Continue editing to issue it.</string>
+
+    <!-- Home (UX_SPEC 2) -->
+    <string name="home_outstanding">Outstanding</string>
+    <string name="home_nothing_outstanding">Nothing outstanding</string>
+    <string name="home_all_paid">All invoices are paid.</string>
+    <string name="home_welcome_title">Create your first invoice</string>
+    <string name="home_welcome_body">It takes about a minute.</string>
+    <string name="home_welcome_tip">Tip: add your clients\' email addresses to send invoices in one tap.</string>
+    <string name="home_needs_attention">Needs attention</string>
+    <string name="home_recent">Recent</string>
+    <string name="home_see_all">See all</string>
+    <string name="home_see_all_count">See all (%1$d)</string>
+    <string name="home_not_sent">Issued, not sent yet</string>
+    <string name="home_started_today">Started today</string>
+    <string name="home_started_yesterday">Started yesterday</string>
+    <string name="home_started_on">Started %1$s</string>
+    <string name="home_remind">Remind</string>
+    <string name="home_email">Email</string>
+    <string name="home_send">Send…</string>
+    <string name="home_continue">Continue</string>
+    <string name="home_show_less">Show less</string>
+    <plurals name="home_unpaid_count">
+        <item quantity="one">%1$d unpaid invoice</item>
+        <item quantity="other">%1$d unpaid invoices</item>
+    </plurals>
+    <plurals name="home_overdue_count">
+        <item quantity="one">%1$d overdue</item>
+        <item quantity="other">%1$d overdue</item>
+    </plurals>
+    <plurals name="home_overdue_days">
+        <item quantity="one">Overdue %1$d day</item>
+        <item quantity="other">Overdue %1$d days</item>
+    </plurals>
+    <plurals name="home_more_currencies">
+        <item quantity="one">+%1$d more currency</item>
+        <item quantity="other">+%1$d more currencies</item>
+    </plurals>
 </resources>

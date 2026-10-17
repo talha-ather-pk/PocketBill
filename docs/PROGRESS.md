@@ -84,6 +84,7 @@ A clickable web prototype was built for testing: https://claude.ai/artifact/Uv6w
 | P4-T12 Backup & restore | Backup file, validated restore, backup reminder | ⏳ Not started | — |
 | P4-T13 Empty/loading/error states | Review across all screens | ⏳ Not started | Many screens already have them |
 | P4-T14 Permissions & manifest | Confirm no permissions, no INTERNET, allowBackup off | ⏳ Not started | Manifest currently has none of them |
+| P4-T15 Home screen | Outstanding, overdue, Needs attention, Recent (UX_SPEC 2) | 🟡 Implemented | 9 unit tests; phone check pending; backup card with P4-T12 |
 
 ---
 
@@ -104,7 +105,6 @@ A clickable web prototype was built for testing: https://claude.ai/artifact/Uv6w
 - **Settings:** business profile (all fields), and the privacy statement.
 
 **Placeholders for now:**
-- **Home** is still the early version. It doesn't yet show amounts owed, overdue items, "Needs attention" or recent invoices.
 - **Saved items** and **Backup** in Settings say "coming in a later build step".
 
 ---

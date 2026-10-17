@@ -40,7 +40,7 @@ import com.example.pocketbill.ui.editor.EditorResult
 import com.example.pocketbill.ui.editor.InvoiceEditorScreen
 import com.example.pocketbill.ui.invoices.InvoiceDetailScreen
 import com.example.pocketbill.ui.invoices.InvoiceListScreen
-import com.example.pocketbill.ui.screens.HomeScreen
+import com.example.pocketbill.ui.home.HomeScreen
 import com.example.pocketbill.ui.pdf.PdfPreviewScreen
 import com.example.pocketbill.ui.screens.PlaceholderScreen
 import com.example.pocketbill.ui.settings.BusinessProfileScreen
@@ -119,7 +119,12 @@ private fun PocketBillNavigation(startDestination: Any) {
             }
 
             composable<Home> {
-                HomeScreen(onCreateInvoice = { navController.navigate(InvoiceEditor()) })
+                HomeScreen(
+                    onCreateInvoice = { navController.navigate(InvoiceEditor()) },
+                    onOpenInvoice = { navController.navigate(InvoiceDetail(it)) },
+                    onContinueDraft = { navController.navigate(InvoiceEditor(invoiceId = it)) },
+                    onOpenInvoices = { navController.navigateToInvoices(it) },
+                )
             }
             composable<InvoiceList> { entry ->
                 InvoiceListScreen(
@@ -231,6 +236,14 @@ private val startDestinationSaver = Saver<Any, Boolean>(
     save = { it == Setup },
     restore = { startedAtSetup -> if (startedAtSetup) Setup else Home },
 )
+
+/** Opens the Invoices tab on [filter] (from Home's Outstanding card, overdue row and "See all"). */
+private fun NavHostController.navigateToInvoices(filter: InvoiceFilter) {
+    navigate(InvoiceList(filter)) {
+        popUpTo(graph.findStartDestination().id) { saveState = true }
+        launchSingleTop = true
+    }
+}
 
 /** Standard bottom-bar navigation: one copy of each tab, tab state saved and restored, Back returns to Home. */
 private fun NavHostController.navigateToTab(tab: TopLevelDestination) {

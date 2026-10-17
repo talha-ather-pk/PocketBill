@@ -40,6 +40,13 @@ data class InvoiceListResult(
     val searching: Boolean,
 )
 
+/** One row in the Invoices list or on Home (UX_SPEC 5 row design). */
+fun InvoiceEntity.toRow(clientsById: Map<Long, ClientEntity>, today: Long) = InvoiceRow(
+    id = id, number = number, clientName = clientNameFor(this, clientsById),
+    status = displayStatus(status, dueDate, today), currency = currency, totalMinor = totalMinor,
+    issueDate = issueDate, dueDate = dueDate, paidDate = paidDate, lastSentAt = lastSentAt, updatedAt = updatedAt,
+)
+
 /** Which client name to show and search: frozen for issued invoices, current otherwise. */
 fun clientNameFor(invoice: InvoiceEntity, clientsById: Map<Long, ClientEntity>): String {
     val frozen = invoice.toSnapshot?.let { SnapshotJson.decodeTo(it)?.name }
@@ -98,13 +105,7 @@ fun buildInvoiceList(
         InvoiceFilter.DRAFTS -> selected.sortedWith(compareByDescending<InvoiceEntity> { it.updatedAt }.thenByDescending { it.id })
         InvoiceFilter.ALL, InvoiceFilter.VOID -> selected.sortedWith(compareByDescending<InvoiceEntity> { it.issueDate }.thenByDescending { it.id })
     }
-    val rows = sorted.map { inv ->
-        InvoiceRow(
-            id = inv.id, number = inv.number, clientName = clientNameFor(inv, clientsById),
-            status = displayStatus(inv.status, inv.dueDate, today), currency = inv.currency, totalMinor = inv.totalMinor,
-            issueDate = inv.issueDate, dueDate = inv.dueDate, paidDate = inv.paidDate, lastSentAt = inv.lastSentAt, updatedAt = inv.updatedAt,
-        )
-    }
+    val rows = sorted.map { it.toRow(clientsById, today) }
 
     val groups = when (effective) {
         InvoiceFilter.ALL -> groupByMonth(rows) { it.issueDate }

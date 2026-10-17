@@ -37,6 +37,7 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 | 2026-10-15 | JAVA_HOME fixed to `C:\java`; docs moved to `C:\dev\PocketBill` | Read back env var; listed copied files |
 | 2026-10-15 | `winget install Google.AndroidStudio` (v2026.2.1.8 found) **failed, exit 65**: package licence agreement not accepted | Nothing was installed. |
 | 2026-10-15 | Founder accepted the licence; Android Studio 2026.2.1.8 installed (exit 0); `studio64.exe` present | winget output plus file check. SDK not installed yet. |
+| 2026-10-17 | P4-T15 Home: testDebugUnitTest 195/195 (9 new). Not checked on the phone (disconnected) | Test XML reports |
 | 2026-10-17 | P4-T09 sending: testDebugUnitTest 186/186 (15 new: templates, send flow, Issue and send). Build passes. **Not checked on the phone** (disconnected): Gmail opening directly with the PDF attached, WhatsApp via the share sheet, Save PDF | Test XML reports |
 | 2026-10-17 | P4-T08 PDF: testDebugUnitTest 171/171 (25 new); connectedDebugAndroidTest on SM-A725F 37/37 (6 new PDF tests: D-007 glyphs, A4/Letter sizes, 50 items in <2 s, marks); also ran the 3 pending P4-T10/T11 tests: pass. App kept installed. Visual check of the PDF layout **not done** (phone disconnected mid-run) | Test XML reports |
 | 2026-10-17 | P4-T10/T11: testDebugUnitTest 146/146 (18 new); on-phone tests not run (phone disconnected) | Test XML reports |
@@ -65,14 +66,15 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 6. P4-T08 PDF generation is **implemented and tested**: `pdf/InvoiceDocument` (what the PDF shows; frozen vs live details), `PdfPagination` (header repeated, totals never split), `InvoicePdfRenderer` (PdfDocument; A4/Letter; DRAFT watermark, PAID/VOID stamps; "Page 1 of N"), ASCII file names (`PdfFileName`), and a real **PDF preview** screen. 171 unit tests, 37/37 on-phone tests. Not yet: business logo on the PDF (F-14, no logo picker yet).
 7. Founder: reconnect the phone (USB debugging switches itself off), open an invoice → **Preview**, and say whether the PDF looks right (A4 and Letter, a paid one, a draft). Claude's visual check is still owed. Sample files from the interrupted check may be left in `/sdcard/Android/data/com.example.pocketbill/files/samples`; delete them when the phone is back.
 8. P4-T09 sending is **implemented**: Email to client (opens the email app directly with address, subject and message filled in; reminder and receipt wording by status), Send another way (share sheet, records the chosen app), Save PDF, "Sent via Gmail" with Undo, Issue and send for drafts, FileProvider with read access for the chosen app only. Decision D-017. 186 unit tests. **Needs a phone check.**
-9. Claude: Home screen (UX_SPEC 2), then P4-T12 backup & restore.
+9. P4-T15 Home is **implemented** (UX_SPEC 2): Outstanding per currency (+N more), overdue row, Create invoice, Needs attention (Remind / Email / Send… / Continue in one tap, See all), Recent 5, welcome on first use, "Nothing outstanding". Deferred: the backup card (with P4-T12) and the "payment details changed" card (needs the update to be recorded first).
+10. Claude: P4-T12 backup & restore, then the Saved items screen, P4-T13, P4-T14.
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 verified on the phone; P4-T03 Room verified (20/20 on phone). P4-T05 clients implemented; DB v2 (D-016). P4-T06 verified; P4-T10/T11 implemented and on-phone tests pass; P4-T08 PDF generation + preview implemented (37 on-phone tests); P4-T09 sending implemented (186 unit tests), phone check pending. Next: Home screen, then P4-T12 backup. Decisions up to D-017. 
+Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 verified on the phone; P4-T03 Room verified (20/20 on phone). P4-T05 clients implemented; DB v2 (D-016). P4-T06 verified; P4-T10/T11 implemented and on-phone tests pass; P4-T08 PDF generation + preview implemented (37 on-phone tests); P4-T09 sending implemented (186 unit tests), phone check pending. P4-T15 Home implemented (195 unit tests). Next: P4-T12 backup. Decisions up to D-017. 
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```
