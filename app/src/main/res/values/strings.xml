@@ -265,4 +265,28 @@
     <string name="pdf_missing">This invoice no longer exists.</string>
     <string name="pdf_draft_note">Draft preview. The invoice gets its number when you issue it.</string>
     <string name="pdf_page_label">Page %1$d of %2$d</string>
+
+    <!-- Sending (UX_SPEC 4) -->
+    <string name="send_email_client">Email to client</string>
+    <string name="send_email_again">Email again</string>
+    <string name="send_reminder">Send reminder</string>
+    <string name="send_receipt">Email receipt</string>
+    <string name="send_generic">Send…</string>
+    <string name="send_issue_and_send">Issue and send</string>
+    <string name="send_another_way">Send another way (WhatsApp, …)</string>
+    <string name="send_to">to %1$s</string>
+    <string name="send_add_email">Add client email for one-tap sending</string>
+    <string name="send_last_sent">Last sent %1$s</string>
+    <string name="send_last_sent_via">Last sent %1$s via %2$s</string>
+    <string name="send_save_pdf">Save PDF</string>
+    <string name="send_chooser_title">Send %1$s</string>
+    <string name="send_msg_sent">Marked as sent</string>
+    <string name="send_msg_sent_via">Marked as sent via %1$s</string>
+    <string name="send_msg_no_email_app">No email app found. Choose another way to send.</string>
+    <string name="send_msg_saved">PDF saved</string>
+    <string name="send_msg_save_failed">Couldn\'t save the PDF. Please try again.</string>
+    <string name="send_issue_title">Issue and send?</string>
+    <string name="send_issue_body">This gives the invoice its number, %1$s, and opens your email app.</string>
+    <string name="send_issue_body_no_number">This gives the invoice its number and opens your email app.</string>
+    <string name="send_draft_incomplete">This draft isn\'t complete yet. Continue editing to issue it.</string>
 </resources>

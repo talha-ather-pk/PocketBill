@@ -78,7 +78,7 @@ A clickable web prototype was built for testing: https://claude.ai/artifact/Uv6w
 | P4-T06 Invoice editor | Client defaults, items, live totals, tax, discount, saved items, autosave, issue with checks, number preview, edit issued, duplicate | ✅ Verified | 128 unit tests; on-phone tests and hands-on check **reported passing by the founder** |
 | P4-T07 Numbering & dates | Numbering rules and preview, date formatting | ✅ Largely covered by P4-T03/T06 | Remaining date edge cases go into Phase 5 |
 | P4-T08 PDF generation | Real invoice PDFs (A4/Letter, pages, stamps, character check) and the PDF preview screen | 🟡 Implemented | 25 unit + 6 on-phone tests pass (D-007 glyphs, 50 items < 2 s); visual check by eye and logo still to do |
-| P4-T09 PDF save/share | Save as file; Email to client / Send another way (UX_SPEC 4) | ⏳ Not started | — |
+| P4-T09 PDF save/share | Save as file; Email to client / Send another way (UX_SPEC 4) | 🟡 Implemented | 15 unit tests pass; Gmail/WhatsApp/Save check on the phone pending (D-017) |
 | P4-T10 Status tracking | Invoice page: mark paid + Undo, change paid date, mark unpaid, void + 6 s Undo, delete draft | 🟡 Implemented | Unit and on-phone tests pass; hands-on check pending |
 | P4-T11 History & search | Invoices tab: filters (incl. Void) with counts, search, totals, month groups; history block | 🟡 Implemented | Unit and on-phone tests pass; hands-on check pending |
 | P4-T12 Backup & restore | Backup file, validated restore, backup reminder | ⏳ Not started | — |

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Only generated PDFs in the cache are shareable (UX_SPEC 4). Nothing else is exposed. -->
+<paths>
+    <cache-path name="pdf" path="pdf/" />
+</paths>

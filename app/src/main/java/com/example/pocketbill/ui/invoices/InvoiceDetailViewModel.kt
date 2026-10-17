@@ -7,9 +7,13 @@ import com.example.pocketbill.data.db.InvoiceEntity
 import com.example.pocketbill.data.db.InvoiceWithLines
 import com.example.pocketbill.data.repository.ClientStore
 import com.example.pocketbill.data.repository.InvoiceBrowser
+import com.example.pocketbill.data.repository.InvoiceSending
 import com.example.pocketbill.domain.Outcome
 import com.example.pocketbill.domain.invoice.InvoiceStatus
+import com.example.pocketbill.domain.invoice.SnapshotJson
 import com.example.pocketbill.domain.time.Clock
+import com.example.pocketbill.share.SendPreparer
+import com.example.pocketbill.ui.send.InvoiceSendFlow
 import com.example.pocketbill.ui.components.DisplayStatus
 import com.example.pocketbill.ui.components.displayStatus
 import kotlinx.coroutines.Job
@@ -30,7 +34,7 @@ sealed interface HistoryEntry {
 }
 
 /** A message with an optional Undo (UX_SPEC 5 status actions). */
-enum class DetailMessage { MARKED_PAID, MARKED_UNPAID, PAID_DATE_CHANGED, VOIDED, FAILED }
+enum class DetailMessage { MARKED_PAID, MARKED_UNPAID, PAID_DATE_CHANGED, VOIDED, FAILED, DRAFT_INCOMPLETE }
 
 data class PendingMessage(val kind: DetailMessage, val canUndo: Boolean)
 
@@ -40,6 +44,9 @@ sealed interface DetailPrompt {
 
     /** "Change date" for a payment recorded late. */
     data class PickPaidDate(val current: Long) : DetailPrompt
+
+    /** UX_SPEC 4: "This gives the invoice its number, INV-0015, and opens your email app." */
+    data class ConfirmIssueAndSend(val nextNumber: String?) : DetailPrompt
 }
 
 data class InvoiceDetailUiState(
@@ -54,18 +61,25 @@ data class InvoiceDetailUiState(
     val message: PendingMessage? = null,
     val prompt: DetailPrompt? = null,
     val deleted: Boolean = false,
+    /** Where "Email to client" goes (D-017); null shows "Send…" instead. */
+    val recipientEmail: String? = null,
 ) {
     /** Drafts and issued (unpaid) invoices can be edited; paid and void are read-only (I-9). */
     val canEdit: Boolean get() = invoice?.invoice?.status.let { it == InvoiceStatus.DRAFT || it == InvoiceStatus.ISSUED }
 }
 
-/** Invoice detail (UX_SPEC 5): the invoice, its status actions and its short history. */
+/** Invoice detail (UX_SPEC 4–5): the invoice, sending, its status actions and its short history. */
 class InvoiceDetailViewModel(
     private val browser: InvoiceBrowser,
     clients: ClientStore,
     private val clock: Clock,
     private val invoiceId: Long,
+    private val sending: InvoiceSending,
+    preparer: SendPreparer,
 ) : ViewModel() {
+    /** Email to client, Send another way, Save PDF (UX_SPEC 4). */
+    val send = InvoiceSendFlow(viewModelScope, sending, preparer, clock, invoiceId)
+
     private val _state = MutableStateFlow(InvoiceDetailUiState(today = clock.todayEpochDay()))
     val state: StateFlow<InvoiceDetailUiState> = _state.asStateFlow()
 
@@ -79,11 +93,15 @@ class InvoiceDetailViewModel(
             combine(browser.observe(invoiceId), allClients) { invoice, cs -> invoice to cs }.collect { (invoice, cs) ->
                 val entity = invoice?.invoice
                 val byId = cs.associateBy { it.id }
+                send.observe(entity)
+                val client = entity?.clientId?.let(byId::get)
                 _state.update {
                     it.copy(
                         loading = false,
                         invoice = invoice,
-                        client = entity?.clientId?.let(byId::get),
+                        client = client,
+                        recipientEmail = client?.email?.takeIf { e -> e.isNotBlank() }
+                            ?: entity?.toSnapshot?.let(SnapshotJson::decodeTo)?.email?.takeIf { e -> e.isNotBlank() },
                         clientName = entity?.let { e -> clientNameFor(e, byId) }.orEmpty(),
                         status = entity?.let { e -> displayStatus(e.status, e.dueDate, it.today) } ?: DisplayStatus.DRAFT,
                         history = entity?.let(::historyFor).orEmpty(),
@@ -115,6 +133,33 @@ class InvoiceDetailViewModel(
     fun onPaidDatePicked(day: Long) {
         _state.update { it.copy(prompt = null) }
         act(DetailMessage.PAID_DATE_CHANGED, undoable = false, undoAction = null) { browser.changePaidDate(invoiceId, day) }
+    }
+
+    // ---- Sending (UX_SPEC 4) ------------------------------------------------------------------------
+
+    /** Primary button: email if the client has an address, else the share sheet. */
+    fun onSend() = send.send(toEmail = _state.value.recipientEmail != null)
+
+    fun onSendAnotherWay() = send.send(toEmail = false)
+
+    fun onSavePdf() = send.save()
+
+    /** Drafts: "Issue and send" asks first, showing the number it will get. */
+    fun onIssueAndSendRequest() {
+        viewModelScope.launch {
+            _state.update { it.copy(prompt = DetailPrompt.ConfirmIssueAndSend(sending.previewNextNumber()), message = null) }
+        }
+    }
+
+    fun onIssueAndSendConfirm() {
+        _state.update { it.copy(prompt = null) }
+        viewModelScope.launch {
+            if (sending.issue(invoiceId) is Outcome.Success) {
+                onSend()
+            } else {
+                _state.update { it.copy(message = PendingMessage(DetailMessage.DRAFT_INCOMPLETE, canUndo = false)) }
+            }
+        }
     }
 
     fun onVoidRequest() = _state.update { it.copy(prompt = DetailPrompt.ConfirmVoid) }

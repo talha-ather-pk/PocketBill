@@ -38,6 +38,7 @@ class InvoicePdfRendererTest {
         fromLines = listOf("hej@oresund.example", "Strøget 1, København"),
         toName = "Müller Design GmbH",
         toLines = listOf("Straße 5, München", "Germany"),
+        toEmail = null,
         facts = listOf(PdfRow("Issue date", "16 Oct 2026"), PdfRow("Due date", "30 Oct 2026"), PdfRow("Currency", "EUR")),
         lines = List(lines) { PdfLine("Item ${it + 1} for José and François: design work with a longer description that wraps", "2", "€60.00", "€120.00") },
         totals = listOf(PdfRow("Subtotal", "€6,000.00"), PdfRow("Total due", "€6,000.00")),

@@ -9,6 +9,7 @@ import com.example.pocketbill.data.repository.ProfileRepository
 import com.example.pocketbill.domain.time.Clock
 import com.example.pocketbill.domain.time.DeviceClock
 import com.example.pocketbill.pdf.InvoicePdfRenderer
+import com.example.pocketbill.share.InvoiceSharePreparer
 import java.io.File
 
 /**
@@ -29,6 +30,9 @@ class AppContainer(
     val profile: ProfileRepository by lazy { ProfileRepository(database, clock) }
     val presets: PresetRepository by lazy { PresetRepository(database, clock) }
 
-    /** Writes invoice PDFs to the app's cache (MVP_SPEC 6); shared through FileProvider in P4-T09. */
+    /** Writes invoice PDFs to the app's cache (MVP_SPEC 6), shared through FileProvider. */
     val pdfRenderer: InvoicePdfRenderer by lazy { InvoicePdfRenderer(File(appContext.cacheDir, "pdf")) }
+
+    /** Generates the PDF and its email text for sending (UX_SPEC 4). */
+    val sharePreparer: InvoiceSharePreparer by lazy { InvoiceSharePreparer(appContext, invoices, profile, clients, pdfRenderer, clock) }
 }

@@ -150,6 +150,7 @@ private fun PocketBillNavigation(startDestination: Any) {
                     onDuplicate = { navController.navigate(InvoiceEditor(duplicateOf = it)) },
                     onPreview = { navController.navigate(PdfPreview(it)) },
                     onOpenClient = { navController.navigate(ClientDetail(it)) },
+                    onEditClient = { navController.navigate(ClientEditor(clientId = it)) },
                 )
             }
             composable<InvoiceEditor> { entry ->

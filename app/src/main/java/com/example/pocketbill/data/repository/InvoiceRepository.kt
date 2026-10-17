@@ -75,6 +75,14 @@ interface InvoiceBrowser {
     suspend fun deleteDraft(invoiceId: Long): Outcome<Unit>
 }
 
+/** What sending needs (UX_SPEC 4): issue a draft before sending, and record or undo "Sent". */
+interface InvoiceSending {
+    suspend fun issue(invoiceId: Long): Outcome<String>
+    suspend fun previewNextNumber(): String?
+    suspend fun recordSent(invoiceId: Long, via: String, at: Long): Outcome<Unit>
+    suspend fun restoreSent(invoiceId: Long, lastSentAt: Long?, lastSentVia: String?): Outcome<Unit>
+}
+
 /**
  * The only code that reads or writes invoices (ARCHITECTURE.md section 3). Each operation that
  * touches several rows runs in one transaction (DATA_MODEL.md section 3) and enforces the
@@ -84,7 +92,7 @@ class InvoiceRepository(
     private val db: PocketBillDatabase,
     private val clock: Clock,
     private val newUuid: () -> String = { UUID.randomUUID().toString() },
-) : InvoiceStore, InvoiceBrowser {
+) : InvoiceStore, InvoiceBrowser, InvoiceSending {
     private val invoices = db.invoiceDao()
     private val clients = db.clientDao()
     private val profiles = db.profileDao()
@@ -248,7 +256,7 @@ class InvoiceRepository(
         changeStatus(invoiceId, from = InvoiceStatus.VOID) { it.copy(status = InvoiceStatus.ISSUED) }
 
     /** Records that the invoice was handed to an app for sending (UX_SPEC 4). Status is unchanged. */
-    suspend fun recordSent(invoiceId: Long, via: String, at: Long = clock.nowMillis()): Outcome<Unit> =
+    override suspend fun recordSent(invoiceId: Long, via: String, at: Long): Outcome<Unit> =
         db.withTransaction {
             val existing = invoices.get(invoiceId) ?: return@withTransaction Outcome.NotFound
             if (existing.status != InvoiceStatus.ISSUED && existing.status != InvoiceStatus.PAID) {
@@ -259,7 +267,7 @@ class InvoiceRepository(
         }
 
     /** Undo for "Marked as sent" (UX_SPEC 4): restores the previous values. */
-    suspend fun restoreSent(invoiceId: Long, lastSentAt: Long?, lastSentVia: String?): Outcome<Unit> =
+    override suspend fun restoreSent(invoiceId: Long, lastSentAt: Long?, lastSentVia: String?): Outcome<Unit> =
         db.withTransaction {
             val existing = invoices.get(invoiceId) ?: return@withTransaction Outcome.NotFound
             invoices.update(existing.copy(lastSentAt = lastSentAt, lastSentVia = lastSentVia, updatedAt = clock.nowMillis()))

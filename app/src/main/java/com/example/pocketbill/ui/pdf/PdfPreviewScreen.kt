@@ -5,6 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,7 +48,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pocketbill.R
+import com.example.pocketbill.domain.invoice.SendKind
 import com.example.pocketbill.ui.appContainer
+import com.example.pocketbill.ui.send.SendMessage
+import com.example.pocketbill.ui.send.SendRequestHandler
+import com.example.pocketbill.ui.send.sendMessageText
 import com.example.pocketbill.ui.theme.Spacing
 import kotlinx.coroutines.delay
 
@@ -50,8 +63,9 @@ private const val MAX_PAGE_WIDTH_PX = 1080
 private const val PROGRESS_DELAY_MS = 300L
 
 /**
- * PDF preview (MVP_SPEC 6): the real PDF's pages, generated from the saved invoice.
- * Send and Save PDF join this screen in P4-T09.
+ * PDF preview (MVP_SPEC 6): the real PDF's pages, generated from the saved invoice, with Send as
+ * the primary action and Save PDF beside it (UX_SPEC 4). Drafts are sent from invoice detail
+ * ("Issue and send"), so their preview has no actions.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,13 +74,39 @@ fun PdfPreviewScreen(invoiceId: Long, onBack: () -> Unit) {
     val widthPx = with(LocalDensity.current) { LocalConfiguration.current.screenWidthDp.dp.roundToPx() }
         .coerceAtMost(MAX_PAGE_WIDTH_PX)
     val vm: PdfPreviewViewModel = viewModel {
-        PdfPreviewViewModel(c.invoices, c.profile, c.clients, c.pdfRenderer, invoiceId, widthPx)
+        PdfPreviewViewModel(
+            invoices = c.invoices, browser = c.invoices, sending = c.invoices, profile = c.profile, clients = c.clients,
+            renderer = c.pdfRenderer, preparer = c.sharePreparer, clock = c.clock, invoiceId = invoiceId, pageWidthPx = widthPx,
+        )
     }
     val state by vm.state.collectAsStateWithLifecycle()
+    val actions by vm.actions.collectAsStateWithLifecycle()
+    val sendState by vm.send.state.collectAsStateWithLifecycle()
     val ready = state as? PdfPreviewUiState.Ready
+    SendRequestHandler(sendState.request, vm.send)
+
+    val snackbar = remember { SnackbarHostState() }
+    val undoLabel = stringResource(R.string.action_undo)
+    val sendMessage = sendState.message
+    val sendText = sendMessage?.let { sendMessageText(it) }
+    LaunchedEffect(sendMessage) {
+        if (sendMessage == null || sendText == null) return@LaunchedEffect
+        val result = snackbar.showSnackbar(
+            message = sendText,
+            actionLabel = if (sendMessage is SendMessage.Sent) undoLabel else null,
+            duration = SnackbarDuration.Short,
+        )
+        if (result == SnackbarResult.ActionPerformed) vm.send.onUndoSent() else vm.send.onMessageShown()
+    }
 
     Scaffold(
         contentWindowInsets = WindowInsets(0), // the app's outer Scaffold handles the status bar
+        snackbarHost = { SnackbarHost(snackbar) },
+        bottomBar = {
+            if (ready != null && (actions.kind != null || actions.canSave)) {
+                PreviewActionsBar(actions, busy = sendState.busy, onSend = vm::onSend, onSave = vm::onSave)
+            }
+        },
         topBar = {
             TopAppBar(
                 windowInsets = WindowInsets(0),
@@ -118,6 +158,39 @@ private fun Pages(state: PdfPreviewUiState.Ready) {
                         .border(1.dp, MaterialTheme.colorScheme.outlineVariant),
                 )
                 Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = Spacing.xs))
+            }
+        }
+    }
+}
+
+/** UX_SPEC 4: Send is the primary button on the preview, with Save PDF beside it. */
+@Composable
+private fun PreviewActionsBar(actions: PreviewActions, busy: Boolean, onSend: () -> Unit, onSave: () -> Unit) {
+    Surface(tonalElevation = 3.dp) {
+        Column {
+            if (busy) LinearProgressIndicator(Modifier.fillMaxWidth())
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.screen, vertical = Spacing.s),
+            ) {
+                if (actions.canSave) {
+                    OutlinedButton(onClick = onSave, enabled = !busy, modifier = Modifier.weight(1f).heightIn(min = Spacing.buttonHeight)) {
+                        Text(stringResource(R.string.send_save_pdf))
+                    }
+                }
+                val kind = actions.kind
+                if (kind != null) {
+                    val label = when {
+                        !actions.hasEmail -> R.string.send_generic
+                        kind == SendKind.RECEIPT -> R.string.send_receipt
+                        kind == SendKind.REMINDER -> R.string.send_reminder
+                        actions.sentBefore -> R.string.send_email_again
+                        else -> R.string.send_email_client
+                    }
+                    Button(onClick = onSend, enabled = !busy, modifier = Modifier.weight(1.4f).heightIn(min = Spacing.buttonHeight)) {
+                        Text(stringResource(label))
+                    }
+                }
             }
         }
     }

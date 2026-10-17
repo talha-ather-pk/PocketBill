@@ -38,6 +38,8 @@ data class InvoiceDocument(
     /** Null when a draft has no client yet. */
     val toName: String?,
     val toLines: List<String>,
+    /** The client's email as shown on the invoice (frozen once issued). */
+    val toEmail: String?,
     /** Issue date, due date, currency, and the paid date when paid. */
     val facts: List<PdfRow>,
     val lines: List<PdfLine>,
@@ -118,6 +120,7 @@ data class InvoiceDocument(
                     textLines(to.address.orEmpty()) + textLines(to.country.orEmpty()) +
                         listOfNotNull(to.email?.takeIf { it.isNotBlank() }?.trim(), to.taxId?.takeIf { it.isNotBlank() }?.let { "Tax ID: ${it.trim()}" })
                 },
+                toEmail = to?.email?.takeIf { it.isNotBlank() }?.trim(),
                 facts = facts,
                 lines = invoice.lines.map {
                     PdfLine(

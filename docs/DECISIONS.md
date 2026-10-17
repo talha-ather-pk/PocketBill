@@ -8,6 +8,15 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-017 — Sending: who gets the email, and drafts
+- **Context:** P4-T09 (UX_SPEC 4). Issued invoices freeze the client's details (DATA_MODEL 5.2), including their email. If the client later changes their billing address, "Email again" would go to the old one. Also, the PDF preview could offer Send for drafts.
+- **Decision:**
+  1. "Email to client" goes to the client's **current** email; if they have none, to the email frozen on the invoice. The address is a delivery detail, not part of what the invoice says. Names, amounts and payment details in the email still come from the frozen details, so the email matches the PDF.
+  2. Drafts are sent only through **Issue and send** on invoice detail (with its confirmation). The preview of a draft shows the DRAFT watermark and no Send or Save buttons.
+  3. Save PDF is offered for issued, paid and void invoices (in the preview and under More on detail). It never counts as sent.
+  4. When Android lets the user pick between several email apps, the app can't tell which one was used, so it records "via email".
+- **Status:** Accepted 2026-10-17 (Claude as product owner, at the founder's request to decide).
+
 ## D-016 — Migrations from now on (replaces D-014)
 - **Context:** D-014 kept database version 1 open because no one had data yet. Since P4-T04 the founder has a real business profile on the phone. Changing version 1 again would make Room refuse to open that database (identity hash mismatch), and the app would crash at launch until its data was wiped.
 - **Decision:** From P4-T05 on, **every** schema change bumps the version and ships with a migration and a migration test, exactly as DATA_MODEL 7 (G-1…G-7) describes. Version 1's schema JSON is frozen as committed in P4-T03.

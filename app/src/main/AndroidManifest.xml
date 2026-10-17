@@ -3,6 +3,19 @@
 
     <!-- No permissions are requested. Add one only with a documented reason (task P4-T14). -->
 
+    <!-- Not permissions: lets the app see which email apps exist and the name of the app the user
+         picks to send with (Android 11+ package visibility, UX_SPEC 4). -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="application/pdf" />
+        </intent>
+    </queries>
+
     <!-- allowBackup stays off: invoice data must never be copied to Google's servers (DECISIONS D-009). -->
     <application
         android:name=".app.PocketBillApplication"
@@ -20,6 +33,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Shares generated PDFs from the cache; each receiving app gets read access to one file only (UX_SPEC 4). -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- Told by the share sheet which app was chosen, to record "Sent via …". Not callable by other apps. -->
+        <receiver
+            android:name=".share.SentReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>

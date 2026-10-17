@@ -149,7 +149,7 @@ class InvoicesTest {
 
     private fun detailFor(inv: InvoiceEntity, vararg lines: LineItemEntity): InvoiceDetailViewModel {
         browser.put(inv, *lines)
-        return InvoiceDetailViewModel(browser, clients, FixedClock(today), inv.id)
+        return InvoiceDetailViewModel(browser, clients, FixedClock(today), inv.id, sending = browser, preparer = { null })
     }
 
     @Test fun `mark paid records today, and Undo makes it unpaid again`() {
