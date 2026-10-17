@@ -37,6 +37,7 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 | 2026-10-15 | JAVA_HOME fixed to `C:\java`; docs moved to `C:\dev\PocketBill` | Read back env var; listed copied files |
 | 2026-10-15 | `winget install Google.AndroidStudio` (v2026.2.1.8 found) **failed, exit 65**: package licence agreement not accepted | Nothing was installed. |
 | 2026-10-15 | Founder accepted the licence; Android Studio 2026.2.1.8 installed (exit 0); `studio64.exe` present | winget output plus file check. SDK not installed yet. |
+| 2026-10-17 | P4-T03 database: 64/64 unit tests; `connectedDebugAndroidTest` on SM-A725F → 20/20 RepositoryTest pass | Test XML reports read back by Claude Code |
 | 2026-10-17 | P4-T01 on the Galaxy A72: editor hides the bottom bar, Back and tab navigation correct, dark theme, no crashes | adb install + taps, checked by screenshots (the UI text dump proved unreliable during transitions) |
 | 2026-10-16 | P4-T01 app shell: `gradlew assembleDebug testDebugUnitTest` → BUILD SUCCESSFUL, 57/57 tests, no compiler warnings | Test XML reports + Gradle problems report read back by Claude Code |
 | 2026-10-16 | P1-T07 phone-creation check: 5 of 6 participants created a real invoice on the phone (42–55 s); T3 re-check 5 of 6 under 30 s unaided | Founder-reported from participants' session logs |
@@ -50,15 +51,15 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 **P1-T07 passed (2026-10-16): 5 of 6 created a real invoice on the phone in 42–55 s.** The D-010 gate is open, so Phase 4 can start. T3 re-check accepted at 5 of 6 (D-013).
 
 1. Founder: review the design drafts (UX_SPEC 1–8, DATA_MODEL 1–7, ARCHITECTURE).
-2. P4-T03 Room persistence is **implemented** (schema v1 exported, DAOs, Invoice/Client/Profile repositories; 64/64 unit tests). Founder: reconnect the phone so Claude can run the 20 on-phone database tests (`connectedDebugAndroidTest`).
-3. Claude: after those pass, P4-T04 business profile & settings (first-launch Setup).
+2. P4-T03 Room persistence is **verified**: 64/64 unit tests and 20/20 database tests on the phone.
+3. Claude: P4-T04 business profile & settings (first-launch Setup, UX_SPEC 1), the first screen that saves real data.
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 verified on the phone; P4-T03 Room implemented, on-phone tests pending. Decisions up to D-014. 
+Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 verified on the phone; P4-T03 Room verified (20/20 on phone). Next: P4-T04 Setup and Settings. Decisions up to D-014. 
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```
