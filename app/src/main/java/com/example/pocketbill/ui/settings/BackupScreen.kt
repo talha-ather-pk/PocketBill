@@ -1,7 +1,6 @@
 package com.example.pocketbill.ui.settings
 
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +40,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pocketbill.app.SafeLog
 import com.example.pocketbill.R
 import com.example.pocketbill.data.backup.BackupProblem
 import com.example.pocketbill.data.backup.RestorePreview
@@ -77,7 +77,7 @@ fun BackupScreen(onBack: () -> Unit) {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                Log.e("Backup", "Writing the backup failed", e)
+                SafeLog.failure("Backup", "Writing the backup failed", e)
                 false
             }
             vm.onBackupWritten(ok)
@@ -93,7 +93,7 @@ fun BackupScreen(onBack: () -> Unit) {
                         if (bytes.size > MAX_BACKUP_BYTES) null else bytes.toString(Charsets.UTF_8)
                     }
                 } catch (e: Exception) {
-                    Log.e("Backup", "Reading the backup failed", e)
+                    SafeLog.failure("Backup", "Reading the backup failed", e)
                     null
                 }
             }

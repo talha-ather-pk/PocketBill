@@ -1,9 +1,9 @@
 package com.example.pocketbill.ui.pdf
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pocketbill.app.SafeLog
 import com.example.pocketbill.data.repository.ClientStore
 import com.example.pocketbill.data.repository.InvoiceBrowser
 import com.example.pocketbill.data.repository.InvoiceSending
@@ -115,7 +115,7 @@ class PdfPreviewViewModel(
                 throw e
             } catch (e: Exception) {
                 // Error details go to the local log only (UX_SPEC 4).
-                Log.e(TAG, "PDF generation failed", e)
+                SafeLog.failure(TAG, "PDF generation failed", e)
                 PdfPreviewUiState.Failed
             }
         }

@@ -2,7 +2,6 @@ package com.example.pocketbill.ui.send
 
 import android.content.ActivityNotFoundException
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -14,6 +13,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.example.pocketbill.app.SafeLog
 import com.example.pocketbill.R
 import com.example.pocketbill.share.SendPackage
 import com.example.pocketbill.share.ShareIntents
@@ -39,10 +39,10 @@ fun SendRequestHandler(request: SendRequest?, flow: InvoiceSendFlow) {
                 try {
                     context.contentResolver.openOutputStream(uri)?.use { out -> File(pkg.filePath).inputStream().use { it.copyTo(out) } } != null
                 } catch (e: IOException) {
-                    Log.e("SavePdf", "Saving the PDF failed", e)
+                    SafeLog.failure("SavePdf", "Saving the PDF failed", e)
                     false
                 } catch (e: SecurityException) {
-                    Log.e("SavePdf", "Saving the PDF failed", e)
+                    SafeLog.failure("SavePdf", "Saving the PDF failed", e)
                     false
                 }
             }
@@ -71,7 +71,7 @@ fun SendRequestHandler(request: SendRequest?, flow: InvoiceSendFlow) {
                 try {
                     context.startActivity(ShareIntents.chooser(context, request.pkg, chooserTitle))
                 } catch (e: ActivityNotFoundException) {
-                    Log.e("Send", "No share sheet", e)
+                    SafeLog.failure("Send", "No share sheet", e)
                 }
                 flow.onRequestHandled()
             }

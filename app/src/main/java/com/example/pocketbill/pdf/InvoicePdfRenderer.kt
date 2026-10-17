@@ -203,9 +203,9 @@ class InvoicePdfRenderer(private val outputDir: File, private val logoDir: File?
             draw(canvas, descriptionLayouts[index], left, top + CELL_PADDING)
             val baseline = top + CELL_PADDING + firstBaseline(descriptionLayouts[index])
             bodyNumbers.textAlign = Paint.Align.RIGHT
-            canvas.drawText(line.quantity, qtyRight, baseline, bodyNumbers)
-            canvas.drawText(line.unitPrice, unitRight, baseline, bodyNumbers)
-            canvas.drawText(line.amount, amountRight, baseline, bodyNumbers)
+            drawFitted(canvas, line.quantity, qtyRight, baseline, bodyNumbers, QTY_WIDTH - CELL_GAP / 2)
+            drawFitted(canvas, line.unitPrice, unitRight, baseline, bodyNumbers, UNIT_WIDTH - CELL_GAP)
+            drawFitted(canvas, line.amount, amountRight, baseline, bodyNumbers, AMOUNT_WIDTH - CELL_GAP)
             rule(canvas, top + rowHeights[index] - 0.5f)
         }
 
@@ -229,7 +229,7 @@ class InvoicePdfRenderer(private val outputDir: File, private val logoDir: File?
                     muted.textAlign = Paint.Align.LEFT
                     canvas.drawText(row.label, labelX, baseline, muted)
                     bodyNumbers.textAlign = Paint.Align.RIGHT
-                    canvas.drawText(row.value, right, baseline, bodyNumbers)
+                    drawFitted(canvas, row.value, right, baseline, bodyNumbers, TOTALS_WIDTH - muted.measureText(row.label) - CELL_GAP)
                 }
                 val totalTop = top + plain.size * FACT_LINE + 4
                 val line = Paint().apply { color = PdfColors.INK; strokeWidth = 1f }
@@ -239,7 +239,7 @@ class InvoicePdfRenderer(private val outputDir: File, private val logoDir: File?
                 totalPaint.textAlign = Paint.Align.LEFT
                 canvas.drawText(total.label, labelX, baseline, totalPaint)
                 totalPaint.textAlign = Paint.Align.RIGHT
-                canvas.drawText(total.value, right, baseline, totalPaint)
+                drawFitted(canvas, total.value, right, baseline, totalPaint, TOTALS_WIDTH - totalPaint.measureText(total.label) - CELL_GAP)
                 // Beside the totals, in the space the totals block always leaves free on its left.
                 if (doc.mark == PdfMark.PAID || doc.mark == PdfMark.VOID) {
                     drawStamp(canvas, cx = left + (contentWidth - TOTALS_WIDTH) / 2, cy = top + height / 2)
@@ -306,6 +306,19 @@ class InvoicePdfRenderer(private val outputDir: File, private val logoDir: File?
 
         private fun draw(canvas: Canvas, layout: StaticLayout, x: Float, y: Float) {
             canvas.withTranslation(x, y) { layout.draw(this) }
+        }
+
+        /** Draws [text], shrinking it just enough to fit [maxWidth] (very large amounts never overlap the next column). */
+        private fun drawFitted(canvas: Canvas, text: String, x: Float, baseline: Float, paint: Paint, maxWidth: Float) {
+            val width = paint.measureText(text)
+            if (width <= maxWidth || maxWidth <= 0f) {
+                canvas.drawText(text, x, baseline, paint)
+                return
+            }
+            val size = paint.textSize
+            paint.textSize = size * maxWidth / width
+            canvas.drawText(text, x, baseline, paint)
+            paint.textSize = size
         }
 
         private fun firstBaseline(layout: StaticLayout): Float = layout.getLineBaseline(0).toFloat()

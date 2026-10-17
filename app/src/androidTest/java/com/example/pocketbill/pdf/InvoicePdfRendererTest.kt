@@ -105,6 +105,51 @@ class InvoicePdfRendererTest {
         }
     }
 
+    // ---- P5-T04 PDF matrix: extremes must render without crashing or losing pages ----------------
+
+    @Test fun emptyOptionalFieldsAndNoItems() = runBlocking {
+        val bare = doc(lines = 0).copy(
+            fromLines = emptyList(), toName = null, toLines = emptyList(), toEmail = null,
+            paymentInstructions = "", notes = "", logoFile = null,
+        )
+        assertEquals(1, pages(renderer.render(bare)).size)
+    }
+
+    @Test fun hugeAmountsZeroAndThreeDecimalCurrencies() = runBlocking {
+        val big = doc(lines = 3).copy(
+            lines = listOf(
+                PdfLine("Yen", "999,999.999", "¥999,999,999,999,999", "¥999,999,999,999,999"),
+                PdfLine("Dinar", "1", "KWD 2.500", "KWD 2.500"),
+                PdfLine("Rupee", "12.5", "₹1,00,000.00", "₹12,50,000.00"),
+            ),
+            totals = listOf(PdfRow("Subtotal", "¥999,999,999,999,999"), PdfRow("Total due", "¥999,999,999,999,999")),
+        )
+        assertEquals(1, pages(renderer.render(big)).size)
+    }
+
+    @Test fun aDescriptionTallerThanAPageStillRenders() = runBlocking {
+        val long = doc(lines = 1).copy(lines = listOf(PdfLine("Very long description. ".repeat(600), "1", "€1.00", "€1.00")))
+        assertTrue(pages(renderer.render(long)).size >= 2)
+    }
+
+    @Test fun longNamesAndNotesWrapInsteadOfOverflowing() = runBlocking {
+        val wordy = doc(lines = 2).copy(
+            fromName = "Ø".repeat(5) + " Extremely Long Business Name Holding Company International ApS",
+            toName = "Müller Design und Kommunikation Gesellschaft mit beschränkter Haftung",
+            notes = "Note line. ".repeat(300),
+            paymentInstructions = "IBAN DE00 0000 0000 0000 0000 00\n".repeat(20),
+        )
+        assertTrue(pages(renderer.render(wordy)).size >= 1)
+    }
+
+    @Test fun twoHundredItemsOnLetter() = runBlocking {
+        val start = System.nanoTime()
+        val count = pages(renderer.render(doc(lines = 200, paper = PaperSize.LETTER))).size
+        val ms = (System.nanoTime() - start) / 1_000_000
+        assertTrue("Expected several pages, got $count", count in 5..20)
+        assertTrue("Took $ms ms", ms < 5_000)
+    }
+
     @Test fun onlyTheLatestPdfStaysInTheFolder() = runBlocking {
         renderer.render(doc(lines = 1).copy(fileName = "A.pdf"))
         renderer.render(doc(lines = 1).copy(fileName = "B.pdf"))
