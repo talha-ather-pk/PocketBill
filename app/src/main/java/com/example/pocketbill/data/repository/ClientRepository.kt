@@ -37,6 +37,9 @@ const val MAX_TERMS_DAYS = 365
  */
 interface ClientStore {
     fun observeActive(): Flow<List<ClientEntity>>
+
+    /** Recent-client chips in the invoice editor (UX_SPEC 3). */
+    fun observeRecent(): Flow<List<ClientEntity>>
     fun observeArchived(): Flow<List<ClientEntity>>
     fun observeOwedByClient(): Flow<List<ClientOwed>>
     fun observeOverdueByClient(): Flow<List<ClientCount>>
@@ -73,7 +76,7 @@ class ClientRepository(
 
     override fun observeArchived(): Flow<List<ClientEntity>> = clients.observeArchived()
 
-    fun observeRecent(): Flow<List<ClientEntity>> = clients.observeRecent()
+    override fun observeRecent(): Flow<List<ClientEntity>> = clients.observeRecent()
 
     override fun observeOwedByClient(): Flow<List<ClientOwed>> = invoices.observeOwedByClient()
 

@@ -321,6 +321,12 @@ Completely empty extra items are dropped silently. On success: number assigned (
 
 Duplicate: row → ⋮ **Duplicate** → **Issue** → **Email** → Send = **5 taps**, with no typing.
 
+### As built in P4-T06 (differences from the design above)
+- **Errors on Issue:** a message at the top ("Some fields need attention…") plus a message at each field. The screen doesn't yet scroll to and focus the first problem; planned with the P5 accessibility pass.
+- **"+ New client"** opens the full client editor and returns the new client to the invoice, rather than a short sheet.
+- **Recent-client chips** appear once clients have issued invoices (`lastInvoicedAt`); before that, use "All clients…".
+- **Suggestions** need 2 typed characters and show up to 3 saved items; tapping one fills the price only when its currency matches the invoice.
+
 ### Accessibility
 - Every field has a visible label (not just a placeholder) and a TalkBack label.
 - Errors are announced when shown (Compose `liveRegion`). The total is announced when it changes after leaving a price field, not on every keystroke.

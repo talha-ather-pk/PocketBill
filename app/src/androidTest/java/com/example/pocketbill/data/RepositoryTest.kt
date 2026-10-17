@@ -285,6 +285,42 @@ class RepositoryTest {
         assertEquals(id, clients.findSameName("muller design gmbh")!!.id)
     }
 
+    // ---- Invoice editor support (P4-T06) ------------------------------------------------------
+
+    @Test fun nextNumberPreviewMatchesWhatIssuingAssigns() = runBlocking {
+        val client = newClient()
+        assertEquals("INV-0001", invoices.previewNextNumber())
+        assertEquals(invoices.previewNextNumber(), issuedInvoice(client).second)
+        assertEquals("INV-0002", invoices.previewNextNumber())
+        profile.save(ProfileInput(name = "Your Studio", defaultCurrency = "USD", invoicePrefix = "2026-", nextInvoiceNumber = 40)).ok()
+        assertEquals("2026-0040", invoices.previewNextNumber())
+        assertEquals("2026-0040", issuedInvoice(client).second)
+        assertEquals("2026-0041", invoices.previewNextNumber())
+    }
+
+    @Test fun lastInvoiceForClientIsTheMostRecentOne() = runBlocking {
+        val client = newClient()
+        assertNull(invoices.lastInvoiceForClient(client))
+        invoices.saveDraft(0, input(client, currency = "EUR").copy(issueDate = today - 30, dueDate = today - 16)).ok()
+        val newer = invoices.saveDraft(0, input(client, currency = "GBP")).ok()
+        assertEquals(newer, invoices.lastInvoiceForClient(client)!!.id)
+    }
+
+    @Test fun savedItemsAreSuggestedMostUsedFirstAndUpdatedNotDuplicated() = runBlocking {
+        val presets = com.example.pocketbill.data.repository.PresetRepository(db, clock)
+        presets.saveFromLine("Logo design", 45_000, "EUR")
+        presets.saveFromLine("Logo animation", 30_000, "EUR")
+        presets.saveFromLine("logo design", 50_000, "EUR") // same item, new price
+        val found = presets.suggestions("lo")
+        assertEquals(2, found.size)
+        val design = found.first { it.description.equals("Logo design", ignoreCase = true) }
+        assertEquals(50_000L, design.unitPriceMinor)
+        presets.markUsed(design.id)
+        presets.markUsed(design.id)
+        assertEquals("Logo design", presets.suggestions("Lo").first().description)
+        assertTrue("one character isn't enough", presets.suggestions("L").isEmpty())
+    }
+
     @Test fun duplicateNamesAreFoundIgnoringCaseAndAccents() = runBlocking {
         newClient("Müller Design GmbH")
         assertTrue(clients.hasClientNamed("muller design gmbh"))

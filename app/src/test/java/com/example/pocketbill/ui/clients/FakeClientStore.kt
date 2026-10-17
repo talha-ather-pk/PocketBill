@@ -26,9 +26,17 @@ class FakeClientStore : ClientStore {
     val updates = mutableListOf<Triple<Long, ClientInput, Boolean>>()
     private var nextId = 1L
 
-    fun add(name: String, email: String? = null, country: String? = null, archived: Boolean = false): ClientEntity {
+    fun add(
+        name: String,
+        email: String? = null,
+        country: String? = null,
+        archived: Boolean = false,
+        preferredCurrency: String? = null,
+        preferredTermsDays: Int? = null,
+    ): ClientEntity {
         val client = ClientEntity(
             id = nextId++, uuid = "u$nextId", name = name, email = email, country = country,
+            preferredCurrency = preferredCurrency, preferredTermsDays = preferredTermsDays,
             archived = archived, createdAt = 0, updatedAt = 0,
         )
         clients.value = clients.value + client
@@ -36,6 +44,8 @@ class FakeClientStore : ClientStore {
     }
 
     override fun observeActive(): Flow<List<ClientEntity>> = clients.map { list -> list.filter { !it.archived } }
+    override fun observeRecent(): Flow<List<ClientEntity>> =
+        clients.map { list -> list.filter { !it.archived && it.lastInvoicedAt != null }.sortedByDescending { it.lastInvoicedAt }.take(3) }
     override fun observeArchived(): Flow<List<ClientEntity>> = clients.map { list -> list.filter { it.archived } }
     override fun observeOwedByClient(): Flow<List<ClientOwed>> = owed
     override fun observeOverdueByClient(): Flow<List<ClientCount>> = overdue

@@ -27,18 +27,23 @@ data class ProfileInput(
     val paperSize: PaperSize = PaperSize.A4,
 )
 
+/** What screens other than Settings need from the profile. Lets ViewModels be tested with a fake. */
+interface ProfileStore {
+    suspend fun get(): BusinessProfileEntity?
+}
+
 /** The only code that reads or writes the business profile (ARCHITECTURE.md section 3). */
 class ProfileRepository(
     private val db: PocketBillDatabase,
     private val clock: Clock,
     private val newUuid: () -> String = { UUID.randomUUID().toString() },
-) {
+) : ProfileStore {
     private val profiles = db.profileDao()
     private val invoices = db.invoiceDao()
 
     fun observe(): Flow<BusinessProfileEntity?> = profiles.observe()
 
-    suspend fun get(): BusinessProfileEntity? = profiles.get()
+    override suspend fun get(): BusinessProfileEntity? = profiles.get()
 
     /** How many issued, unpaid invoices would take new details (DATA_MODEL 5.5 dialog). */
     suspend fun unpaidIssuedCount(): Int = invoices.allUnpaidIssued().size

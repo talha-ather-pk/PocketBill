@@ -84,6 +84,10 @@ interface InvoiceDao {
     @Query("SELECT * FROM invoice WHERE id = :id")
     fun observeWithLines(id: Long): Flow<InvoiceWithLines?>
 
+    /** The client's most recent invoice, any status: source of their defaults (D-015). */
+    @Query("SELECT * FROM invoice WHERE clientId = :clientId ORDER BY issueDate DESC, id DESC LIMIT 1")
+    suspend fun lastForClient(clientId: Long): InvoiceEntity?
+
     @Query("SELECT EXISTS(SELECT 1 FROM invoice WHERE number = :number)")
     suspend fun numberExists(number: String): Boolean
 
@@ -160,6 +164,9 @@ interface PresetDao {
 
     @Query("SELECT * FROM item_preset WHERE id = :id")
     suspend fun get(id: Long): ItemPresetEntity?
+
+    @Query("SELECT * FROM item_preset WHERE description = :description COLLATE NOCASE LIMIT 1")
+    suspend fun findByDescription(description: String): ItemPresetEntity?
 
     /** Editor suggestions after 2 typed characters (UX_SPEC 3). */
     @Query(

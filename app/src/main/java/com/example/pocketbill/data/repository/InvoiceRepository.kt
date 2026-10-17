@@ -42,6 +42,21 @@ data class InvoiceInput(
     val notes: String = "",
 )
 
+/** What the invoice editor needs from storage. [InvoiceRepository] is the real one; tests use a fake. */
+interface InvoiceStore {
+    suspend fun get(id: Long): InvoiceWithLines?
+    suspend fun saveDraft(invoiceId: Long, input: InvoiceInput): Outcome<Long>
+    suspend fun deleteDraft(invoiceId: Long): Outcome<Unit>
+    suspend fun issue(invoiceId: Long): Outcome<String>
+    suspend fun updateIssued(invoiceId: Long, input: InvoiceInput): Outcome<Unit>
+
+    /** The client's most recent invoice: source of their defaults (D-015). */
+    suspend fun lastInvoiceForClient(clientId: Long): InvoiceEntity?
+
+    /** The number the next issued invoice will get, exactly as [issue] would choose it (N-2, N-7). */
+    suspend fun previewNextNumber(): String?
+}
+
 /**
  * The only code that reads or writes invoices (ARCHITECTURE.md section 3). Each operation that
  * touches several rows runs in one transaction (DATA_MODEL.md section 3) and enforces the
@@ -51,14 +66,21 @@ class InvoiceRepository(
     private val db: PocketBillDatabase,
     private val clock: Clock,
     private val newUuid: () -> String = { UUID.randomUUID().toString() },
-) {
+) : InvoiceStore {
     private val invoices = db.invoiceDao()
     private val clients = db.clientDao()
     private val profiles = db.profileDao()
 
     // ---- Reads -------------------------------------------------------------------------------
 
-    suspend fun get(id: Long): InvoiceWithLines? = invoices.getWithLines(id)
+    override suspend fun get(id: Long): InvoiceWithLines? = invoices.getWithLines(id)
+
+    override suspend fun lastInvoiceForClient(clientId: Long): InvoiceEntity? = invoices.lastForClient(clientId)
+
+    override suspend fun previewNextNumber(): String? {
+        val profile = profiles.get() ?: return null
+        return InvoiceNumbering.firstFree(profile.invoicePrefix, profile.nextInvoiceNumber) { invoices.numberExists(it) }.number
+    }
 
     fun observe(id: Long): Flow<InvoiceWithLines?> = invoices.observeWithLines(id)
 
@@ -79,7 +101,7 @@ class InvoiceRepository(
      * descriptions), but stored numbers must be valid and totals are always recalculated (I-7).
      * Returns the draft's ID.
      */
-    suspend fun saveDraft(invoiceId: Long, input: InvoiceInput): Outcome<Long> {
+    override suspend fun saveDraft(invoiceId: Long, input: InvoiceInput): Outcome<Long> {
         val problems = checkNumbers(input)
         if (problems.isNotEmpty()) return Outcome.ValidationFailed(problems)
         val totals = when (val result = calculate(input)) {
@@ -111,7 +133,7 @@ class InvoiceRepository(
     }
 
     /** Deletes a draft (UX_SPEC 3). Issued invoices are never deleted, only voided (N-3). */
-    suspend fun deleteDraft(invoiceId: Long): Outcome<Unit> = db.withTransaction {
+    override suspend fun deleteDraft(invoiceId: Long): Outcome<Unit> = db.withTransaction {
         val existing = invoices.get(invoiceId) ?: return@withTransaction Outcome.NotFound
         if (existing.status != InvoiceStatus.DRAFT) return@withTransaction Outcome.NotAllowed(Problem.NOT_A_DRAFT)
         invoices.delete(existing)
@@ -125,7 +147,7 @@ class InvoiceRepository(
      * next free number (N-1…N-7), freezes the business and client details (5.2), advances the
      * sequence and records when the client was last invoiced. Returns the number.
      */
-    suspend fun issue(invoiceId: Long): Outcome<String> = db.withTransaction {
+    override suspend fun issue(invoiceId: Long): Outcome<String> = db.withTransaction {
         val draft = invoices.getWithLines(invoiceId) ?: return@withTransaction Outcome.NotFound
         val invoice = draft.invoice
         if (invoice.status != InvoiceStatus.DRAFT) return@withTransaction Outcome.NotAllowed(Problem.NOT_A_DRAFT)
@@ -165,7 +187,7 @@ class InvoiceRepository(
      * Edits an issued, unpaid invoice (UX_SPEC 3 "Edit issued"). The number stays. Choosing a
      * different client takes a fresh snapshot of that client (DATA_MODEL 5.4).
      */
-    suspend fun updateIssued(invoiceId: Long, input: InvoiceInput): Outcome<Unit> {
+    override suspend fun updateIssued(invoiceId: Long, input: InvoiceInput): Outcome<Unit> {
         val problems = checkNumbers(input) + checkIssuable(input.clientId, input.issueDate, input.dueDate, input.lines)
         if (problems.isNotEmpty()) return Outcome.ValidationFailed(problems)
         val totals = when (val result = calculate(input)) {

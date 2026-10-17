@@ -35,6 +35,9 @@ import com.example.pocketbill.ui.clients.ClientDetailScreen
 import com.example.pocketbill.ui.clients.ClientEditorResult
 import com.example.pocketbill.ui.clients.ClientEditorScreen
 import com.example.pocketbill.ui.clients.ClientListScreen
+import com.example.pocketbill.ui.editor.EditorArgs
+import com.example.pocketbill.ui.editor.EditorResult
+import com.example.pocketbill.ui.editor.InvoiceEditorScreen
 import com.example.pocketbill.ui.screens.EmptyStateScreen
 import com.example.pocketbill.ui.screens.HomeScreen
 import com.example.pocketbill.ui.screens.PlaceholderScreen
@@ -134,7 +137,27 @@ private fun PocketBillNavigation(startDestination: Any) {
             }
 
             composable<InvoiceDetail> { PlaceholderScreen(R.string.title_invoice) }
-            composable<InvoiceEditor> { PlaceholderScreen(R.string.title_new_invoice) }
+            composable<InvoiceEditor> { entry ->
+                val route = entry.toRoute<InvoiceEditor>()
+                // A client created via "+ New client" comes back through this entry's saved state.
+                val picked by entry.savedStateHandle.getStateFlow(PICKED_CLIENT_KEY, NO_ID).collectAsStateWithLifecycle()
+                InvoiceEditorScreen(
+                    args = EditorArgs(route.invoiceId, route.duplicateOf, route.clientId),
+                    pickedClientId = picked.takeIf { it != NO_ID },
+                    onPickedClientConsumed = { entry.savedStateHandle[PICKED_CLIENT_KEY] = NO_ID },
+                    onNewClient = { navController.navigate(ClientEditor(returnToEditor = true)) },
+                    onDone = { result ->
+                        when (result) {
+                            // UX_SPEC 1: after issuing, Back from the preview goes to the invoice, not the editor.
+                            is EditorResult.Issued -> {
+                                navController.navigate(InvoiceDetail(result.invoiceId)) { popUpTo<InvoiceEditor> { inclusive = true } }
+                                navController.navigate(PdfPreview(result.invoiceId))
+                            }
+                            else -> navController.popBackStack()
+                        }
+                    },
+                )
+            }
             composable<PdfPreview> { PlaceholderScreen(R.string.title_pdf_preview) }
             composable<ClientDetail> { entry ->
                 ClientDetailScreen(
@@ -146,10 +169,21 @@ private fun PocketBillNavigation(startDestination: Any) {
                 )
             }
             composable<ClientEditor> { entry ->
+                val route = entry.toRoute<ClientEditor>()
                 ClientEditorScreen(
-                    clientId = entry.toRoute<ClientEditor>().clientId,
+                    clientId = route.clientId,
                     onCancel = { navController.popBackStack() },
                     onDone = { result ->
+                        val chosenId = when (result) {
+                            is ClientEditorResult.Saved -> result.clientId
+                            is ClientEditorResult.UseExisting -> result.clientId
+                        }
+                        if (route.returnToEditor) {
+                            // Opened from the invoice editor: hand the client back and return there (UX_SPEC 1).
+                            navController.previousBackStackEntry?.savedStateHandle?.set(PICKED_CLIENT_KEY, chosenId)
+                            navController.popBackStack()
+                            return@ClientEditorScreen
+                        }
                         when (result) {
                             // A new client opens on its own page; an edit returns to where it started.
                             is ClientEditorResult.Saved -> if (result.isNew) {
@@ -170,6 +204,9 @@ private fun PocketBillNavigation(startDestination: Any) {
         }
     }
 }
+
+/** Saved-state key the client editor uses to hand a new client back to the invoice editor. */
+private const val PICKED_CLIENT_KEY = "pickedClientId"
 
 /** Remembers whether the graph started at Setup or Home across rotation and process death. */
 private val startDestinationSaver = Saver<Any, Boolean>(

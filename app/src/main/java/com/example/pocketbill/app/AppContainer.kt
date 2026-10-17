@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.pocketbill.data.db.PocketBillDatabase
 import com.example.pocketbill.data.repository.ClientRepository
 import com.example.pocketbill.data.repository.InvoiceRepository
+import com.example.pocketbill.data.repository.PresetRepository
 import com.example.pocketbill.data.repository.ProfileRepository
 import com.example.pocketbill.domain.time.Clock
 import com.example.pocketbill.domain.time.DeviceClock
@@ -24,4 +25,5 @@ class AppContainer(
     val invoices: InvoiceRepository by lazy { InvoiceRepository(database, clock) }
     val clients: ClientRepository by lazy { ClientRepository(database, clock) }
     val profile: ProfileRepository by lazy { ProfileRepository(database, clock) }
+    val presets: PresetRepository by lazy { PresetRepository(database, clock) }
 }

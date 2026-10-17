@@ -37,6 +37,7 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 | 2026-10-15 | JAVA_HOME fixed to `C:\java`; docs moved to `C:\dev\PocketBill` | Read back env var; listed copied files |
 | 2026-10-15 | `winget install Google.AndroidStudio` (v2026.2.1.8 found) **failed, exit 65**: package licence agreement not accepted | Nothing was installed. |
 | 2026-10-15 | Founder accepted the licence; Android Studio 2026.2.1.8 installed (exit 0); `studio64.exe` present | winget output plus file check. SDK not installed yet. |
+| 2026-10-17 | P4-T06: testDebugUnitTest 128/128 (34 new); on-phone tests not run (phone disconnected) | Test XML reports |
 | 2026-10-17 | P4-T05: 94/94 unit tests; connectedDebugAndroidTest on SM-A725F 25/25 (incl. v1→v2 migration); app kept installed, founder data untouched, safety copy made | Test XML reports + `run-as ls` before/after |
 | 2026-10-17 | P4-T04 on SM-A725F: Setup on fresh data, profile saved and remembered after restart, Settings and Business profile screens; two layout fixes | adb + screenshots (deleted afterwards: they contained the founder's details) |
 | 2026-10-17 | P4-T03 database: 64/64 unit tests; `connectedDebugAndroidTest` on SM-A725F → 20/20 RepositoryTest pass | Test XML reports read back by Claude Code |
@@ -55,15 +56,16 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 1. Founder: review the design drafts (UX_SPEC 1–8, DATA_MODEL 1–7, ARCHITECTURE).
 2. P4-T03 Room persistence is **verified**: 64/64 unit tests and 20/20 database tests on the phone.
 3. P4-T05 clients is **implemented**: Clients tab (search, A–Z / most owed, archived), client detail (owed per currency, invoices, archive/delete), add/edit with duplicate check and "update unpaid invoices" (D-015 preferences). Database is now **version 2** (D-016). 94/94 unit tests, 25/25 on-phone tests.
-4. Founder: open PocketBill once (this runs the v1 → v2 upgrade on your real data; a safety copy is in the app's private storage at files/pre-migration-v1), check Settings still shows your business, then try adding and editing a client.
-5. Claude: P4-T06 invoice editor.
+4. P4-T06 invoice editor is **implemented**: client choice with D-015 defaults, items with live totals, tax and discount, saved-item suggestions, autosave with "Saving… / Draft saved", issue with per-field checks and number preview, editing issued invoices, duplicates. 128/128 unit tests.
+5. Founder: connect the phone so Claude can run the on-phone tests (app stays installed), then try creating and issuing an invoice. After Issue you'll see the "coming later" PDF preview placeholder; the invoice itself is real and numbered.
+6. Claude: P4-T07 numbering & dates review, then P4-T08 PDF generation.
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 verified on the phone; P4-T03 Room verified (20/20 on phone). P4-T05 clients implemented; DB v2 (D-016). Next: P4-T06 invoice editor. Decisions up to D-016. 
+Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 verified on the phone; P4-T03 Room verified (20/20 on phone). P4-T05 clients implemented; DB v2 (D-016). P4-T06 invoice editor implemented (128 unit tests); on-phone tests pending. Decisions up to D-016. 
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```
