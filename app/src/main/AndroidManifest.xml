@@ -16,10 +16,13 @@
         </intent>
     </queries>
 
-    <!-- allowBackup stays off: invoice data must never be copied to Google's servers (DECISIONS D-009). -->
+    <!-- allowBackup stays off: invoice data must never be copied to Google's servers (DECISIONS D-009).
+         On Android 12+, data_extraction_rules also blocks cloud backup but allows moving to a new phone (D-019). -->
     <application
         android:name=".app.PocketBillApplication"
         android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
 import android.os.ParcelFileDescriptor
+import androidx.core.graphics.createBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -16,7 +17,7 @@ object PdfPageImages {
                 (0 until renderer.pageCount).map { index ->
                     renderer.openPage(index).use { page ->
                         val height = widthPx * page.height / page.width
-                        Bitmap.createBitmap(widthPx, height, Bitmap.Config.ARGB_8888).also {
+                        createBitmap(widthPx, height).also {
                             // Pages have no background of their own; paper is white.
                             it.eraseColor(Color.WHITE)
                             page.render(it, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)

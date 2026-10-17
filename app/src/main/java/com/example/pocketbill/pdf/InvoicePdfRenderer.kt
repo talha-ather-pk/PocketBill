@@ -7,6 +7,8 @@ import android.graphics.pdf.PdfDocument
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import androidx.core.graphics.withRotation
+import androidx.core.graphics.withTranslation
 import com.example.pocketbill.domain.invoice.PaperSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -248,10 +250,9 @@ class InvoicePdfRenderer(private val outputDir: File) {
                 alpha = 30
                 textAlign = Paint.Align.CENTER
             }
-            canvas.save()
-            canvas.rotate(-35f, pageWidth / 2f, pageHeight / 2f)
-            canvas.drawText("DRAFT", pageWidth / 2f, pageHeight / 2f + WATERMARK_SIZE / 3f, p)
-            canvas.restore()
+            canvas.withRotation(-35f, pageWidth / 2f, pageHeight / 2f) {
+                drawText("DRAFT", pageWidth / 2f, pageHeight / 2f + WATERMARK_SIZE / 3f, p)
+            }
         }
 
         /** A rotated, outlined "PAID" (with its date) or "VOID" stamp near the top of page 1. */
@@ -267,14 +268,13 @@ class InvoicePdfRenderer(private val outputDir: File) {
             val cx = left + contentWidth * 0.62f
             val cy = billToTop - SECTION_GAP / 2
 
-            canvas.save()
-            canvas.rotate(-12f, cx, cy)
             val box = Paint().apply { this.color = color; style = Paint.Style.STROKE; strokeWidth = 2.5f; isAntiAlias = true }
-            canvas.drawRoundRect(cx - width / 2, cy - height / 2, cx + width / 2, cy + height / 2, 6f, 6f, box)
-            val wordBaseline = cy - height / 2 + 8 + STAMP_SIZE * 0.85f
-            canvas.drawText(word, cx, wordBaseline, big)
-            if (detail != null) canvas.drawText(detail, cx, wordBaseline + 4 + SMALL_SIZE, small)
-            canvas.restore()
+            canvas.withRotation(-12f, cx, cy) {
+                drawRoundRect(cx - width / 2, cy - height / 2, cx + width / 2, cy + height / 2, 6f, 6f, box)
+                val wordBaseline = cy - height / 2 + 8 + STAMP_SIZE * 0.85f
+                drawText(word, cx, wordBaseline, big)
+                if (detail != null) drawText(detail, cx, wordBaseline + 4 + SMALL_SIZE, small)
+            }
         }
 
         // ---- Helpers -------------------------------------------------------------------------------
@@ -285,10 +285,7 @@ class InvoicePdfRenderer(private val outputDir: File) {
         }
 
         private fun draw(canvas: Canvas, layout: StaticLayout, x: Float, y: Float) {
-            canvas.save()
-            canvas.translate(x, y)
-            layout.draw(canvas)
-            canvas.restore()
+            canvas.withTranslation(x, y) { layout.draw(this) }
         }
 
         private fun firstBaseline(layout: StaticLayout): Float = layout.getLineBaseline(0).toFloat()

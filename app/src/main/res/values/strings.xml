@@ -252,6 +252,11 @@
     <string name="detail_history_sent">Last sent</string>
     <string name="detail_history_paid">Paid</string>
 
+    <!-- A record opened from a list no longer exists (P4-T13) -->
+    <string name="missing_invoice_title">This invoice no longer exists</string>
+    <string name="missing_client_title">This client no longer exists</string>
+    <string name="missing_body">It was deleted, or replaced when a backup was restored. Go back to see the current list.</string>
+
     <!-- PDF preview (MVP_SPEC 6, UX_SPEC 4) -->
     <string name="pdf_creating">Creating PDF…</string>
     <string name="pdf_failed">Couldn\'t create the PDF. Your invoice is saved.</string>

@@ -8,6 +8,12 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-019 — Moving to a new phone is allowed; cloud backup stays off (P4-T14)
+- **Context:** On Android 12+, `allowBackup="false"` alone doesn't settle device-to-device transfer (setting up a new phone from the old one, by cable or directly). D-009 forbids copying invoice data to Google's servers, but losing invoices when changing phones is the top user problem (UP-01).
+- **Decision:** `data_extraction_rules.xml` **excludes everything from cloud backup** and **includes the database, preferences and files in device-to-device transfer**. On Android 8–11, `allowBackup="false"` and `fullBackupContent="false"` keep everything off. The PocketBill backup file (P4-T12) stays the main safety net.
+- **Also checked (P4-T14):** the merged release manifest requests no permissions except androidx.core's app-private, signature-level `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` (no user prompt, nothing leaves the phone). No `INTERNET`. Exported: only `MainActivity` and androidx's profile-install receiver, which only the system shell can call (`DUMP` permission). The debug-only Compose preview activity is not in release builds. `<queries>` (mailto and PDF sharing) are package visibility, not permissions. `ManifestTest` now fails the build if any of this changes.
+- **Status:** Accepted 2026-10-17 (Claude as product owner).
+
 ## D-018 — Backup and restore details (P4-T12)
 - **Context:** MVP_SPEC 7 sets the rules (JSON file, validate first, one transaction, safety copy, reminder) but left some details open.
 - **Decision:**

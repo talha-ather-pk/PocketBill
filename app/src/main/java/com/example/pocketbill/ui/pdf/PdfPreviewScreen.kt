@@ -39,8 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -71,8 +70,7 @@ private const val PROGRESS_DELAY_MS = 300L
 @Composable
 fun PdfPreviewScreen(invoiceId: Long, onBack: () -> Unit) {
     val c = appContainer()
-    val widthPx = with(LocalDensity.current) { LocalConfiguration.current.screenWidthDp.dp.roundToPx() }
-        .coerceAtMost(MAX_PAGE_WIDTH_PX)
+    val widthPx = LocalWindowInfo.current.containerSize.width.coerceIn(1, MAX_PAGE_WIDTH_PX)
     val vm: PdfPreviewViewModel = viewModel {
         PdfPreviewViewModel(
             invoices = c.invoices, browser = c.invoices, sending = c.invoices, profile = c.profile, clients = c.clients,

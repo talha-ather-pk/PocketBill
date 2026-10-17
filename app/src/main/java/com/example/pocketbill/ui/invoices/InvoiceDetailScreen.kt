@@ -59,6 +59,7 @@ import com.example.pocketbill.domain.money.MoneyFormatter
 import com.example.pocketbill.ui.appContainer
 import com.example.pocketbill.ui.components.DisplayStatus
 import com.example.pocketbill.ui.components.StatusChip
+import com.example.pocketbill.ui.screens.EmptyStateScreen
 import com.example.pocketbill.ui.send.SendMessage
 import com.example.pocketbill.ui.send.SendRequestHandler
 import com.example.pocketbill.ui.send.sendMessageText
@@ -151,7 +152,12 @@ fun InvoiceDetailScreen(
             )
         },
     ) { padding ->
-        if (state.loading || invoice == null) return@Scaffold
+        if (state.loading) return@Scaffold
+        if (invoice == null) {
+            // Deleted elsewhere, or replaced by a restore: say so rather than show a blank page.
+            EmptyStateScreen(R.string.missing_invoice_title, R.string.missing_body, modifier = Modifier.padding(padding))
+            return@Scaffold
+        }
         if (sendState.busy) LinearProgressIndicator(Modifier.fillMaxWidth().padding(padding))
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.item),

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import androidx.core.net.toUri
 
 /**
  * Builds the intents for sending (UX_SPEC 4, ARCHITECTURE "share"): read access is granted to the
@@ -14,7 +15,7 @@ import android.os.Build
  */
 object ShareIntents {
     private const val PDF = "application/pdf"
-    private val MAILTO: Uri = Uri.parse("mailto:")
+    private val MAILTO: Uri = "mailto:".toUri()
 
     /** Apps that can send email. With exactly one (usually Gmail) it opens directly. */
     fun emailAppLabels(context: Context): List<String> {
@@ -40,7 +41,7 @@ object ShareIntents {
     }
 
     private fun send(pkg: SendPackage): Intent {
-        val uri = Uri.parse(pkg.fileUri)
+        val uri = pkg.fileUri.toUri()
         return Intent(Intent.ACTION_SEND).apply {
             type = PDF
             putExtra(Intent.EXTRA_STREAM, uri)

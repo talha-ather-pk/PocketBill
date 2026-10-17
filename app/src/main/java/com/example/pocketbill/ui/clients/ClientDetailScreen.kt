@@ -53,6 +53,7 @@ import com.example.pocketbill.ui.components.DisplayStatus
 import com.example.pocketbill.ui.components.StatusChip
 import com.example.pocketbill.ui.components.currencyLabel
 import com.example.pocketbill.ui.components.displayStatus
+import com.example.pocketbill.ui.screens.EmptyStateScreen
 import com.example.pocketbill.ui.theme.Spacing
 import com.example.pocketbill.ui.theme.tabular
 
@@ -109,7 +110,11 @@ fun ClientDetailScreen(
             )
         },
     ) { padding ->
-        if (state.loading || client == null) return@Scaffold
+        if (state.loading) return@Scaffold
+        if (client == null) {
+            EmptyStateScreen(R.string.missing_client_title, R.string.missing_body, modifier = Modifier.padding(padding))
+            return@Scaffold
+        }
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(Spacing.item),
             modifier = Modifier.padding(padding).fillMaxSize().padding(horizontal = Spacing.screen),

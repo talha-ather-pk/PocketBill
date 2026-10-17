@@ -1,5 +1,6 @@
 package com.example.pocketbill.ui.navigation
 
+import androidx.annotation.Keep
 import kotlinx.serialization.Serializable
 
 // Type-safe navigation routes from UX_SPEC.md section 1.
@@ -37,5 +38,6 @@ const val NO_ID: Long = 0
 @Serializable data object Presets
 @Serializable data object Backup
 
-/** Invoice list filters (UX_SPEC.md section 5). */
+/** Invoice list filters (UX_SPEC.md section 5). Kept by name: it is a navigation argument. */
+@Keep
 enum class InvoiceFilter { ALL, DRAFTS, UNPAID, OVERDUE, PAID, VOID }
