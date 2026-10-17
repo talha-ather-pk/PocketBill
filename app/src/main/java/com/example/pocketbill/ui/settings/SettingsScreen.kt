@@ -8,11 +8,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -47,6 +49,8 @@ fun SettingsScreen(
     val vm: SettingsViewModel = viewModel { SettingsViewModel(container.profile) }
     val businessName by vm.businessName.collectAsStateWithLifecycle()
     val comingLater = stringResource(R.string.settings_coming_later)
+    // Rows sit on the page background, not on a lighter surface band.
+    val rowColors = ListItemDefaults.colors(containerColor = Color.Transparent)
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(vertical = Spacing.l)) {
         Text(
@@ -57,16 +61,19 @@ fun SettingsScreen(
         ListItem(
             headlineContent = { Text(stringResource(R.string.title_business_profile)) },
             supportingContent = { Text(businessName) },
+            colors = rowColors,
             modifier = Modifier.clickable(onClick = onOpenProfile),
         )
         ListItem(
             headlineContent = { Text(stringResource(R.string.title_presets)) },
             supportingContent = { Text(comingLater) },
+            colors = rowColors,
             modifier = Modifier.clickable(onClick = onOpenPresets),
         )
         ListItem(
             headlineContent = { Text(stringResource(R.string.title_backup)) },
             supportingContent = { Text(comingLater) },
+            colors = rowColors,
             modifier = Modifier.clickable(onClick = onOpenBackup),
         )
         HorizontalDivider(Modifier.padding(vertical = Spacing.s))
