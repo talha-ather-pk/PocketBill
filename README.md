@@ -8,6 +8,7 @@ An offline-first Android app that helps freelancers create professional invoices
 
 | Document | Purpose |
 |---|---|
+| [PROGRESS.md](docs/PROGRESS.md) | One-page progress report: what is done, what remains |
 | [PROJECT_STATUS.md](docs/PROJECT_STATUS.md) | Current phase, task status, exact next action, resume prompt |
 | [ROADMAP.md](docs/ROADMAP.md) | All phases and task IDs |
 | [ENVIRONMENT.md](docs/ENVIRONMENT.md) | What is installed on the development laptop |
