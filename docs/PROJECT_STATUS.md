@@ -52,14 +52,15 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 1. Founder: review the design drafts (UX_SPEC 1–8, DATA_MODEL 1–7, ARCHITECTURE).
 2. P4-T03 Room persistence is **verified**: 64/64 unit tests and 20/20 database tests on the phone.
-3. Claude: P4-T04 business profile & settings (first-launch Setup, UX_SPEC 1), the first screen that saves real data.
+3. P4-T04 is **implemented**: first-launch Setup, Settings tab, Business profile editor with the "update unpaid invoices" dialog (72/72 unit tests). Founder: free the phone for about 2 minutes so Claude can walk through Setup on it.
+4. Claude: then P4-T05 clients.
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 verified on the phone; P4-T03 Room verified (20/20 on phone). Next: P4-T04 Setup and Settings. Decisions up to D-014. 
+Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 verified on the phone; P4-T03 Room verified (20/20 on phone). P4-T04 implemented, on-phone check pending. Decisions up to D-014. 
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```

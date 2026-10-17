@@ -1,7 +1,11 @@
 package com.example.pocketbill.ui.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -10,11 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -22,9 +29,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pocketbill.R
+import com.example.pocketbill.ui.appContainer
 import com.example.pocketbill.ui.screens.EmptyStateScreen
 import com.example.pocketbill.ui.screens.HomeScreen
 import com.example.pocketbill.ui.screens.PlaceholderScreen
+import com.example.pocketbill.ui.settings.BusinessProfileScreen
+import com.example.pocketbill.ui.settings.SettingsScreen
+import com.example.pocketbill.ui.setup.SetupScreen
 
 /**
  * App shell: bottom bar plus the navigation graph from UX_SPEC.md section 1.
@@ -32,6 +43,25 @@ import com.example.pocketbill.ui.screens.PlaceholderScreen
  */
 @Composable
 fun PocketBillApp() {
+    val container = appContainer()
+    val startVm: StartViewModel = viewModel { StartViewModel(container.profile) }
+    val start by startVm.start.collectAsStateWithLifecycle()
+    if (start == StartState.LOADING) {
+        // The database answers in well under a second; show the plain background meanwhile (UX_SPEC 2: no spinner).
+        Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+    } else {
+        // One call site, so the graph survives NEEDS_SETUP changing to READY when Setup saves.
+        PocketBillNavigation(startDestination = if (start == StartState.NEEDS_SETUP) Setup else Home)
+    }
+}
+
+/**
+ * [startDestination] is fixed for the life of the nav graph: once Setup finishes it navigates
+ * to Home itself, so the change from NEEDS_SETUP to READY must not rebuild the graph.
+ */
+@Composable
+private fun PocketBillNavigation(startDestination: Any) {
+    val graphStart = rememberSaveable(saver = startDestinationSaver) { startDestination }
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
@@ -69,10 +99,14 @@ fun PocketBillApp() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Home,
+            startDestination = graphStart,
             modifier = Modifier.padding(innerPadding),
         ) {
-            composable<Setup> { PlaceholderScreen(R.string.title_setup) }
+            composable<Setup> {
+                SetupScreen(onDone = {
+                    navController.navigate(Home) { popUpTo<Setup> { inclusive = true } }
+                })
+            }
 
             composable<Home> {
                 HomeScreen(onCreateInvoice = { navController.navigate(InvoiceEditor()) })
@@ -84,7 +118,11 @@ fun PocketBillApp() {
                 EmptyStateScreen(R.string.clients_empty_title, R.string.clients_empty_body)
             }
             composable<Settings> {
-                EmptyStateScreen(R.string.settings_placeholder_title, R.string.settings_placeholder_body)
+                SettingsScreen(
+                    onOpenProfile = { navController.navigate(BusinessProfile) },
+                    onOpenPresets = { navController.navigate(Presets) },
+                    onOpenBackup = { navController.navigate(Backup) },
+                )
             }
 
             composable<InvoiceDetail> { PlaceholderScreen(R.string.title_invoice) }
@@ -92,13 +130,19 @@ fun PocketBillApp() {
             composable<PdfPreview> { PlaceholderScreen(R.string.title_pdf_preview) }
             composable<ClientDetail> { PlaceholderScreen(R.string.title_client) }
             composable<ClientEditor> { PlaceholderScreen(R.string.title_client_editor) }
-            composable<BusinessProfile> { PlaceholderScreen(R.string.title_business_profile) }
+            composable<BusinessProfile> { BusinessProfileScreen(onBack = { navController.popBackStack() }) }
             composable<Presets> { PlaceholderScreen(R.string.title_presets) }
             composable<Backup> { PlaceholderScreen(R.string.title_backup) }
             composable<RestoreConfirm> { PlaceholderScreen(R.string.title_restore) }
         }
     }
 }
+
+/** Remembers whether the graph started at Setup or Home across rotation and process death. */
+private val startDestinationSaver = Saver<Any, Boolean>(
+    save = { it == Setup },
+    restore = { startedAtSetup -> if (startedAtSetup) Setup else Home },
+)
 
 /** Standard bottom-bar navigation: one copy of each tab, tab state saved and restored, Back returns to Home. */
 private fun NavHostController.navigateToTab(tab: TopLevelDestination) {

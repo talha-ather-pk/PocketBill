@@ -15,8 +15,6 @@
     <string name="invoices_empty_body">Invoices you create will be listed here.</string>
     <string name="clients_empty_title">No clients yet</string>
     <string name="clients_empty_body">Save a client once and reuse their details on every invoice.</string>
-    <string name="settings_placeholder_title">Settings</string>
-    <string name="settings_placeholder_body">Your business details and default currency will go here.</string>
 
     <!-- Screens whose routes exist but whose content comes in a later Phase 4 task -->
     <string name="placeholder_body">This screen is coming in a later build step.</string>
@@ -35,4 +33,65 @@
     <string name="save_status_saving">Saving…</string>
     <string name="save_status_saved">Draft saved</string>
     <string name="save_status_failed">Couldn\'t save. Your changes are kept on screen.</string>
+
+    <!-- Common actions -->
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_back">Back</string>
+    <string name="action_change">Change</string>
+    <string name="action_search">Search</string>
+    <string name="save_failed">Couldn\'t save. Please try again.</string>
+
+    <!-- Setup and business profile (P4-T04, MVP_SPEC F-01) -->
+    <string name="setup_subtitle">This appears on your invoices. You can change everything later in Settings.</string>
+    <string name="setup_start">Start using PocketBill</string>
+    <string name="field_business_name">Business name</string>
+    <string name="field_currency">Default currency</string>
+    <string name="field_payment">Payment details (optional)</string>
+    <string name="field_payment_help">Printed on every invoice, for example your bank, PayPal or Wise details.</string>
+    <string name="field_contact">Contact details</string>
+    <string name="field_contact_help">Email, phone or website, one per line.</string>
+    <string name="field_address">Address</string>
+    <string name="field_tax_id">Tax ID (optional)</string>
+    <string name="field_tax_id_help">For example a VAT number.</string>
+    <string name="field_terms">Payment due</string>
+    <string name="terms_on_receipt">On receipt</string>
+    <plurals name="terms_days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <string name="field_tax_rate">Default tax (%)</string>
+    <string name="field_prefix">Invoice number prefix</string>
+    <string name="field_next_number">Next invoice number</string>
+    <string name="field_next_number_help">Your next invoice will be %1$s</string>
+    <string name="field_paper">Paper size</string>
+    <string name="paper_a4">A4</string>
+    <string name="paper_letter">US Letter</string>
+    <string name="currency_picker_title">Choose currency</string>
+    <string name="settings_section_defaults">Defaults for new invoices</string>
+    <string name="settings_section_numbering">Invoice numbers</string>
+    <string name="profile_error_name_required">Enter your business name.</string>
+    <string name="profile_error_bad_percent">Enter a percentage, like 7.5 or 20.</string>
+    <string name="profile_error_prefix_too_long">Use %1$d characters or fewer.</string>
+    <string name="profile_error_bad_number">Enter a whole number, like 58.</string>
+    <string name="profile_error_number_too_low">Can\'t be lower than %1$d. Invoice numbers are never reused.</string>
+
+    <!-- Update unpaid invoices dialog (DATA_MODEL 5.5) -->
+    <string name="update_unpaid_title">Update unpaid invoices too?</string>
+    <string name="update_unpaid_payment_warning">Your payment details changed. Clients paying from invoices with the old details could send money to the old account.</string>
+    <plurals name="update_unpaid_body">
+        <item quantity="one">%1$d unpaid invoice still shows your old details.</item>
+        <item quantity="other">%1$d unpaid invoices still show your old details.</item>
+    </plurals>
+    <string name="update_unpaid_only_new">Only new invoices</string>
+    <plurals name="update_unpaid_also">
+        <item quantity="one">Also update the unpaid invoice</item>
+        <item quantity="other">Also update the %1$d unpaid invoices</item>
+    </plurals>
+    <string name="update_unpaid_paid_note">Paid invoices always keep the details they were sent with.</string>
+
+    <!-- Settings tab -->
+    <string name="settings_coming_later">Coming in a later build step</string>
+    <string name="settings_privacy_title">Your data</string>
+    <string name="settings_privacy_body">Your invoices are stored only on this phone. PocketBill has no account and no internet access. A copy leaves the phone only when you send an invoice or make a backup.</string>
 </resources>
