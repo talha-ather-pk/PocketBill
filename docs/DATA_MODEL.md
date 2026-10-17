@@ -90,7 +90,7 @@ data class InvoiceEntity(
     val uuid: String,
     val number: String? = null,                   // assigned when issued
     val status: InvoiceStatus = InvoiceStatus.DRAFT,
-    val clientId: Long,
+    val clientId: Long? = null,                   // null only while DRAFT (I-11)
     val currency: String,
     val issueDate: Long,
     val dueDate: Long,
@@ -157,7 +157,7 @@ Changes from MVP_SPEC section 4: `client.lastInvoicedAt` (recent-client chips), 
 
 ## 2. Invariants
 
-Room can't express SQL `CHECK` constraints through annotations, so the **repository enforces these, and unit tests cover each one**:
+Room can't express SQL `CHECK` constraints through annotations, so the **repository enforces these, and tests cover each one**:
 
 | # | Rule |
 |---|---|
@@ -171,6 +171,7 @@ Room can't express SQL `CHECK` constraints through annotations, so the **reposit
 | I-8 | `currency` is a valid ISO 4217 code (`java.util.Currency.getInstance` succeeds). |
 | I-9 | PAID and VOID invoices are read-only except for status changes (MVP_SPEC "Editing rules"). |
 | I-10 | `business_profile` has exactly one row once setup is complete. |
+| I-11 | `clientId` may be null **only** while DRAFT. Autosaved drafts can exist before a client is chosen (UX_SPEC 3); issuing requires a client. *(Added in P4-T03.)* |
 
 ## 3. Operations that must be atomic (one `@Transaction` each)
 

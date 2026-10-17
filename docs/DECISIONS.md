@@ -8,6 +8,13 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-014 — Database version 1 stays open until the first release
+- **Context:** DATA_MODEL 7 (G-1…G-7) requires a version bump, a migration and a test for every schema change. That protects users' data, but before the first release no user has any data, and the schema is still being built across Phase 4.
+- **Decision:** Until the **first release build** (closed testing or production), the schema stays at **version 1** and its exported JSON (`app/schemas/`) is regenerated as entities change. From the first release build onward, G-1…G-7 apply in full and version 1's JSON is frozen.
+- **Still applies now:** no `fallbackToDestructiveMigration` (G-1), and schema JSON is committed so every change is visible in Git.
+- **Versions chosen for P4-T03** (checked against official release pages 2026-10-17): Room **2.8.5** (D-005; still the latest stable), KSP **2.3.12** (KSP versions are independent of Kotlin since 2.3.0; 2.3.10 added the Kotlin 2.4 fix), kotlinx-serialization-json **1.11.0**, AndroidX test core/runner **1.7.0**, ext-junit **1.3.0**.
+- **Status:** Accepted 2026-10-17 (founder approved starting P4-T03 with this approach).
+
 ## D-013 — Accept the T3 sending re-check at 5 of 6
 - **Context:** The T3 re-check rule needed every tested participant to send unaided in under 30 s. 5 of 6 did. P-e needed help (38 s) and had also given up on creating the invoice (120 s) (VALIDATION_RESULTS.md).
 - **Decision:** Accept the result. P-e's difficulty looks general rather than specific to sending, since they struggled with both tasks. Respond to P-e's stated confusion (unsure items were saved) by making the editor's "Saving…" / "Draft saved ✓" indicator a prominent requirement (UX_SPEC 3).

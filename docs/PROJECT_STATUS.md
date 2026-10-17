@@ -50,14 +50,15 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 **P1-T07 passed (2026-10-16): 5 of 6 created a real invoice on the phone in 42–55 s.** The D-010 gate is open, so Phase 4 can start. T3 re-check accepted at 5 of 6 (D-013).
 
 1. Founder: review the design drafts (UX_SPEC 1–8, DATA_MODEL 1–7, ARCHITECTURE).
-2. Claude: P4-T03 Room persistence (DATA_MODEL 1–5, 7). P4-T01 app shell is **verified** on the phone; P4-T02 money code done.
+2. P4-T03 Room persistence is **implemented** (schema v1 exported, DAOs, Invoice/Client/Profile repositories; 64/64 unit tests). Founder: reconnect the phone so Claude can run the 20 on-phone database tests (`connectedDebugAndroidTest`).
+3. Claude: after those pass, P4-T04 business profile & settings (first-launch Setup).
 
 ## Resume prompt for a new Claude session
 
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/ROADMAP.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 app shell verified on the phone. Next: P4-T03 Room. Decisions up to D-013.
+Phase 0 complete (all tasks verified). Current phase: Phase 4 (MVP implementation). P1-T07 passed (5/6), so the D-010 gate is open. P4-T02 money code done (47 tests). P4-T01 verified on the phone; P4-T03 Room implemented, on-phone tests pending. Decisions up to D-014. 
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md. Follow the master project prompt
 rules: small numbered tasks, never fake verification, explain things simply (I'm a beginner on Windows).
 ```
