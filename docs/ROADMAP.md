@@ -38,13 +38,13 @@ P4-T01 App shell: **Verified** (57 unit tests; checked on the Galaxy A72) · P4-
 P5-T01 Unit tests: **done** (223) · P5-T02 Database tests: **done** (on the phone) · P5-T03 UI tests: **manual checklist** (QA_REPORT.md) · P5-T04 PDF matrix: **done** · P5-T05 Device & lifecycle: **manual checklist** · P5-T06 Security & privacy review: **done** ([SECURITY_REVIEW.md](SECURITY_REVIEW.md)). Report: [QA_REPORT.md](QA_REPORT.md).
 
 ## Phase 6 — Monetization (only after core workflow is reliable)
-P6-T01 Free tier · P6-T02 Pro features · P6-T03 Ads evaluation · P6-T04 Billing (if justified) · P6-T05 Revenue model — all Not started.
+**Decided** (D-020, [MONETIZATION.md](MONETIZATION.md)): 1.0 fully free, no ads, no billing; Pro later for new features, one-time unlock.
 
 ## Phase 7 — Analytics and feedback
-`ANALYTICS_PLAN.md`, minimal privacy-preserving metrics — Not started.
+**Decided** (D-021, [ANALYTICS_PLAN.md](ANALYTICS_PLAN.md)): no in-app analytics; Play Console metrics + Send feedback (built, hidden until a support email is set).
 
 ## Phase 8 — Google Play release
-P8-T01 Identity & branding · P8-T02 Store listing · P8-T03 Privacy policy & Data Safety · P8-T04 Compliance · P8-T05 Testing-track requirements · P8-T06 Signed bundle · P8-T07 Release checklist — all Not started.
+P8-T01 Identity & branding: **needs founder** (app ID, support email) · P8-T02 Store listing: **drafted** ([STORE_LISTING.md](STORE_LISTING.md)) · P8-T03 Privacy policy & Data Safety: **drafted** ([privacy-policy.html](privacy-policy.html)) · P8-T04 Compliance: **checked** (target API 37 ≥ 36) · P8-T05 Testing track: **needs founder** (12 testers × 14 days) · P8-T06 Signed bundle: **ready** (bundle builds; key script, D-022) · P8-T07 Release checklist: **done** ([RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)).
 
 ## Phase 9 — Launch and growth
-P9-T01 Channels · P9-T02 Launch content · P9-T03 Feedback process · P9-T04 30-day experiment plan — all Not started.
+**Planned** ([LAUNCH_PLAN.md](LAUNCH_PLAN.md)): channels, launch content, feedback process, 30-day experiments. Runs after production access.

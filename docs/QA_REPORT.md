@@ -7,7 +7,7 @@ _As of 2026-10-17. Device: Samsung Galaxy A72 (SM-A725F), Android 14._
 | Suite | Count | Result | Covers |
 |---|---|---|---|
 | Unit tests (computer) | 223 | ✅ all pass | Money and rounding (232,000 random cases), numbering, dates incl. leap days, year ends and time zones, editor, clients, invoices list and detail, sending flow and email templates, Home, backup format and validation, saved items, theme contrast, manifest and privacy guards |
-| On-phone tests | 49 | ✅ all pass | Database and repositories, v1→v2 migration, backup round trip / safety copy / bad files / half-way failure / logo, PDF: D-007 characters, page sizes, 50 and 200 items, marks, logo, extreme amounts and long text |
+| On-phone tests | 52 | ✅ all pass | Database and repositories, logo import (shrinking, refusing non-images), v1→v2 migration, backup round trip / safety copy / bad files / half-way failure / logo, PDF: D-007 characters, page sizes, 50 and 200 items, marks, logo, extreme amounts and long text |
 
 On-phone tests use an in-memory database and test folders: the founder's real data is never touched.
 

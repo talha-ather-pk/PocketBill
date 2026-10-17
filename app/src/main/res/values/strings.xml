@@ -406,4 +406,9 @@
     <string name="logo_current">Your logo</string>
     <string name="logo_help">Shown at the top of new invoices. Invoices already issued keep the logo they had.</string>
     <string name="logo_failed">Couldn\'t use that image. Try a PNG or JPEG.</string>
+
+    <!-- Feedback (ANALYTICS_PLAN). Empty until the founder sets a support address for release (P8-T01). -->
+    <string name="support_email" translatable="false"></string>
+    <string name="settings_feedback">Send feedback</string>
+    <string name="settings_feedback_hint">Opens your email app. Nothing from your invoices is attached.</string>
 </resources>

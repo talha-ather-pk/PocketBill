@@ -8,6 +8,21 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-022 — Release build: signing outside the repo, R8 off for 1.0 (P8-T06)
+- **Decision:** Release signing reads `keystore.properties` (git-ignored), created once by `tools/make-upload-key.ps1`, which puts the upload key in `C:\dev\keys`. Use **Play App Signing**. R8/minification stays **off** for 1.0: the app is 9 MB as a bundle, and a shrunk build that was never tested on a phone (installing it over the founder's debug app would need an uninstall and lose data) is the bigger risk.
+- **Revisit:** turn R8 on once a spare phone or emulator can run the release build end to end.
+- **Status:** Accepted 2026-10-17 (Claude as product owner).
+
+## D-021 — No in-app analytics or crash reporting in 1.0 (Phase 7)
+- **Decision:** No analytics, crash-reporting or ads SDKs. Measure with Play Console (installs, retention, Android vitals for crashes/ANRs, ratings) plus a "Send feedback" email that attaches nothing from invoices. Details: [ANALYTICS_PLAN.md](ANALYTICS_PLAN.md).
+- **Why:** The app has no INTERNET permission and promises that data never leaves the phone unless the user shares it.
+- **Status:** Accepted 2026-10-17 (Claude as product owner).
+
+## D-020 — 1.0 is completely free: no ads, no paywall, no billing (Phase 6)
+- **Decision:** Every 1.0 feature is free and unlimited; no ads ever in the editor, PDFs or emails; no billing code. Later Pro features must be new value (e.g. recurring invoices, several business profiles), sold as a one-time unlock after retention is proven. Details: [MONETIZATION.md](MONETIZATION.md).
+- **Why:** "Free, no ads, no cap" is the position against Zoho and Saldo; billing would need network access.
+- **Status:** Accepted 2026-10-17 (Claude as product owner). Founder can override before launch.
+
 ## D-019 — Moving to a new phone is allowed; cloud backup stays off (P4-T14)
 - **Context:** On Android 12+, `allowBackup="false"` alone doesn't settle device-to-device transfer (setting up a new phone from the old one, by cable or directly). D-009 forbids copying invoice data to Google's servers, but losing invoices when changing phones is the top user problem (UP-01).
 - **Decision:** `data_extraction_rules.xml` **excludes everything from cloud backup** and **includes the database, preferences and files in device-to-device transfer**. On Android 8–11, `allowBackup="false"` and `fullBackupContent="false"` keep everything off. The PocketBill backup file (P4-T12) stays the main safety net.

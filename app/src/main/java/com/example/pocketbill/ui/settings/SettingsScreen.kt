@@ -22,7 +22,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import com.example.pocketbill.R
+import com.example.pocketbill.app.SafeLog
 import com.example.pocketbill.domain.format.DateFormatter
 import com.example.pocketbill.data.repository.ProfileRepository
 import com.example.pocketbill.ui.appContainer
@@ -82,6 +89,17 @@ fun SettingsScreen(
             colors = rowColors,
             modifier = Modifier.clickable(onClick = onOpenBackup),
         )
+        // Shown once a support address is set for release (P8-T01); only versions are prefilled (ANALYTICS_PLAN).
+        val supportEmail = stringResource(R.string.support_email)
+        if (supportEmail.isNotBlank()) {
+            val context = LocalContext.current
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.settings_feedback)) },
+                supportingContent = { Text(stringResource(R.string.settings_feedback_hint)) },
+                colors = rowColors,
+                modifier = Modifier.clickable { sendFeedback(context, supportEmail) },
+            )
+        }
         HorizontalDivider(Modifier.padding(vertical = Spacing.s))
         Text(
             stringResource(R.string.settings_privacy_title),
@@ -101,3 +119,17 @@ fun SettingsScreen(
 @Composable
 internal fun lastBackupText(at: Long?): String =
     at?.let { stringResource(R.string.backup_last, DateFormatter.full(it / 86_400_000L)) } ?: stringResource(R.string.backup_never)
+
+/** Opens the email app to the support address with the app and Android versions; nothing else is attached. */
+private fun sendFeedback(context: Context, to: String) {
+    val version = runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull().orEmpty()
+    val intent = Intent(Intent.ACTION_SENDTO, "mailto:".toUri()).apply {
+        putExtra(Intent.EXTRA_EMAIL, arrayOf(to))
+        putExtra(Intent.EXTRA_SUBJECT, "PocketBill feedback (app $version, Android ${Build.VERSION.RELEASE})")
+    }
+    try {
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        SafeLog.failure("Feedback", "No email app", e)
+    }
+}

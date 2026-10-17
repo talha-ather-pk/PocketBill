@@ -3,7 +3,8 @@ package com.example.pocketbill.data
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
+import androidx.core.graphics.scale
+import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -30,9 +31,11 @@ class LogoStore(private val context: Context) : LogoFiles {
     /** Null if the picked file isn't a readable image. */
     suspend fun import(uri: String): String? = withContext(Dispatchers.IO) {
         val resolver = context.contentResolver
-        val parsed = Uri.parse(uri)
+        val parsed = uri.toUri()
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        resolver.openInputStream(parsed)?.use { BitmapFactory.decodeStream(it, null, bounds) } ?: return@withContext null
+        // With inJustDecodeBounds, decodeStream always returns null and only fills [bounds].
+        val opened = resolver.openInputStream(parsed)?.use { BitmapFactory.decodeStream(it, null, bounds); true } ?: false
+        if (!opened) return@withContext null
         if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return@withContext null
         var sample = 1
         while (max(bounds.outWidth, bounds.outHeight) / (sample * 2) >= MAX_SIDE_PX) sample *= 2
@@ -41,7 +44,7 @@ class LogoStore(private val context: Context) : LogoFiles {
         } ?: return@withContext null
         val scale = MAX_SIDE_PX.toFloat() / max(decoded.width, decoded.height)
         val sized = if (scale < 1f) {
-            Bitmap.createScaledBitmap(decoded, (decoded.width * scale).toInt().coerceAtLeast(1), (decoded.height * scale).toInt().coerceAtLeast(1), true)
+            decoded.scale((decoded.width * scale).toInt().coerceAtLeast(1), (decoded.height * scale).toInt().coerceAtLeast(1))
         } else {
             decoded
         }
