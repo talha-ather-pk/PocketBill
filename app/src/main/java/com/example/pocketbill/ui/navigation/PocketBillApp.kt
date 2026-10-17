@@ -38,7 +38,8 @@ import com.example.pocketbill.ui.clients.ClientListScreen
 import com.example.pocketbill.ui.editor.EditorArgs
 import com.example.pocketbill.ui.editor.EditorResult
 import com.example.pocketbill.ui.editor.InvoiceEditorScreen
-import com.example.pocketbill.ui.screens.EmptyStateScreen
+import com.example.pocketbill.ui.invoices.InvoiceDetailScreen
+import com.example.pocketbill.ui.invoices.InvoiceListScreen
 import com.example.pocketbill.ui.screens.HomeScreen
 import com.example.pocketbill.ui.screens.PlaceholderScreen
 import com.example.pocketbill.ui.settings.BusinessProfileScreen
@@ -119,8 +120,12 @@ private fun PocketBillNavigation(startDestination: Any) {
             composable<Home> {
                 HomeScreen(onCreateInvoice = { navController.navigate(InvoiceEditor()) })
             }
-            composable<InvoiceList> {
-                EmptyStateScreen(R.string.invoices_empty_title, R.string.invoices_empty_body)
+            composable<InvoiceList> { entry ->
+                InvoiceListScreen(
+                    initialFilter = entry.toRoute<InvoiceList>().filter,
+                    onOpenInvoice = { navController.navigate(InvoiceDetail(it)) },
+                    onNewInvoice = { navController.navigate(InvoiceEditor()) },
+                )
             }
             composable<ClientList> {
                 ClientListScreen(
@@ -136,7 +141,16 @@ private fun PocketBillNavigation(startDestination: Any) {
                 )
             }
 
-            composable<InvoiceDetail> { PlaceholderScreen(R.string.title_invoice) }
+            composable<InvoiceDetail> { entry ->
+                InvoiceDetailScreen(
+                    invoiceId = entry.toRoute<InvoiceDetail>().invoiceId,
+                    onBack = { navController.popBackStack() },
+                    onEdit = { navController.navigate(InvoiceEditor(invoiceId = it)) },
+                    onDuplicate = { navController.navigate(InvoiceEditor(duplicateOf = it)) },
+                    onPreview = { navController.navigate(PdfPreview(it)) },
+                    onOpenClient = { navController.navigate(ClientDetail(it)) },
+                )
+            }
             composable<InvoiceEditor> { entry ->
                 val route = entry.toRoute<InvoiceEditor>()
                 // A client created via "+ New client" comes back through this entry's saved state.

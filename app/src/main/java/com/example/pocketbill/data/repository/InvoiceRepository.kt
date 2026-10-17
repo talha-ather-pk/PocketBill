@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import com.example.pocketbill.data.db.CurrencyTotal
 import com.example.pocketbill.data.db.InvoiceEntity
 import com.example.pocketbill.data.db.InvoiceWithLines
+import com.example.pocketbill.data.db.LineDescription
 import com.example.pocketbill.data.db.LineItemEntity
 import com.example.pocketbill.data.db.PocketBillDatabase
 import com.example.pocketbill.domain.Outcome
@@ -57,6 +58,23 @@ interface InvoiceStore {
     suspend fun previewNextNumber(): String?
 }
 
+/** What the Invoices tab and invoice detail need (UX_SPEC 5). [InvoiceRepository] is the real one. */
+interface InvoiceBrowser {
+    fun observeAll(): Flow<List<InvoiceEntity>>
+    fun observe(id: Long): Flow<InvoiceWithLines?>
+    fun observeLineDescriptions(): Flow<List<LineDescription>>
+    suspend fun markPaid(invoiceId: Long, paidDate: Long): Outcome<Unit>
+    suspend fun markUnpaid(invoiceId: Long): Outcome<Unit>
+
+    /** "Change date" on a paid invoice (UX_SPEC 5). */
+    suspend fun changePaidDate(invoiceId: Long, paidDate: Long): Outcome<Unit>
+    suspend fun void(invoiceId: Long): Outcome<Unit>
+
+    /** Only for the Undo offered for 6 seconds after Void (UX_SPEC 5). */
+    suspend fun undoVoid(invoiceId: Long): Outcome<Unit>
+    suspend fun deleteDraft(invoiceId: Long): Outcome<Unit>
+}
+
 /**
  * The only code that reads or writes invoices (ARCHITECTURE.md section 3). Each operation that
  * touches several rows runs in one transaction (DATA_MODEL.md section 3) and enforces the
@@ -66,7 +84,7 @@ class InvoiceRepository(
     private val db: PocketBillDatabase,
     private val clock: Clock,
     private val newUuid: () -> String = { UUID.randomUUID().toString() },
-) : InvoiceStore {
+) : InvoiceStore, InvoiceBrowser {
     private val invoices = db.invoiceDao()
     private val clients = db.clientDao()
     private val profiles = db.profileDao()
@@ -82,7 +100,11 @@ class InvoiceRepository(
         return InvoiceNumbering.firstFree(profile.invoicePrefix, profile.nextInvoiceNumber) { invoices.numberExists(it) }.number
     }
 
-    fun observe(id: Long): Flow<InvoiceWithLines?> = invoices.observeWithLines(id)
+    override fun observe(id: Long): Flow<InvoiceWithLines?> = invoices.observeWithLines(id)
+
+    override fun observeAll(): Flow<List<InvoiceEntity>> = invoices.observeAll()
+
+    override fun observeLineDescriptions(): Flow<List<LineDescription>> = invoices.observeLineDescriptions()
 
     fun observeOutstanding(): Flow<List<CurrencyTotal>> = invoices.observeOutstanding()
 
@@ -209,15 +231,21 @@ class InvoiceRepository(
 
     // ---- Status changes (UX_SPEC 5) --------------------------------------------------------
 
-    suspend fun markPaid(invoiceId: Long, paidDate: Long = clock.todayEpochDay()): Outcome<Unit> =
+    override suspend fun markPaid(invoiceId: Long, paidDate: Long): Outcome<Unit> =
         changeStatus(invoiceId, from = InvoiceStatus.ISSUED) { it.copy(status = InvoiceStatus.PAID, paidDate = paidDate) }
 
-    suspend fun markUnpaid(invoiceId: Long): Outcome<Unit> =
+    override suspend fun markUnpaid(invoiceId: Long): Outcome<Unit> =
         changeStatus(invoiceId, from = InvoiceStatus.PAID) { it.copy(status = InvoiceStatus.ISSUED, paidDate = null) }
 
+    override suspend fun changePaidDate(invoiceId: Long, paidDate: Long): Outcome<Unit> =
+        changeStatus(invoiceId, from = InvoiceStatus.PAID) { it.copy(paidDate = paidDate) }
+
     /** Voids an unpaid invoice. Its number stays reserved forever (N-3). */
-    suspend fun void(invoiceId: Long): Outcome<Unit> =
+    override suspend fun void(invoiceId: Long): Outcome<Unit> =
         changeStatus(invoiceId, from = InvoiceStatus.ISSUED) { it.copy(status = InvoiceStatus.VOID) }
+
+    override suspend fun undoVoid(invoiceId: Long): Outcome<Unit> =
+        changeStatus(invoiceId, from = InvoiceStatus.VOID) { it.copy(status = InvoiceStatus.ISSUED) }
 
     /** Records that the invoice was handed to an app for sending (UX_SPEC 4). Status is unchanged. */
     suspend fun recordSent(invoiceId: Long, via: String, at: Long = clock.nowMillis()): Outcome<Unit> =

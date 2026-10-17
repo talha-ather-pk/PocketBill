@@ -471,7 +471,7 @@ stateDiagram-v2
 - **Delete** exists only for drafts (UX_SPEC 3).
 
 ### Invoices list
-**Filters** (chips with counts): **All · Unpaid 4 · Overdue 1 · Paid · Drafts 2**. Void invoices appear only under All. The selected filter is remembered while the app is open.
+**Filters** (chips with counts): **All · Drafts 2 · Unpaid 4 · Overdue 1 · Paid 3 · Void 1**. *A Void filter was added at the founder's request in P4-T10; void invoices also appear under All.* The selected filter is remembered while the app is open.
 
 | Filter | Sort | Header line |
 |---|---|---|
@@ -480,6 +480,7 @@ stateDiagram-v2
 | Overdue | Due date, **oldest first** (most urgent on top) | "Overdue: $1,200.00" |
 | Paid | Paid date, newest first, grouped by month | — |
 | Drafts | Last edited, newest first | — |
+| Void | Issue date, newest first | — |
 
 **Row design** (the same everywhere: Home, Invoices, client detail):
 ```
@@ -502,6 +503,10 @@ INV-0014 · Due 30 Oct · Sent 16 Oct [Unpaid]
 | Search | "No invoices match “logo”." |
 
 **Performance:** lists use Paging once there are more than 200 invoices, so 1,000 invoices scroll smoothly on the Galaxy A72 (MVP_SPEC 8).
+
+### As built in P4-T10/T11
+- **Detail actions** until sending exists (P4-T08/T09): Unpaid shows **Mark as paid**, then Preview / Edit / Duplicate, with Void under ⋮. Paid shows **Mark as unpaid** and **Change paid date**. Drafts show **Continue editing** and **Delete draft**. Void shows Duplicate and Preview. The **Email to client** button from section 4 joins the top once PDFs exist.
+- **Header totals** show for every filter except All, per currency.
 
 ### Invoice detail: history block
 Below the actions, a short history built from existing columns (no new table):

@@ -19,7 +19,6 @@
     <!-- Screens whose routes exist but whose content comes in a later Phase 4 task -->
     <string name="placeholder_body">This screen is coming in a later build step.</string>
     <string name="title_setup">Set up your business</string>
-    <string name="title_invoice">Invoice</string>
     <string name="title_new_invoice">New invoice</string>
     <string name="title_pdf_preview">PDF preview</string>
     <string name="title_business_profile">Business profile</string>
@@ -217,4 +216,45 @@
     <string name="editor_keep_editing">Keep editing</string>
     <string name="editor_delete_draft">Delete draft</string>
     <string name="editor_delete_title">Delete this draft?</string>
+
+    <!-- Invoices tab and invoice detail (P4-T10/T11, UX_SPEC 5) -->
+    <string name="action_undo">Undo</string>
+    <string name="client_edit_short">Edit</string>
+    <string name="filter_all">All</string>
+    <string name="filter_drafts">Drafts</string>
+    <string name="invoices_new">New invoice</string>
+    <string name="invoices_search">Search invoices</string>
+    <string name="invoices_searching_all">Searching all invoices</string>
+    <string name="invoices_total_line">%1$s: %2$s</string>
+    <string name="invoices_no_match">No invoices match “%1$s”.</string>
+    <string name="invoices_no_client">No client yet</string>
+    <string name="invoices_empty_drafts">No drafts.</string>
+    <string name="invoices_empty_unpaid">Nothing unpaid.</string>
+    <string name="invoices_empty_overdue">Nothing overdue.</string>
+    <string name="invoices_empty_paid">No paid invoices yet. Mark an invoice as paid when the money arrives.</string>
+    <string name="invoices_empty_void">No voided invoices.</string>
+    <string name="invoice_row_edited">edited %1$s</string>
+    <string name="invoice_row_issued">Issued %1$s</string>
+    <string name="invoice_row_not_sent">Not sent yet</string>
+    <string name="detail_issued_on">Issued %1$s</string>
+    <string name="detail_due_on">Due %1$s</string>
+    <string name="detail_continue_editing">Continue editing</string>
+    <string name="detail_mark_paid">Mark as paid</string>
+    <string name="detail_mark_unpaid">Mark as unpaid</string>
+    <string name="detail_change_paid_date">Change paid date</string>
+    <string name="detail_preview">Preview</string>
+    <string name="detail_duplicate">Duplicate</string>
+    <string name="detail_void">Void invoice</string>
+    <string name="detail_void_title">Void %1$s?</string>
+    <string name="detail_void_body">It stays in your records with its number, but no longer counts as owed. Undo is offered for a few seconds.</string>
+    <string name="detail_void_note">Voided. This invoice no longer counts as owed, and voided invoices can\'t be sent.</string>
+    <string name="detail_msg_paid">Marked as paid today</string>
+    <string name="detail_msg_unpaid">Marked as unpaid</string>
+    <string name="detail_msg_paid_date">Paid date changed</string>
+    <string name="detail_msg_voided">Invoice voided</string>
+    <string name="detail_history">History</string>
+    <string name="detail_history_created">Created</string>
+    <string name="detail_history_issued">Issued</string>
+    <string name="detail_history_sent">Last sent</string>
+    <string name="detail_history_paid">Paid</string>
 </resources>

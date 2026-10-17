@@ -214,7 +214,7 @@ class RepositoryTest {
         val client = newClient()
         val (unpaidId, _) = issuedInvoice(client)
         val (paidId, _) = issuedInvoice(client)
-        invoices.markPaid(paidId).ok()
+        invoices.markPaid(paidId, today).ok()
         val paidBefore = invoices.get(paidId)!!.invoice.toSnapshot
         assertEquals(1, clients.unpaidIssuedCount(client))
 
@@ -228,7 +228,7 @@ class RepositoryTest {
         val client = newClient()
         val (unpaidId, _) = issuedInvoice(client)
         val (paidId, _) = issuedInvoice(client)
-        invoices.markPaid(paidId).ok()
+        invoices.markPaid(paidId, today).ok()
         profile.save(ProfileInput(name = "Your Studio", defaultCurrency = "USD", paymentInstructions = "IBAN NEW 2222"), alsoUpdateUnpaid = true).ok()
         assertEquals("IBAN NEW 2222", SnapshotJson.decodeFrom(invoices.get(unpaidId)!!.invoice.fromSnapshot!!)!!.paymentInstructions)
         assertEquals("IBAN OLD 1111", SnapshotJson.decodeFrom(invoices.get(paidId)!!.invoice.fromSnapshot!!)!!.paymentInstructions)
@@ -321,6 +321,31 @@ class RepositoryTest {
         assertTrue("one character isn't enough", presets.suggestions("L").isEmpty())
     }
 
+    // ---- Invoices tab and detail (P4-T10/T11) ----------------------------------------------------
+
+    @Test fun paidDateCanBeChangedOnlyOnPaidInvoices() = runBlocking {
+        val (id, _) = issuedInvoice(newClient())
+        assertEquals(Outcome.NotAllowed(Problem.READ_ONLY), invoices.changePaidDate(id, today))
+        invoices.markPaid(id, today).ok()
+        invoices.changePaidDate(id, today - 3).ok()
+        assertEquals(today - 3, invoices.get(id)!!.invoice.paidDate)
+    }
+
+    @Test fun undoVoidRestoresTheIssuedInvoiceWithItsNumber() = runBlocking {
+        val (id, number) = issuedInvoice(newClient())
+        invoices.void(id).ok()
+        invoices.undoVoid(id).ok()
+        assertEquals(InvoiceStatus.ISSUED, invoices.get(id)!!.invoice.status)
+        assertEquals(number, invoices.get(id)!!.invoice.number)
+        assertEquals(Outcome.NotAllowed(Problem.READ_ONLY), invoices.undoVoid(id))
+    }
+
+    @Test fun lineDescriptionsAreAvailableForSearch() = runBlocking {
+        val id = invoices.saveDraft(0, input(newClient(), LineDraft("Logo design", 1_000, 45_000), LineDraft("Extra revisions", 2_000, 6_000))).ok()
+        val found = invoices.observeLineDescriptions().first().filter { it.invoiceId == id }.map { it.description }.toSet()
+        assertEquals(setOf("Logo design", "Extra revisions"), found)
+    }
+
     @Test fun duplicateNamesAreFoundIgnoringCaseAndAccents() = runBlocking {
         newClient("Müller Design GmbH")
         assertTrue(clients.hasClientNamed("muller design gmbh"))
@@ -335,7 +360,7 @@ class RepositoryTest {
         val usdOverdue = invoices.saveDraft(0, input(client, LineDraft("Brand guide", 1_000, 120_000), currency = "USD").copy(issueDate = today - 40, dueDate = today - 10)).ok()
         invoices.issue(usdOverdue).ok()
         val paid = invoices.saveDraft(0, input(client, currency = "USD")).ok().also { invoices.issue(it).ok() }
-        invoices.markPaid(paid).ok()
+        invoices.markPaid(paid, today).ok()
         invoices.saveDraft(0, input(client, currency = "GBP")).ok() // drafts never count
 
         val outstanding = invoices.observeOutstanding().first().associate { it.currency to it.totalMinor }

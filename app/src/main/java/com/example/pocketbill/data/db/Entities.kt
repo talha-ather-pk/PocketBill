@@ -159,6 +159,9 @@ data class InvoiceWithLines(
     val lines: List<LineItemEntity> get() = unorderedLines.sortedBy { it.position }
 }
 
+/** One line's description, for searching invoices by item (UX_SPEC 5). */
+data class LineDescription(val invoiceId: Long, val description: String)
+
 /** What one client owes in one currency, and how many unpaid invoices make it up (UX_SPEC 6). */
 data class ClientOwed(val clientId: Long, val currency: String, val totalMinor: Long, val invoiceCount: Int)
 

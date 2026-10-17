@@ -95,6 +95,10 @@ interface InvoiceDao {
     @Insert
     suspend fun insertLines(lines: List<LineItemEntity>)
 
+    /** Every line description, for the invoice search (UX_SPEC 5). Paged lists come later if needed. */
+    @Query("SELECT invoiceId, description FROM line_item")
+    fun observeLineDescriptions(): Flow<List<LineDescription>>
+
     @Query("DELETE FROM line_item WHERE invoiceId = :invoiceId")
     suspend fun deleteLines(invoiceId: Long)
 
