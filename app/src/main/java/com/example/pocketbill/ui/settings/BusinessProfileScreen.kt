@@ -50,7 +50,9 @@ import com.example.pocketbill.ui.theme.Spacing
 @Composable
 fun BusinessProfileScreen(onBack: () -> Unit) {
     val container = appContainer()
-    val vm: BusinessProfileViewModel = viewModel { BusinessProfileViewModel(container.profile) }
+    val vm: BusinessProfileViewModel = viewModel {
+        BusinessProfileViewModel(container.profile) { container.homePrefs.paymentDetailsChangedAt = container.clock.nowMillis() }
+    }
     val state by vm.state.collectAsStateWithLifecycle()
     LaunchedEffect(state.done) { if (state.done) onBack() }
 

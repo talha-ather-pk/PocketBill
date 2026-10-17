@@ -411,4 +411,19 @@
     <string name="support_email" translatable="false"></string>
     <string name="settings_feedback">Send feedback</string>
     <string name="settings_feedback_hint">Opens your email app. Nothing from your invoices is attached.</string>
+
+    <!-- Home card after payment details change (UX_SPEC 2, DATA_MODEL 5.5) -->
+    <string name="home_payment_card_title">Your payment details changed</string>
+    <plurals name="home_payment_card_body">
+        <item quantity="one">%1$d unpaid invoice was sent with the old details. Send it again?</item>
+        <item quantity="other">%1$d unpaid invoices were sent with the old details. Send them again?</item>
+    </plurals>
+    <string name="home_payment_card_dismiss">Hide this card</string>
+
+    <!-- Accountant export (F-19) -->
+    <string name="csv_title">For your accountant</string>
+    <string name="csv_body">A spreadsheet of all issued, paid and void invoices (CSV), which opens in Excel or Google Sheets. It can\'t be restored; use a backup for that.</string>
+    <string name="csv_button">Export invoices (CSV)</string>
+    <string name="csv_saved">Spreadsheet saved</string>
+    <string name="csv_failed">Couldn\'t save the spreadsheet. Please try again.</string>
 </resources>

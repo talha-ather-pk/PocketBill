@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.pocketbill.data.backup.BackupFormat
 import com.example.pocketbill.data.backup.BackupStore
 import com.example.pocketbill.data.backup.RestorePreview
+import com.example.pocketbill.data.export.InvoiceCsv
 import com.example.pocketbill.domain.time.Clock
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-enum class BackupMessage { BACKED_UP, BACKUP_FAILED, RESTORED, RESTORE_FAILED, FILE_UNREADABLE }
+enum class BackupMessage { BACKED_UP, BACKUP_FAILED, RESTORED, RESTORE_FAILED, FILE_UNREADABLE, CSV_SAVED, CSV_FAILED }
 
 data class BackupUiState(
     val loading: Boolean = true,
@@ -49,6 +50,12 @@ class BackupViewModel(private val store: BackupStore, private val clock: Clock) 
             _state.update { it.copy(busy = false) }
         }
     }
+
+    fun csvFileName(): String = InvoiceCsv.fileName(LocalDate.ofEpochDay(clock.todayEpochDay()))
+
+    suspend fun csvText(): String = store.exportCsv()
+
+    fun onCsvWritten(ok: Boolean) = _state.update { it.copy(message = if (ok) BackupMessage.CSV_SAVED else BackupMessage.CSV_FAILED) }
 
     fun onBackupWritten(ok: Boolean) {
         viewModelScope.launch {

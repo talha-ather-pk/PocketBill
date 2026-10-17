@@ -83,6 +83,23 @@ fun BackupScreen(onBack: () -> Unit) {
             vm.onBackupWritten(ok)
         }
     }
+    val csvLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri: Uri? ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val ok = try {
+                val text = vm.csvText()
+                withContext(Dispatchers.IO) {
+                    context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(text.toByteArray(Charsets.UTF_8)) } != null
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                SafeLog.failure("Backup", "Writing the CSV failed", e)
+                false
+            }
+            vm.onCsvWritten(ok)
+        }
+    }
     val openLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
         if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
@@ -107,6 +124,8 @@ fun BackupScreen(onBack: () -> Unit) {
         BackupMessage.RESTORED to stringResource(R.string.backup_msg_restored),
         BackupMessage.RESTORE_FAILED to stringResource(R.string.backup_msg_restore_failed),
         BackupMessage.FILE_UNREADABLE to stringResource(R.string.backup_unreadable),
+        BackupMessage.CSV_SAVED to stringResource(R.string.csv_saved),
+        BackupMessage.CSV_FAILED to stringResource(R.string.csv_failed),
     )
     LaunchedEffect(state.message) {
         val message = state.message ?: return@LaunchedEffect
@@ -155,6 +174,18 @@ fun BackupScreen(onBack: () -> Unit) {
                     enabled = !state.busy,
                     modifier = Modifier.fillMaxWidth().heightIn(min = Spacing.buttonHeight),
                 ) { Text(stringResource(R.string.backup_restore_button)) }
+
+                Text(
+                    stringResource(R.string.csv_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = Spacing.l).semantics { heading() },
+                )
+                Text(stringResource(R.string.csv_body), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                OutlinedButton(
+                    onClick = { csvLauncher.launch(vm.csvFileName()) },
+                    enabled = !state.busy,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = Spacing.buttonHeight),
+                ) { Text(stringResource(R.string.csv_button)) }
             }
         }
     }

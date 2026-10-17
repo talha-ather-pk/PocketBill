@@ -33,7 +33,11 @@ data class BusinessProfileUiState(
 )
 
 /** Settings → Business profile: every profile field (MVP_SPEC F-01). */
-class BusinessProfileViewModel(private val profile: ProfileRepository) : ViewModel() {
+class BusinessProfileViewModel(
+    private val profile: ProfileRepository,
+    /** Called with the time when updated unpaid invoices carry new payment details (Home card, UX_SPEC 2). */
+    private val onPaymentDetailsUpdated: () -> Unit = {},
+) : ViewModel() {
     private val _state = MutableStateFlow(BusinessProfileUiState())
     val state: StateFlow<BusinessProfileUiState> = _state.asStateFlow()
 
@@ -90,7 +94,9 @@ class BusinessProfileViewModel(private val profile: ProfileRepository) : ViewMod
 
     private suspend fun save(input: ProfileInput, alsoUpdateUnpaid: Boolean) {
         _state.update { it.copy(saving = true, failed = false) }
+        val paymentChanged = original?.paymentDetailsDiffer(input) == true
         val outcome = profile.save(input, alsoUpdateUnpaid)
+        if (outcome is Outcome.Success && alsoUpdateUnpaid && paymentChanged) onPaymentDetailsUpdated()
         _state.update { it.copy(saving = false, done = outcome is Outcome.Success, failed = outcome !is Outcome.Success) }
     }
 

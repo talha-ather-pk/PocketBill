@@ -38,6 +38,7 @@ class HomeViewModel(
     private val prefs: HomeCardPrefs,
 ) : ViewModel() {
     private val backupCardHidden = MutableStateFlow(prefs.backupCardHiddenUntil > clock.nowMillis())
+    private val paymentChangedAt = MutableStateFlow(prefs.paymentDetailsChangedAt)
 
     private val today = clock.todayEpochDay()
     private val _state = MutableStateFlow(HomeUiState(today = today))
@@ -52,9 +53,9 @@ class HomeViewModel(
         viewModelScope.launch {
             val allClients = combine(clients.observeActive(), clients.observeArchived()) { a, b -> a + b }
             // Recomputed when invoices change or the profile changes (it holds the last backup date).
-            combine(browser.observeAll(), allClients, businessName, backupCardHidden) { invoices, cs, name, hidden ->
+            combine(browser.observeAll(), allClients, businessName, backupCardHidden, paymentChangedAt) { invoices, cs, name, hidden, changedAt ->
                 HomeUiState(
-                    loading = false, businessName = name.orEmpty(), today = today, summary = buildHome(invoices, cs, today),
+                    loading = false, businessName = name.orEmpty(), today = today, summary = buildHome(invoices, cs, today, changedAt),
                     showBackupCard = !hidden && invoices.isNotEmpty() && backupDue(),
                 )
             }.collect { _state.value = it }
@@ -65,6 +66,12 @@ class HomeViewModel(
     fun onDismissBackupCard() {
         prefs.backupCardHiddenUntil = clock.nowMillis() + BACKUP_CARD_HIDE_MS
         backupCardHidden.value = true
+    }
+
+    /** ✕ on the payment-details card: the invoices stay as they are, the card goes away. */
+    fun onDismissPaymentCard() {
+        prefs.paymentDetailsChangedAt = 0
+        paymentChangedAt.value = 0
     }
 
     /** Remind (overdue) or Email (issued, not sent): the email app with the right template, or Send… without an email. */

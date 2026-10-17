@@ -148,6 +148,14 @@ class BackupRepositoryTest {
         assertTrue(files[restored]!!.contentEquals(bytes))
     }
 
+    @Test fun csvListsIssuedPaidAndVoidButNotDrafts() = runBlocking {
+        fillBook()
+        val rows = backup.exportCsv().removePrefix("\uFEFF").trimEnd().split("\r\n")
+        assertEquals(3, rows.size) // header + paid + void; the draft is left out
+        assertTrue(rows[1], rows[1].startsWith("INV-0001,Paid,Müller Design GmbH,billing@mueller.example,"))
+        assertTrue(rows[2], rows[2].startsWith("INV-0002,Void,José Ltda,"))
+    }
+
     @Test fun backupReminderAfterTenInvoicesOrThirtyDays() = runBlocking {
         assertEquals(false, backup.reminderDue())
         val client = clients.create(ClientInput(name = "Acme")).ok()

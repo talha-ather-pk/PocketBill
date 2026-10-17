@@ -8,6 +8,11 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-023 — Completing 1.0: CSV export in, due-date notifications out
+- **Context:** All Must and Should features were built. Two Could features remained (MVP_SPEC): F-17 due-date reminder notification and F-19 CSV export. The founder asked to complete the app before publishing.
+- **Decision:** **F-19 is in 1.0**: Backup screen → "Export invoices (CSV)", for accountants (issued, paid and void invoices; ISO dates; plain amounts; UTF-8 with BOM; formula-like text neutralised). **F-17 is not**: notifications on Android 13+ need a runtime permission, and "no permissions" is part of the privacy promise; Home already shows overdue invoices and Remind in one tap. Also built: the Home "Your payment details changed" card (UX_SPEC 2) listing unpaid invoices sent before the change, each with Email again.
+- **Status:** Accepted 2026-10-17 (Claude as product owner).
+
 ## D-022 — Release build: signing outside the repo, R8 off for 1.0 (P8-T06)
 - **Decision:** Release signing reads `keystore.properties` (git-ignored), created once by `tools/make-upload-key.ps1`, which puts the upload key in `C:\dev\keys`. Use **Play App Signing**. R8/minification stays **off** for 1.0: the app is 9 MB as a bundle, and a shrunk build that was never tested on a phone (installing it over the founder's debug app would need an uninstall and lose data) is the bigger risk.
 - **Revisit:** turn R8 on once a spare phone or emulator can run the release build end to end.

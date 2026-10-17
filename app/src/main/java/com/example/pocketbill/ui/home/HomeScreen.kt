@@ -105,7 +105,12 @@ fun HomeScreen(
                 Icon(painterResource(R.drawable.ic_add), contentDescription = null)
                 Text(stringResource(R.string.home_create_invoice), modifier = Modifier.padding(start = Spacing.s))
             }
-            if (state.showBackupCard) BackupCard(onBackUp = onBackUp, onDismiss = vm::onDismissBackupCard)
+            // At most one card (UX_SPEC 2): payment details first, then backup.
+            if (summary.resend.isNotEmpty()) {
+                PaymentChangedCard(summary.resend, state.today, onOpen = onOpenInvoice, onSend = vm::onSendFromRow, onDismiss = vm::onDismissPaymentCard)
+            } else if (state.showBackupCard) {
+                BackupCard(onBackUp = onBackUp, onDismiss = vm::onDismissBackupCard)
+            }
             if (summary.attention.isNotEmpty()) {
                 SectionHeader(
                     stringResource(R.string.home_needs_attention),
@@ -234,6 +239,27 @@ private fun OutstandingCard(summary: HomeSummary, onOpenInvoices: (InvoiceFilter
     }
 }
 
+/** UX_SPEC 2 card 1: unpaid invoices sent with the old payment details, each with Email again. */
+@Composable
+private fun PaymentChangedCard(items: List<AttentionItem>, today: Long, onOpen: (Long) -> Unit, onSend: (AttentionItem) -> Unit, onDismiss: () -> Unit) {
+    OutlinedCard(Modifier.padding(horizontal = Spacing.screen).fillMaxWidth()) {
+        Row(Modifier.padding(start = Spacing.l, top = Spacing.s, end = Spacing.xs)) {
+            Column(Modifier.weight(1f).padding(top = Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
+                Text(stringResource(R.string.home_payment_card_title), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    pluralStringResource(R.plurals.home_payment_card_body, items.size, items.size),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            IconButton(onClick = onDismiss) {
+                Icon(painterResource(R.drawable.ic_close), contentDescription = stringResource(R.string.home_payment_card_dismiss))
+            }
+        }
+        items.forEach { item -> AttentionRow(item, today, onOpen = { onOpen(item.row.id) }, onAction = { onSend(item) }) }
+    }
+}
+
 /** UX_SPEC 2 card: "Back up your invoices." with Back up now; ✕ hides it for 7 days. */
 @Composable
 private fun BackupCard(onBackUp: () -> Unit, onDismiss: () -> Unit) {
@@ -270,6 +296,7 @@ private fun AttentionRow(item: AttentionItem, today: Long, onOpen: () -> Unit, o
         AttentionKind.OVERDUE ->
             pluralStringResource(R.plurals.home_overdue_days, item.daysOverdue.toInt(), item.daysOverdue.toInt()) + " · " + amount(row.currency, row.totalMinor)
         AttentionKind.UNSENT -> stringResource(R.string.home_not_sent)
+        AttentionKind.RESEND -> amount(row.currency, row.totalMinor)
         AttentionKind.DRAFT -> {
             val day = row.updatedAt / DAY_MS
             when (today - day) {
@@ -283,6 +310,7 @@ private fun AttentionRow(item: AttentionItem, today: Long, onOpen: () -> Unit, o
         item.kind == AttentionKind.DRAFT -> R.string.home_continue
         !item.hasEmail -> R.string.home_send
         item.kind == AttentionKind.OVERDUE -> R.string.home_remind
+        item.kind == AttentionKind.RESEND -> R.string.send_email_again
         else -> R.string.home_email
     }
     Row(

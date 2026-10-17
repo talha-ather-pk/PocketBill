@@ -122,12 +122,31 @@ class HomeTest {
         assertEquals(listOf(1L, 2L, 3L, 4L, 5L), home.recent.map { it.id })
     }
 
+    @Test fun `after payment details change, unpaid invoices sent before it are offered for resending`() {
+        val changedAt = 5_000L
+        val home = buildHome(
+            listOf(
+                inv(1, InvoiceStatus.ISSUED, sentAt = 1_000L), // sent with the old details: resend
+                inv(2, InvoiceStatus.ISSUED, sentAt = 9_000L), // already re-sent after the change
+                inv(3, InvoiceStatus.ISSUED, sentAt = null), // never sent: "not sent yet" covers it
+                inv(4, InvoiceStatus.PAID, sentAt = 1_000L), // paid: nothing to do
+            ),
+            listOf(acme), today, paymentChangedAt = changedAt,
+        )
+        assertEquals(listOf(1L), home.resend.map { it.row.id })
+        assertEquals(AttentionKind.RESEND, home.resend.single().kind)
+        assertTrue(buildHome(listOf(inv(1, InvoiceStatus.ISSUED, sentAt = 1_000L)), listOf(acme), today).resend.isEmpty())
+    }
+
     @Test fun `Remind opens the email app for that invoice`() {
         val browser = FakeInvoiceBrowser()
         val clients = FakeClientStore()
         browser.put(inv(9, InvoiceStatus.ISSUED, due = today - 3))
         val pkg = SendPackage(9, "INV-0009", "/f", "content://f", "f.pdf", "a@acme.example", null, "s", "b")
-        val prefs = object : HomeCardPrefs { override var backupCardHiddenUntil = 0L }
+        val prefs = object : HomeCardPrefs {
+            override var backupCardHiddenUntil = 0L
+            override var paymentDetailsChangedAt = 0L
+        }
         var due = true
         val vm = HomeViewModel(browser, clients, flowOf("Studio"), browser, { pkg }, FixedClock(today), backupDue = { due }, prefs = prefs)
         val item = vm.state.value.summary.attention.single()

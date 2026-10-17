@@ -3,6 +3,7 @@ package com.example.pocketbill.data.backup
 import androidx.room.withTransaction
 import com.example.pocketbill.data.LogoFiles
 import com.example.pocketbill.data.db.PocketBillDatabase
+import com.example.pocketbill.data.export.InvoiceCsv
 import com.example.pocketbill.domain.time.Clock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,6 +26,9 @@ interface BackupStore {
     suspend fun export(): String
     suspend fun recordBackup()
     suspend fun lastBackupAt(): Long?
+
+    /** Invoices as a spreadsheet for an accountant (F-19). */
+    suspend fun exportCsv(): String
 
     /** Reads and checks a file. Changes nothing. */
     fun preview(text: String): RestorePreview
@@ -58,6 +62,8 @@ class BackupRepository(
             ).copy(logo = logo),
         )
     }
+
+    override suspend fun exportCsv(): String = db.withTransaction { InvoiceCsv.build(dao.invoices(), dao.clients()) }
 
     override suspend fun recordBackup() {
         db.withTransaction {

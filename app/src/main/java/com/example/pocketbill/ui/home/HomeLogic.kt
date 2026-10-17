@@ -14,7 +14,7 @@ import com.example.pocketbill.ui.navigation.InvoiceFilter
 data class OutstandingLine(val currency: String, val totalMinor: Long, val count: Int)
 
 /** The three kinds of "Needs attention" rows, most urgent first (UX_SPEC 2). */
-enum class AttentionKind { OVERDUE, UNSENT, DRAFT }
+enum class AttentionKind { OVERDUE, UNSENT, DRAFT, RESEND }
 
 data class AttentionItem(
     val kind: AttentionKind,
@@ -41,6 +41,8 @@ data class HomeSummary(
     val noInvoices: Boolean = true,
     /** Nothing owed and at least one paid invoice: "All invoices are paid." */
     val allPaid: Boolean = false,
+    /** Unpaid invoices sent before the payment details changed: "Send them again?" (UX_SPEC 2 card 1). */
+    val resend: List<AttentionItem> = emptyList(),
 ) {
     companion object {
         const val MAX_ATTENTION = 3
@@ -53,7 +55,7 @@ data class HomeSummary(
  * the overdue row, "Needs attention" (overdue oldest-due first, then issued-but-unsent, then
  * drafts most recently edited) and the 5 most recently changed invoices.
  */
-fun buildHome(invoices: List<InvoiceEntity>, clients: List<ClientEntity>, today: Long): HomeSummary {
+fun buildHome(invoices: List<InvoiceEntity>, clients: List<ClientEntity>, today: Long, paymentChangedAt: Long = 0): HomeSummary {
     val clientsById = clients.associateBy { it.id }
     val unpaid = invoices.filter { it.status == InvoiceStatus.ISSUED }
     val overdue = unpaid.filter { isOverdue(it.status, it.dueDate, today) }
@@ -84,7 +86,8 @@ fun buildHome(invoices: List<InvoiceEntity>, clients: List<ClientEntity>, today:
     }
     val attentionFilter = when (attentionAll.firstOrNull()?.kind) {
         AttentionKind.OVERDUE -> InvoiceFilter.OVERDUE
-        AttentionKind.UNSENT -> InvoiceFilter.UNPAID
+        // RESEND rows live in the payment-details card, never in Needs attention.
+        AttentionKind.UNSENT, AttentionKind.RESEND -> InvoiceFilter.UNPAID
         AttentionKind.DRAFT -> InvoiceFilter.DRAFTS
         null -> InvoiceFilter.ALL
     }
@@ -102,5 +105,12 @@ fun buildHome(invoices: List<InvoiceEntity>, clients: List<ClientEntity>, today:
             .map { it.toRow(clientsById, today) },
         noInvoices = invoices.isEmpty(),
         allPaid = unpaid.isEmpty() && invoices.any { it.status == InvoiceStatus.PAID },
+        resend = if (paymentChangedAt <= 0) {
+            emptyList()
+        } else {
+            unpaid.filter { it.lastSentAt != null && it.lastSentAt < paymentChangedAt }
+                .sortedWith(compareBy<InvoiceEntity> { it.dueDate }.thenBy { it.id })
+                .map { AttentionItem(AttentionKind.RESEND, it.toRow(clientsById, today), hasEmail = hasEmail(it)) }
+        },
     )
 }

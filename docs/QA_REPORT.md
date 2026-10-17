@@ -6,8 +6,8 @@ _As of 2026-10-17. Device: Samsung Galaxy A72 (SM-A725F), Android 14._
 
 | Suite | Count | Result | Covers |
 |---|---|---|---|
-| Unit tests (computer) | 223 | ✅ all pass | Money and rounding (232,000 random cases), numbering, dates incl. leap days, year ends and time zones, editor, clients, invoices list and detail, sending flow and email templates, Home, backup format and validation, saved items, theme contrast, manifest and privacy guards |
-| On-phone tests | 52 | ✅ all pass | Database and repositories, logo import (shrinking, refusing non-images), v1→v2 migration, backup round trip / safety copy / bad files / half-way failure / logo, PDF: D-007 characters, page sizes, 50 and 200 items, marks, logo, extreme amounts and long text |
+| Unit tests (computer) | 230 | ✅ all pass | Money and rounding (232,000 random cases), numbering, dates incl. leap days, year ends and time zones, editor, clients, invoices list and detail, sending flow and email templates, Home, backup format and validation, CSV export (quoting, formula safety), saved items, theme contrast, manifest and privacy guards |
+| On-phone tests | 53 | ✅ all pass | Database and repositories, logo import (shrinking, refusing non-images), v1→v2 migration, backup round trip / safety copy / bad files / half-way failure / logo, PDF: D-007 characters, page sizes, 50 and 200 items, marks, logo, extreme amounts and long text |
 
 On-phone tests use an in-memory database and test folders: the founder's real data is never touched.
 
@@ -15,7 +15,7 @@ On-phone tests use an in-memory database and test folders: the founder's real da
 
 | Task | State | Notes |
 |---|---|---|
-| P5-T01 Unit tests | ✅ | 223, incl. date edge cases left over from P4-T07 |
+| P5-T01 Unit tests | ✅ | 230, incl. date edge cases left over from P4-T07 |
 | P5-T02 Database tests | ✅ | 30 repository + 1 migration + 6 backup tests on the phone |
 | P5-T03 UI tests | 🟡 Manual | Automated UI tests would drive the real app on the founder's phone and touch real data, so the UI is checked by hand with the list below. Automate once a spare test phone or emulator is available. |
 | P5-T04 PDF matrix | ✅ | Many items, long text, a description taller than a page, huge amounts, 0- and 3-decimal currencies, empty optional fields, A4/Letter, all marks, logo. Visual check of samples done (fixed: digits lost in copied text; stamp position; very large amounts now shrink to fit their column). |
@@ -44,6 +44,10 @@ Tick each one; note anything confusing.
 
 **Backup**
 - [ ] Back up now → save to Drive or Downloads → Restore from that file → counts look right → Replace → everything is still there
+
+**Accountant export and payment-details card**
+- [ ] Backup and restore → Export invoices (CSV) → open the file in Google Sheets: one row per issued/paid/void invoice
+- [ ] Business profile → change Payment instructions → choose "update unpaid invoices" → Home shows "Your payment details changed" with Email again on invoices you had sent
 
 **Saved items and logo**
 - [ ] Add a saved item; in a new invoice type its first 2 letters → it's suggested
