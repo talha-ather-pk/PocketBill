@@ -38,4 +38,6 @@ enum class Problem {
     READ_ONLY,
     CLIENT_HAS_INVOICES,
     CLIENT_NAME_EMPTY,
+    BAD_EMAIL,
+    BAD_TERMS,
 }

@@ -28,8 +28,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.pocketbill.R
 import com.example.pocketbill.ui.appContainer
+import com.example.pocketbill.ui.clients.ClientDetailScreen
+import com.example.pocketbill.ui.clients.ClientEditorResult
+import com.example.pocketbill.ui.clients.ClientEditorScreen
+import com.example.pocketbill.ui.clients.ClientListScreen
 import com.example.pocketbill.ui.screens.EmptyStateScreen
 import com.example.pocketbill.ui.screens.HomeScreen
 import com.example.pocketbill.ui.screens.PlaceholderScreen
@@ -115,7 +120,10 @@ private fun PocketBillNavigation(startDestination: Any) {
                 EmptyStateScreen(R.string.invoices_empty_title, R.string.invoices_empty_body)
             }
             composable<ClientList> {
-                EmptyStateScreen(R.string.clients_empty_title, R.string.clients_empty_body)
+                ClientListScreen(
+                    onOpenClient = { navController.navigate(ClientDetail(it)) },
+                    onAddClient = { navController.navigate(ClientEditor()) },
+                )
             }
             composable<Settings> {
                 SettingsScreen(
@@ -128,8 +136,33 @@ private fun PocketBillNavigation(startDestination: Any) {
             composable<InvoiceDetail> { PlaceholderScreen(R.string.title_invoice) }
             composable<InvoiceEditor> { PlaceholderScreen(R.string.title_new_invoice) }
             composable<PdfPreview> { PlaceholderScreen(R.string.title_pdf_preview) }
-            composable<ClientDetail> { PlaceholderScreen(R.string.title_client) }
-            composable<ClientEditor> { PlaceholderScreen(R.string.title_client_editor) }
+            composable<ClientDetail> { entry ->
+                ClientDetailScreen(
+                    clientId = entry.toRoute<ClientDetail>().clientId,
+                    onBack = { navController.popBackStack() },
+                    onEdit = { navController.navigate(ClientEditor(clientId = it)) },
+                    onNewInvoice = { navController.navigate(InvoiceEditor(clientId = it)) },
+                    onOpenInvoice = { navController.navigate(InvoiceDetail(it)) },
+                )
+            }
+            composable<ClientEditor> { entry ->
+                ClientEditorScreen(
+                    clientId = entry.toRoute<ClientEditor>().clientId,
+                    onCancel = { navController.popBackStack() },
+                    onDone = { result ->
+                        when (result) {
+                            // A new client opens on its own page; an edit returns to where it started.
+                            is ClientEditorResult.Saved -> if (result.isNew) {
+                                navController.navigate(ClientDetail(result.clientId)) { popUpTo<ClientEditor> { inclusive = true } }
+                            } else {
+                                navController.popBackStack()
+                            }
+                            is ClientEditorResult.UseExisting ->
+                                navController.navigate(ClientDetail(result.clientId)) { popUpTo<ClientEditor> { inclusive = true } }
+                        }
+                    },
+                )
+            }
             composable<BusinessProfile> { BusinessProfileScreen(onBack = { navController.popBackStack() }) }
             composable<Presets> { PlaceholderScreen(R.string.title_presets) }
             composable<Backup> { PlaceholderScreen(R.string.title_backup) }

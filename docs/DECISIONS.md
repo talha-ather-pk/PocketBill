@@ -8,6 +8,18 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-016 — Migrations from now on (replaces D-014)
+- **Context:** D-014 kept database version 1 open because no one had data yet. Since P4-T04 the founder has a real business profile on the phone. Changing version 1 again would make Room refuse to open that database (identity hash mismatch), and the app would crash at launch until its data was wiped.
+- **Decision:** From P4-T05 on, **every** schema change bumps the version and ships with a migration and a migration test, exactly as DATA_MODEL 7 (G-1…G-7) describes. Version 1's schema JSON is frozen as committed in P4-T03.
+- **First use:** version 2 adds `client.preferredCurrency` and `client.preferredTermsDays` (D-015) with Room's `@AutoMigration(from = 1, to = 2)`, an additive change (G-4). `MigrationTest` checks real version-1 rows survive.
+- **Status:** Accepted 2026-10-17. Supersedes D-014.
+
+## D-015 — Optional preferred currency and payment terms per client
+- **Context:** The founder asked for custom currency and terms on the client form (P4-T05). The design (UX_SPEC 3) instead fills these from the client's last invoice.
+- **Decision:** Add two **optional** client fields, `preferredCurrency` and `preferredTermsDays`. The editor fills a new invoice from, in order: the client's preference → the client's last invoice → the business defaults. Empty means "no preference".
+- **Schema:** two nullable columns on `client`, in database **version 2** with an automatic migration (D-016).
+- **Status:** Accepted 2026-10-17 (founder request).
+
 ## D-014 — Database version 1 stays open until the first release
 - **Context:** DATA_MODEL 7 (G-1…G-7) requires a version bump, a migration and a test for every schema change. That protects users' data, but before the first release no user has any data, and the schema is still being built across Phase 4.
 - **Decision:** Until the **first release build** (closed testing or production), the schema stays at **version 1** and its exported JSON (`app/schemas/`) is regenerated as entities change. From the first release build onward, G-1…G-7 apply in full and version 1's JSON is frozen.

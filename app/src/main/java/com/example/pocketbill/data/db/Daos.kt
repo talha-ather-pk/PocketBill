@@ -39,6 +39,12 @@ interface ClientDao {
     @Query("SELECT * FROM client WHERE id = :id")
     suspend fun get(id: Long): ClientEntity?
 
+    @Query("SELECT * FROM client WHERE id = :id")
+    fun observe(id: Long): Flow<ClientEntity?>
+
+    @Query("SELECT * FROM client")
+    suspend fun all(): List<ClientEntity>
+
     @Query("SELECT * FROM client WHERE archived = 0 ORDER BY name COLLATE NOCASE")
     fun observeActive(): Flow<List<ClientEntity>>
 
@@ -51,9 +57,6 @@ interface ClientDao {
             "ORDER BY lastInvoicedAt DESC LIMIT :limit",
     )
     fun observeRecent(limit: Int = 3): Flow<List<ClientEntity>>
-
-    @Query("SELECT name FROM client")
-    suspend fun allNames(): List<String>
 
     @Query("SELECT COUNT(*) FROM invoice WHERE clientId = :clientId")
     suspend fun countInvoices(clientId: Long): Int
@@ -125,6 +128,19 @@ interface InvoiceDao {
 
     @Query("SELECT * FROM invoice WHERE clientId = :clientId ORDER BY issueDate DESC, id DESC")
     fun observeForClient(clientId: Long): Flow<List<InvoiceEntity>>
+
+    // Clients list and detail (UX_SPEC 6): owed per client per currency, never added across currencies
+    @Query(
+        "SELECT clientId, currency, SUM(totalMinor) AS totalMinor, COUNT(*) AS invoiceCount FROM invoice " +
+            "WHERE status = 'ISSUED' AND clientId IS NOT NULL GROUP BY clientId, currency",
+    )
+    fun observeOwedByClient(): Flow<List<ClientOwed>>
+
+    @Query(
+        "SELECT clientId, COUNT(*) AS count FROM invoice " +
+            "WHERE status = 'ISSUED' AND dueDate < :today AND clientId IS NOT NULL GROUP BY clientId",
+    )
+    fun observeOverdueByClient(today: Long): Flow<List<ClientCount>>
 
     // Snapshot updates (DATA_MODEL 5.4–5.5)
     @Query("SELECT * FROM invoice WHERE status = 'ISSUED' AND clientId = :clientId")

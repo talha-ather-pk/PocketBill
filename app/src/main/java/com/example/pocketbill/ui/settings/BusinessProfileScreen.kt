@@ -124,7 +124,7 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
             CurrencyField(
                 label = stringResource(R.string.field_currency),
                 code = form.currency,
-                onChange = { code -> vm.onFormChange { it.copy(currency = code) } },
+                onChange = { code -> if (code != null) vm.onFormChange { it.copy(currency = code) } },
             )
             Text(stringResource(R.string.field_terms), style = MaterialTheme.typography.labelLarge)
             Row(horizontalArrangement = Arrangement.spacedBy(Spacing.s), modifier = Modifier.horizontalScroll(rememberScrollState())) {

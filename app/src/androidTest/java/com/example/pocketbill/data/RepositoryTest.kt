@@ -248,6 +248,43 @@ class RepositoryTest {
         assertNull(clients.get(unused))
     }
 
+    @Test fun preferredCurrencyAndTermsAreStoredAndCleared() = runBlocking {
+        val id = clients.create(ClientInput(name = "Acme Studio", preferredCurrency = "EUR", preferredTermsDays = 30)).ok()
+        assertEquals("EUR", clients.get(id)!!.preferredCurrency)
+        assertEquals(30, clients.get(id)!!.preferredTermsDays)
+        clients.update(id, ClientInput(name = "Acme Studio"), alsoUpdateUnpaid = false).ok()
+        assertNull(clients.get(id)!!.preferredCurrency)
+        assertNull(clients.get(id)!!.preferredTermsDays)
+    }
+
+    @Test fun badClientFieldsAreRefused() = runBlocking {
+        val result = clients.create(ClientInput(name = "Acme", email = "acme@", preferredCurrency = "XYZ", preferredTermsDays = 999))
+        val reasons = (result as Outcome.ValidationFailed).reasons
+        assertEquals(setOf(Problem.BAD_EMAIL, Problem.UNKNOWN_CURRENCY, Problem.BAD_TERMS), reasons)
+    }
+
+    @Test fun owedAndOverdueAreGroupedPerClientAndCurrency() = runBlocking {
+        val acme = newClient("Acme Studio", null)
+        val muller = newClient()
+        invoices.issue(invoices.saveDraft(0, input(acme, LineDraft("Brand guide", 1_000, 120_000), currency = "USD").copy(issueDate = today - 40, dueDate = today - 10)).ok()).ok()
+        invoices.issue(invoices.saveDraft(0, input(acme, currency = "EUR")).ok()).ok()
+        invoices.issue(invoices.saveDraft(0, input(muller, currency = "EUR")).ok()).ok()
+        invoices.issue(invoices.saveDraft(0, input(muller, currency = "EUR")).ok()).ok()
+
+        val owed = clients.observeOwedByClient().first().associate { (it.clientId to it.currency) to (it.totalMinor to it.invoiceCount) }
+        assertEquals(
+            mapOf((acme to "USD") to (120_000L to 1), (acme to "EUR") to (45_000L to 1), (muller to "EUR") to (90_000L to 2)),
+            owed,
+        )
+        assertEquals(mapOf(acme to 1), clients.observeOverdueByClient().first().associate { it.clientId to it.count })
+    }
+
+    @Test fun sameNameCheckIgnoresTheClientBeingEdited() = runBlocking {
+        val id = newClient("Müller Design GmbH")
+        assertNull(clients.findSameName("muller design gmbh", excludeId = id))
+        assertEquals(id, clients.findSameName("muller design gmbh")!!.id)
+    }
+
     @Test fun duplicateNamesAreFoundIgnoringCaseAndAccents() = runBlocking {
         newClient("Müller Design GmbH")
         assertTrue(clients.hasClientNamed("muller design gmbh"))

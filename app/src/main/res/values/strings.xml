@@ -22,8 +22,6 @@
     <string name="title_invoice">Invoice</string>
     <string name="title_new_invoice">New invoice</string>
     <string name="title_pdf_preview">PDF preview</string>
-    <string name="title_client">Client</string>
-    <string name="title_client_editor">Client details</string>
     <string name="title_business_profile">Business profile</string>
     <string name="title_presets">Saved items</string>
     <string name="title_backup">Backup and restore</string>
@@ -94,4 +92,66 @@
     <string name="settings_coming_later">Coming in a later build step</string>
     <string name="settings_privacy_title">Your data</string>
     <string name="settings_privacy_body">Your invoices are stored only on this phone. PocketBill has no account and no internet access. A copy leaves the phone only when you send an invoice or make a backup.</string>
+
+    <!-- Invoice statuses (UX_SPEC 5) -->
+    <string name="status_draft">Draft</string>
+    <string name="status_unpaid">Unpaid</string>
+    <string name="status_overdue">Overdue</string>
+    <string name="status_paid">Paid</string>
+    <string name="status_void">Void</string>
+    <string name="invoice_row_due">Due %1$s</string>
+    <string name="invoice_row_paid">Paid %1$s</string>
+    <string name="invoice_row_overdue">Was due %1$s</string>
+
+    <!-- Clients (P4-T05, UX_SPEC 6, D-015) -->
+    <string name="clients_add">Add client</string>
+    <string name="clients_search">Search clients</string>
+    <string name="clients_sort_name">A–Z</string>
+    <string name="clients_sort_owed">Most owed</string>
+    <string name="clients_archived_toggle">Archived clients (%1$d)</string>
+    <string name="clients_no_match">No clients match “%1$s”.</string>
+    <plurals name="client_unpaid">
+        <item quantity="one">%1$d unpaid</item>
+        <item quantity="other">%1$d unpaid</item>
+    </plurals>
+    <plurals name="client_overdue">
+        <item quantity="one">%1$d overdue</item>
+        <item quantity="other">%1$d overdue</item>
+    </plurals>
+    <string name="client_nothing_owed">Nothing owed</string>
+    <string name="client_owed_label">Owed</string>
+    <string name="client_archived_label">Archived</string>
+    <string name="client_archived_note">Archived: hidden from your client list and from invoice pickers. Their invoices still work.</string>
+    <string name="client_new_invoice">New invoice for this client</string>
+    <string name="client_edit">Edit client</string>
+    <string name="client_more">More options</string>
+    <string name="client_archive">Archive</string>
+    <string name="client_unarchive">Unarchive</string>
+    <string name="client_delete">Delete client</string>
+    <string name="client_delete_title">Delete %1$s?</string>
+    <string name="client_delete_body">This client has no invoices. Deleting can\'t be undone.</string>
+    <string name="client_invoices_title">Invoices</string>
+    <string name="client_no_invoices">No invoices for this client yet.</string>
+    <string name="client_prefs_line">New invoices: %1$s</string>
+    <string name="title_new_client">New client</string>
+    <string name="title_edit_client">Edit client</string>
+    <string name="client_field_name">Client or company name</string>
+    <string name="client_field_email">Email (optional)</string>
+    <string name="client_field_email_help">Lets you email invoices in one tap.</string>
+    <string name="client_field_country">Country (optional)</string>
+    <string name="client_field_address">Address (optional)</string>
+    <string name="client_field_notes">Private notes (optional)</string>
+    <string name="client_field_notes_help">Never printed on invoices.</string>
+    <string name="client_section_defaults">For new invoices to this client</string>
+    <string name="client_field_currency">Currency</string>
+    <string name="client_field_terms">Payment due</string>
+    <string name="client_no_preference">No preference</string>
+    <string name="client_defaults_help">With no preference, new invoices use this client\'s last invoice, then your defaults.</string>
+    <string name="client_error_name">Enter the client\'s name.</string>
+    <string name="client_error_email">Enter an email address like name@company.com.</string>
+    <string name="dup_title">Client already exists</string>
+    <string name="dup_body">You already have a client called %1$s.</string>
+    <string name="dup_use_existing">Use existing</string>
+    <string name="dup_create_anyway">Create new anyway</string>
+    <string name="dup_save_anyway">Save anyway</string>
 </resources>

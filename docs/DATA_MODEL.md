@@ -67,6 +67,8 @@ data class ClientEntity(
     val country: String? = null,
     val taxId: String? = null,
     val notes: String? = null,
+    val preferredCurrency: String? = null,        // optional default for new invoices (D-015)
+    val preferredTermsDays: Int? = null,          // optional default for new invoices (D-015)
     val archived: Boolean = false,
     val lastInvoicedAt: Long? = null,             // sorts "recent clients" chips (UX_SPEC 1)
     val createdAt: Long,
@@ -412,6 +414,12 @@ Goal: **an app update never loses or corrupts a user's invoices** (UP-01).
 | G-5 | A migration also changes what's **in** the rows when needed (e.g. filling a new column from existing data), inside the same migration. |
 | G-6 | **Downgrades aren't supported** (Google Play doesn't downgrade apps). If an older app version meets a newer database, it shows "This data was created by a newer PocketBill. Please update the app." It **never** deletes or rewrites the data. |
 | G-7 | Enum names stored in the database (`ISSUED`, `PERCENT`…) are part of the schema. Renaming one needs a migration (section 1). |
+
+### Version history
+| Version | Change | Migration |
+|---|---|---|
+| 1 | First schema (P4-T03) | — |
+| 2 | `client.preferredCurrency`, `client.preferredTermsDays`, both nullable (D-015) | `@AutoMigration(1 → 2)`, tested by `MigrationTest` (D-016) |
 
 ### 7.2 Safety copy before upgrading (Should)
 Before Room opens a database whose stored version is **lower** than the app's, PocketBill copies the database file to app-private storage (`pre-migration-v1.db`) and keeps the latest copy. Comparing the version needs a plain SQLite read of `user_version`, without Room. If a migration ever fails on a user's phone, the app shows a clear message and keeps the copy for support and recovery, instead of crashing in a loop.

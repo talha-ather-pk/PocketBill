@@ -43,13 +43,17 @@ fun currencyLabel(code: String): String {
     return if (name == null || name == code) code else "$code · $name"
 }
 
-/** A field showing the chosen currency; tapping it opens a searchable list of the supported currencies. */
+/**
+ * A field showing the chosen currency; tapping it opens a searchable list of the supported currencies.
+ * With [noneLabel], "no currency" is allowed: it shows [noneLabel] and is offered first in the list.
+ */
 @Composable
 fun CurrencyField(
     label: String,
-    code: String,
-    onChange: (String) -> Unit,
+    code: String?,
+    onChange: (String?) -> Unit,
     modifier: Modifier = Modifier,
+    noneLabel: String? = null,
 ) {
     var open by rememberSaveable { mutableStateOf(false) }
     Surface(
@@ -61,7 +65,7 @@ fun CurrencyField(
         Column(Modifier.padding(horizontal = Spacing.l, vertical = Spacing.s)) {
             Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(currencyLabel(code), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+                Text(code?.let(::currencyLabel) ?: noneLabel.orEmpty(), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
                 Text(stringResource(R.string.action_change), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
             }
         }
@@ -69,6 +73,7 @@ fun CurrencyField(
     if (open) {
         CurrencyPickerDialog(
             selected = code,
+            noneLabel = noneLabel,
             onPick = { onChange(it); open = false },
             onDismiss = { open = false },
         )
@@ -76,10 +81,12 @@ fun CurrencyField(
 }
 
 @Composable
-private fun CurrencyPickerDialog(selected: String, onPick: (String) -> Unit, onDismiss: () -> Unit) {
+private fun CurrencyPickerDialog(selected: String?, noneLabel: String?, onPick: (String?) -> Unit, onDismiss: () -> Unit) {
     var query by rememberSaveable { mutableStateOf("") }
     val wanted = normalizeForMatching(query)
-    val matches = CurrencyCode.entries.map { it.name }.filter { normalizeForMatching(currencyLabel(it)).contains(wanted) }
+    val currencies = CurrencyCode.entries.map { it.name }.filter { normalizeForMatching(currencyLabel(it)).contains(wanted) }
+    // null stands for "no currency" and is offered first when allowed.
+    val matches: List<String?> = if (noneLabel != null && wanted.isEmpty()) listOf(null) + currencies else currencies
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.currency_picker_title)) },
@@ -93,7 +100,7 @@ private fun CurrencyPickerDialog(selected: String, onPick: (String) -> Unit, onD
                     modifier = Modifier.fillMaxWidth(),
                 )
                 LazyColumn(Modifier.heightIn(max = 360.dp)) {
-                    items(matches, key = { it }) { code ->
+                    items(matches, key = { it ?: "" }) { code ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
@@ -103,7 +110,7 @@ private fun CurrencyPickerDialog(selected: String, onPick: (String) -> Unit, onD
                                 .clickable(role = Role.RadioButton) { onPick(code) }
                                 .padding(horizontal = Spacing.xs),
                         ) {
-                            Text(currencyLabel(code), modifier = Modifier.weight(1f))
+                            Text(code?.let(::currencyLabel) ?: noneLabel.orEmpty(), modifier = Modifier.weight(1f))
                             if (code == selected) {
                                 Icon(painterResource(R.drawable.ic_check), contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                             }

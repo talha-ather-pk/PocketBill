@@ -88,7 +88,7 @@ private fun SetupContent(
         CurrencyField(
             label = stringResource(R.string.field_currency),
             code = state.form.currency,
-            onChange = onCurrencyChange,
+            onChange = { code -> code?.let(onCurrencyChange) },
         )
         FormTextField(
             value = state.form.paymentInstructions,

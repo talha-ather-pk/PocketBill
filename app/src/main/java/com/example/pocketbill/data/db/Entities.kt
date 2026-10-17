@@ -54,6 +54,10 @@ data class ClientEntity(
     val country: String? = null,
     val taxId: String? = null,
     val notes: String? = null,
+    /** Optional: currency for new invoices to this client (D-015). Null = no preference. */
+    val preferredCurrency: String? = null,
+    /** Optional: payment terms in days for new invoices to this client (D-015). */
+    val preferredTermsDays: Int? = null,
     val archived: Boolean = false,
     val lastInvoicedAt: Long? = null,
     val createdAt: Long,
@@ -154,6 +158,12 @@ data class InvoiceWithLines(
 ) {
     val lines: List<LineItemEntity> get() = unorderedLines.sortedBy { it.position }
 }
+
+/** What one client owes in one currency, and how many unpaid invoices make it up (UX_SPEC 6). */
+data class ClientOwed(val clientId: Long, val currency: String, val totalMinor: Long, val invoiceCount: Int)
+
+/** A count per client, e.g. overdue invoices. */
+data class ClientCount(val clientId: Long, val count: Int)
 
 /** Sum of amounts in one currency (outstanding totals are never added across currencies). */
 data class CurrencyTotal(val currency: String, val totalMinor: Long)

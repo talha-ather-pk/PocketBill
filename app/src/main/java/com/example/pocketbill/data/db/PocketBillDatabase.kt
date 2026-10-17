@@ -1,13 +1,18 @@
 package com.example.pocketbill.data.db
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
 /**
- * The app's database (DATA_MODEL.md section 1). Version 1 stays open until the first release
- * (DECISIONS D-014); after that, every change needs a migration and its test (DATA_MODEL 7).
+ * The app's database (DATA_MODEL.md section 1). Every schema change bumps [version] and ships with
+ * a migration and its test (DATA_MODEL 7, DECISIONS D-016). Exported schemas in app/schemas are
+ * never edited after they are committed.
+ *
+ * - v1: first schema (P4-T03).
+ * - v2: client.preferredCurrency and client.preferredTermsDays, both nullable (D-015).
  */
 @Database(
     entities = [
@@ -17,8 +22,11 @@ import androidx.room.RoomDatabase
         LineItemEntity::class,
         ItemPresetEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2), // adds two nullable client columns; existing rows keep NULL
+    ],
 )
 abstract class PocketBillDatabase : RoomDatabase() {
     abstract fun profileDao(): ProfileDao
