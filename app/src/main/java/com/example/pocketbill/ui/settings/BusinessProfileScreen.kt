@@ -80,6 +80,7 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = Spacing.screen, vertical = Spacing.l),
         ) {
+            LogoSection()
             FormTextField(
                 value = form.name,
                 onValueChange = { v -> vm.onFormChange { it.copy(name = v) } },
@@ -199,7 +200,7 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
 }
 
 @Composable
-private fun SectionTitle(text: String) {
+internal fun SectionTitle(text: String) {
     Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = Spacing.l))
 }
 

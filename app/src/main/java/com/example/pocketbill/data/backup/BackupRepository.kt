@@ -1,11 +1,13 @@
 package com.example.pocketbill.data.backup
 
 import androidx.room.withTransaction
+import com.example.pocketbill.data.LogoFiles
 import com.example.pocketbill.data.db.PocketBillDatabase
 import com.example.pocketbill.domain.time.Clock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.Base64
 
 /** A checked backup waiting for the user's "Replace" (MVP_SPEC 7: show counts → confirm). */
 data class PendingRestore(val file: BackupFile, val counts: BackupCounts)
@@ -41,16 +43,19 @@ class BackupRepository(
     private val clock: Clock,
     private val safetyDir: File,
     private val appVersion: String,
+    private val logos: LogoFiles? = null,
 ) : BackupStore {
     private val dao = db.backupDao()
 
     override suspend fun export(): String = db.withTransaction {
         // One transaction so the file is a consistent snapshot.
+        val profile = dao.profile()
+        val logo = profile?.logoFile?.let { logos?.read(it) }?.let { Base64.getEncoder().encodeToString(it) }
         BackupFormat.encode(
             BackupFormat.from(
-                dao.profile(), dao.clients(), dao.invoices(), dao.lines(), dao.presets(),
+                profile, dao.clients(), dao.invoices(), dao.lines(), dao.presets(),
                 appVersion = appVersion, databaseVersion = DATABASE_VERSION, madeAt = clock.nowMillis(),
-            ),
+            ).copy(logo = logo),
         )
     }
 
@@ -73,7 +78,10 @@ class BackupRepository(
     }
 
     override suspend fun restore(pending: PendingRestore) {
-        val entities = BackupFormat.toEntities(pending.file)
+        val restored = BackupFormat.toEntities(pending.file)
+        // The logo file is written before the transaction; an unused file is harmless if it fails.
+        val logoName = pending.file.logo?.let { encoded -> logos?.write(Base64.getDecoder().decode(encoded)) }
+        val entities = restored.copy(profile = restored.profile?.copy(logoFile = logoName))
         val safetyCopy = export()
         withContext(Dispatchers.IO) {
             safetyDir.mkdirs()

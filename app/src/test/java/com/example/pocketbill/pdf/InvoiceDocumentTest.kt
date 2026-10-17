@@ -23,7 +23,7 @@ class InvoiceDocumentTest {
 
     private val profile = BusinessProfileEntity(
         uuid = "p", name = "Live Studio", contactLines = "hi@live.example\n+1 555 0100", address = "1 Live St",
-        taxId = "DE123", paymentInstructions = "IBAN LIVE", defaultCurrency = "EUR", paperSize = PaperSize.LETTER,
+        taxId = "DE123", paymentInstructions = "IBAN LIVE", logoFile = "new.png", defaultCurrency = "EUR", paperSize = PaperSize.LETTER,
         createdAt = 0, updatedAt = 0,
     )
     private val client = ClientEntity(uuid = "c", name = "Live Client", email = "live@client.example", country = "Germany", createdAt = 0, updatedAt = 0)
@@ -32,7 +32,7 @@ class InvoiceDocumentTest {
         InvoiceEntity(
             uuid = "i", number = if (status == InvoiceStatus.DRAFT) null else "INV-0014", status = status, clientId = 1,
             currency = "EUR", issueDate = issue, dueDate = due, subtotalMinor = 57000, totalMinor = 57000,
-            fromSnapshot = SnapshotJson.encode(FromSnapshot(name = "Frozen Studio", paymentInstructions = "IBAN FROZEN")),
+            fromSnapshot = SnapshotJson.encode(FromSnapshot(name = "Frozen Studio", paymentInstructions = "IBAN FROZEN", logoFile = "old.png")),
             toSnapshot = SnapshotJson.encode(ToSnapshot(name = "Müller Design GmbH", email = "billing@mueller.example")),
             createdAt = 0, updatedAt = 0,
         ).change(),
@@ -61,6 +61,11 @@ class InvoiceDocumentTest {
         assertNull(doc.number)
         assertEquals(PdfMark.DRAFT, doc.mark)
         assertEquals("Draft_Live-Client.pdf", doc.fileName)
+    }
+
+    @Test fun `issued invoices keep their old logo, drafts use the current one (F-14)`() {
+        assertEquals("old.png", InvoiceDocument.from(invoice(InvoiceStatus.ISSUED), profile, client).logoFile)
+        assertEquals("new.png", InvoiceDocument.from(invoice(InvoiceStatus.DRAFT), profile, client).logoFile)
     }
 
     @Test fun `unreadable snapshot falls back to live details`() {

@@ -128,6 +128,26 @@ class BackupRepositoryTest {
         assertEquals(before, snapshot())
     }
 
+    @Test fun theLogoTravelsWithTheBackup() = runBlocking {
+        val files = mutableMapOf<String, ByteArray>()
+        val logos = object : com.example.pocketbill.data.LogoFiles {
+            override fun read(name: String) = files[name]
+            override fun write(png: ByteArray): String = ("logo-" + png.size + ".png").also { files[it] = png }
+        }
+        val withLogos = BackupRepository(db, clock, safetyDir, appVersion = "test", logos = logos)
+        val bytes = byteArrayOf(1, 2, 3, 4)
+        val name = logos.write(bytes)
+        ProfileRepository(db, clock).setLogo(name)
+        val text = withLogos.export()
+        assertTrue(text.contains("\"logo\": \"AQIDBA==\""))
+
+        files.clear()
+        ProfileRepository(db, clock).setLogo(null)
+        withLogos.restore(ready(text))
+        val restored = db.backupDao().profile()!!.logoFile!!
+        assertTrue(files[restored]!!.contentEquals(bytes))
+    }
+
     @Test fun backupReminderAfterTenInvoicesOrThirtyDays() = runBlocking {
         assertEquals(false, backup.reminderDue())
         val client = clients.create(ClientInput(name = "Acme")).ok()

@@ -1,6 +1,7 @@
 package com.example.pocketbill.app
 
 import android.content.Context
+import com.example.pocketbill.data.LogoStore
 import com.example.pocketbill.data.backup.BackupRepository
 import com.example.pocketbill.data.db.PocketBillDatabase
 import com.example.pocketbill.data.repository.ClientRepository
@@ -30,12 +31,15 @@ class AppContainer(
     val profile: ProfileRepository by lazy { ProfileRepository(database, clock) }
     val presets: PresetRepository by lazy { PresetRepository(database, clock) }
 
+    /** Business logo files (F-14). */
+    val logos: LogoStore by lazy { LogoStore(appContext) }
+
     /** Writes invoice PDFs to the app's cache (MVP_SPEC 6), shared through FileProvider. */
-    val pdfRenderer: InvoicePdfRenderer by lazy { InvoicePdfRenderer(File(appContext.cacheDir, "pdf")) }
+    val pdfRenderer: InvoicePdfRenderer by lazy { InvoicePdfRenderer(File(appContext.cacheDir, "pdf"), logos.dir) }
 
     /** Backup file and restore (MVP_SPEC 7); the pre-restore safety copy goes to private storage. */
     val backup: BackupRepository by lazy {
-        BackupRepository(database, clock, File(appContext.filesDir, "backups"), appVersion = appVersion())
+        BackupRepository(database, clock, File(appContext.filesDir, "backups"), appVersion = appVersion(), logos = logos)
     }
 
     /** Hides Home's backup card for 7 days after ✕ (a per-phone preference, not invoice data). */

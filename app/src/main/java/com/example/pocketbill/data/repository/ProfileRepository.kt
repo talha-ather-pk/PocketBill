@@ -10,6 +10,8 @@ import com.example.pocketbill.domain.money.CurrencyCode
 import com.example.pocketbill.domain.money.MoneyLimits
 import com.example.pocketbill.domain.time.Clock
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 /** Business profile fields set in Setup and Settings (MVP_SPEC.md F-01). */
@@ -42,6 +44,17 @@ class ProfileRepository(
     private val invoices = db.invoiceDao()
 
     fun observe(): Flow<BusinessProfileEntity?> = profiles.observe()
+
+    /** The current logo file name (F-14), or null. */
+    fun observeLogo(): Flow<String?> = profiles.observe().map { it?.logoFile }.distinctUntilChanged()
+
+    /** Sets or removes the logo. New invoices and drafts use it; issued invoices keep theirs (DATA_MODEL 5.2). */
+    suspend fun setLogo(fileName: String?) {
+        db.withTransaction {
+            val existing = profiles.get() ?: return@withTransaction
+            profiles.upsert(existing.copy(logoFile = fileName, updatedAt = clock.nowMillis()))
+        }
+    }
 
     override suspend fun get(): BusinessProfileEntity? = profiles.get()
 

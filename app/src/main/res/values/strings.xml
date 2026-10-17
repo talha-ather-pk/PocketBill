@@ -397,4 +397,13 @@
         <item quantity="one">used %1$d time</item>
         <item quantity="other">used %1$d times</item>
     </plurals>
+
+    <!-- Business logo (F-14) -->
+    <string name="logo_title">Logo</string>
+    <string name="logo_choose">Choose logo</string>
+    <string name="logo_change">Change</string>
+    <string name="logo_remove">Remove</string>
+    <string name="logo_current">Your logo</string>
+    <string name="logo_help">Shown at the top of new invoices. Invoices already issued keep the logo they had.</string>
+    <string name="logo_failed">Couldn\'t use that image. Try a PNG or JPEG.</string>
 </resources>

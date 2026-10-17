@@ -1,7 +1,10 @@
 package com.example.pocketbill.pdf
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.RectF
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.text.Layout
@@ -30,7 +33,7 @@ object PdfColors {
  * totals, payment details, notes, "Page 1 of N", and the DRAFT / PAID / VOID marks.
  * Units are PDF points (1/72 inch). Uses the system font (Roboto) with Android's fallback chain.
  */
-class InvoicePdfRenderer(private val outputDir: File) {
+class InvoicePdfRenderer(private val outputDir: File, private val logoDir: File? = null) {
 
     /** Renders off the main thread and returns the file (in [outputDir], named [InvoiceDocument.fileName]). */
     suspend fun render(doc: InvoiceDocument): File = withContext(Dispatchers.Default) {
@@ -41,7 +44,9 @@ class InvoicePdfRenderer(private val outputDir: File) {
         val partial = File(outputDir, doc.fileName + ".part")
         val pdf = PdfDocument()
         try {
-            Drawing(doc).drawAll(pdf)
+            val logo = doc.logoFile?.let { name -> logoDir?.let { File(it, name) } }?.takeIf { it.isFile }
+                ?.let { BitmapFactory.decodeFile(it.path) }
+            Drawing(doc, logo).drawAll(pdf)
             partial.outputStream().use { pdf.writeTo(it) }
         } finally {
             pdf.close()
@@ -54,7 +59,7 @@ class InvoicePdfRenderer(private val outputDir: File) {
     }
 
     /** The layout of one document. */
-    private class Drawing(private val doc: InvoiceDocument) {
+    private class Drawing(private val doc: InvoiceDocument, private val logo: Bitmap?) {
         private val pageWidth = if (doc.paperSize == PaperSize.LETTER) 612 else 595
         private val pageHeight = if (doc.paperSize == PaperSize.LETTER) 792 else 842
         private val left = MARGIN
@@ -127,7 +132,14 @@ class InvoicePdfRenderer(private val outputDir: File) {
         private val toLayout = layout(doc.toLines.joinToString("\n"), mutedText, billToWidth)
         private var billToTop = 0f
 
-        private fun fromBlockHeight() = nameLayout.height + (if (doc.fromLines.isEmpty()) 0 else 4 + fromLayout.height)
+        /** Logo box fitted inside LOGO_MAX_WIDTH × LOGO_MAX_HEIGHT, keeping its shape. */
+        private val logoSize: Pair<Float, Float>? = logo?.let {
+            val scale = minOf(LOGO_MAX_WIDTH / it.width, LOGO_MAX_HEIGHT / it.height)
+            it.width * scale to it.height * scale
+        }
+        private val logoSpace = logoSize?.let { it.second + 10f } ?: 0f
+
+        private fun fromBlockHeight() = logoSpace + nameLayout.height + (if (doc.fromLines.isEmpty()) 0 else 4 + fromLayout.height)
         private fun titleBlockHeight() = TITLE_SIZE + 6 + NUMBER_SIZE + 4
         private fun billToHeight() = LABEL_SIZE + 6 + toNameLayout.height + (if (doc.toLines.isEmpty()) 0 else 3 + toLayout.height)
         private fun factsHeight() = doc.facts.size * FACT_LINE
@@ -138,8 +150,14 @@ class InvoicePdfRenderer(private val outputDir: File) {
         }
 
         private fun drawFirstPageHeader(canvas: Canvas) {
-            draw(canvas, nameLayout, left, MARGIN)
-            if (doc.fromLines.isNotEmpty()) draw(canvas, fromLayout, left, MARGIN + nameLayout.height + 4)
+            val logoBitmap = logo
+            if (logoBitmap != null && logoSize != null) {
+                val dst = RectF(left, MARGIN, left + logoSize.first, MARGIN + logoSize.second)
+                canvas.drawBitmap(logoBitmap, null, dst, Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG))
+            }
+            val nameTop = MARGIN + logoSpace
+            draw(canvas, nameLayout, left, nameTop)
+            if (doc.fromLines.isNotEmpty()) draw(canvas, fromLayout, left, nameTop + nameLayout.height + 4)
 
             title.textAlign = Paint.Align.RIGHT
             canvas.drawText("INVOICE", right, MARGIN + TITLE_SIZE * 0.85f, title)
@@ -317,6 +335,8 @@ class InvoicePdfRenderer(private val outputDir: File) {
         private const val TOTAL_SIZE = 12f
         private const val STAMP_SIZE = 24f
         private const val WATERMARK_SIZE = 110f
+        private const val LOGO_MAX_WIDTH = 160f
+        private const val LOGO_MAX_HEIGHT = 48f
 
         // No "tnum" feature: Roboto's digits are already the same width, and the tabular variants
         // lost their character mapping in the PDF, so copied or searched amounts dropped 6s and 8s.

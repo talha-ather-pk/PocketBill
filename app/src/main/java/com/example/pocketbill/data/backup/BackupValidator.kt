@@ -52,6 +52,10 @@ object BackupValidator {
             if (profile.defaultTaxRateBp !in 0..MoneyLimits.MAX_TAX_BP) problems += BackupProblem.BAD_AMOUNT
         }
 
+        file.logo?.let { encoded ->
+            if (runCatching { java.util.Base64.getDecoder().decode(encoded) }.getOrNull()?.isNotEmpty() != true) problems += BackupProblem.BAD_PROFILE
+        }
+
         fun <T> unique(items: List<T>, key: (T) -> Any, problem: BackupProblem) {
             if (items.map(key).toSet().size != items.size) problems += problem
         }

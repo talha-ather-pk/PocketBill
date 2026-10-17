@@ -35,6 +35,8 @@ data class InvoiceDocument(
     val markDetail: String?,
     val fromName: String,
     val fromLines: List<String>,
+    /** Logo file name (frozen for issued invoices); drawn if the file exists (F-14). */
+    val logoFile: String? = null,
     /** Null when a draft has no client yet. */
     val toName: String?,
     val toLines: List<String>,
@@ -111,6 +113,7 @@ data class InvoiceDocument(
                 mark = mark,
                 markDetail = e.paidDate?.takeIf { mark == PdfMark.PAID }?.let(DateFormatter::full),
                 fromName = from.name,
+                logoFile = from.logoFile,
                 fromLines = textLines(from.contactLines) + textLines(from.address) +
                     listOfNotNull(from.taxId?.takeIf { it.isNotBlank() }?.let { "Tax ID: ${it.trim()}" }),
                 toName = to?.name,

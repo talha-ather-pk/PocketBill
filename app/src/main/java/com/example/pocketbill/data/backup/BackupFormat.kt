@@ -33,7 +33,7 @@ data class BackupFile(
     val invoices: List<BackupInvoice> = emptyList(),
     val lineItems: List<BackupLineItem> = emptyList(),
     val itemPresets: List<BackupPreset> = emptyList(),
-    /** Base64 logo image; reserved for F-14 (no logo picker yet). */
+    /** The current business logo as base64 PNG (F-14), or null. */
     val logo: String? = null,
 )
 
@@ -226,7 +226,7 @@ object BackupFormat {
             BusinessProfileEntity(
                 uuid = uuid, name = name, contactLines = contactLines, address = address, taxId = taxId,
                 paymentInstructions = paymentInstructions,
-                // The logo image isn't in v1 files yet (F-14), so no file is referenced.
+                // Set by the restore once the logo file from [BackupFile.logo] is written.
                 logoFile = null,
                 defaultCurrency = defaultCurrency, defaultTermsDays = defaultTermsDays, defaultTaxRateBp = defaultTaxRateBp,
                 invoicePrefix = invoicePrefix, nextInvoiceNumber = nextInvoiceNumber, paperSize = PaperSize.valueOf(paperSize),

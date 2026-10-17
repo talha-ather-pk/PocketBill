@@ -88,6 +88,23 @@ class InvoicePdfRendererTest {
         }
     }
 
+    @Test fun logoIsDrawnAndAMissingLogoIsSkipped() = runBlocking {
+        val logoDir = File(dir.parentFile, "logo-test").apply { mkdirs() }
+        try {
+            val png = java.io.ByteArrayOutputStream().also {
+                android.graphics.Bitmap.createBitmap(300, 90, android.graphics.Bitmap.Config.ARGB_8888)
+                    .apply { eraseColor(android.graphics.Color.rgb(31, 78, 121)) }
+                    .compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it)
+            }.toByteArray()
+            File(logoDir, "logo.png").writeBytes(png)
+            val withLogo = InvoicePdfRenderer(dir, logoDir)
+            assertEquals(1, pages(withLogo.render(doc(lines = 3).copy(logoFile = "logo.png"))).size)
+            assertEquals(1, pages(withLogo.render(doc(lines = 3).copy(logoFile = "missing.png"))).size)
+        } finally {
+            logoDir.deleteRecursively()
+        }
+    }
+
     @Test fun onlyTheLatestPdfStaysInTheFolder() = runBlocking {
         renderer.render(doc(lines = 1).copy(fileName = "A.pdf"))
         renderer.render(doc(lines = 1).copy(fileName = "B.pdf"))
