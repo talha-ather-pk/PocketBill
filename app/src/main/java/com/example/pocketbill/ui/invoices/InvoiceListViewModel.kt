@@ -27,7 +27,7 @@ data class InvoiceListUiState(
 class InvoiceListViewModel(
     browser: InvoiceBrowser,
     clients: ClientStore,
-    clock: Clock,
+    private val clock: Clock,
     initialFilter: InvoiceFilter,
 ) : ViewModel() {
     private val today = clock.todayEpochDay()
@@ -43,7 +43,7 @@ class InvoiceListViewModel(
             combine(browser.observeAll(), allClients, browser.observeLineDescriptions(), filter, query) { invoices, cs, lines, f, q ->
                 InvoiceListUiState(
                     loading = false, filter = f, query = q, today = today,
-                    result = buildInvoiceList(invoices, cs, lines, f, q, today),
+                    result = buildInvoiceList(invoices, cs, lines, f, q, today, clock::dayOf),
                     noInvoices = invoices.isEmpty(),
                 )
             }.collect { _state.value = it }

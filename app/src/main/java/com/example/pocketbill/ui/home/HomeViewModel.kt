@@ -55,7 +55,7 @@ class HomeViewModel(
             // Recomputed when invoices change or the profile changes (it holds the last backup date).
             combine(browser.observeAll(), allClients, businessName, backupCardHidden, paymentChangedAt) { invoices, cs, name, hidden, changedAt ->
                 HomeUiState(
-                    loading = false, businessName = name.orEmpty(), today = today, summary = buildHome(invoices, cs, today, changedAt),
+                    loading = false, businessName = name.orEmpty(), today = today, summary = buildHome(invoices, cs, today, changedAt, clock::dayOf),
                     showBackupCard = !hidden && invoices.isNotEmpty() && backupDue(),
                 )
             }.collect { _state.value = it }

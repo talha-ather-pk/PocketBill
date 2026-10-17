@@ -25,6 +25,8 @@ data class InvoiceRow(
     val paidDate: Long?,
     val lastSentAt: Long?,
     val updatedAt: Long,
+    /** The local calendar day of [updatedAt] ("edited 18 Oct", "Started today"). */
+    val updatedDay: Long = Math.floorDiv(updatedAt, 86_400_000L),
 )
 
 /** A month heading ("October 2026") followed by its rows, for the All and Paid filters. */
@@ -41,10 +43,11 @@ data class InvoiceListResult(
 )
 
 /** One row in the Invoices list or on Home (UX_SPEC 5 row design). */
-fun InvoiceEntity.toRow(clientsById: Map<Long, ClientEntity>, today: Long) = InvoiceRow(
+fun InvoiceEntity.toRow(clientsById: Map<Long, ClientEntity>, today: Long, dayOf: (Long) -> Long = { Math.floorDiv(it, 86_400_000L) }) = InvoiceRow(
     id = id, number = number, clientName = clientNameFor(this, clientsById),
     status = displayStatus(status, dueDate, today), currency = currency, totalMinor = totalMinor,
     issueDate = issueDate, dueDate = dueDate, paidDate = paidDate, lastSentAt = lastSentAt, updatedAt = updatedAt,
+    updatedDay = dayOf(updatedAt),
 )
 
 /** Which client name to show and search: frozen for issued invoices, current otherwise. */
@@ -78,6 +81,7 @@ fun buildInvoiceList(
     filter: InvoiceFilter,
     query: String,
     today: Long,
+    dayOf: (Long) -> Long = { Math.floorDiv(it, 86_400_000L) },
 ): InvoiceListResult {
     val clientsById = clients.associateBy { it.id }
     val counts = InvoiceFilter.entries.associateWith { f -> invoices.count { it.matchesFilter(f, today) } }
@@ -105,7 +109,7 @@ fun buildInvoiceList(
         InvoiceFilter.DRAFTS -> selected.sortedWith(compareByDescending<InvoiceEntity> { it.updatedAt }.thenByDescending { it.id })
         InvoiceFilter.ALL, InvoiceFilter.VOID -> selected.sortedWith(compareByDescending<InvoiceEntity> { it.issueDate }.thenByDescending { it.id })
     }
-    val rows = sorted.map { it.toRow(clientsById, today) }
+    val rows = sorted.map { it.toRow(clientsById, today, dayOf) }
 
     val groups = when (effective) {
         InvoiceFilter.ALL -> groupByMonth(rows) { it.issueDate }
@@ -131,8 +135,7 @@ val InvoiceRow.isDraft: Boolean get() = status == DisplayStatus.DRAFT
 fun InvoiceRow.datePart(): Pair<DateKind, Long> = when (status) {
     DisplayStatus.PAID -> DateKind.PAID to (paidDate ?: issueDate)
     DisplayStatus.OVERDUE -> DateKind.OVERDUE to dueDate
-    // updatedAt is a timestamp (ms); shown as the day it was last edited.
-    DisplayStatus.DRAFT -> DateKind.EDITED to updatedAt / 86_400_000L
+    DisplayStatus.DRAFT -> DateKind.EDITED to updatedDay
     DisplayStatus.VOID -> DateKind.ISSUED to issueDate
     DisplayStatus.UNPAID -> DateKind.DUE to dueDate
 }

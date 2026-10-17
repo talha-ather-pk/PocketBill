@@ -55,7 +55,13 @@ data class HomeSummary(
  * the overdue row, "Needs attention" (overdue oldest-due first, then issued-but-unsent, then
  * drafts most recently edited) and the 5 most recently changed invoices.
  */
-fun buildHome(invoices: List<InvoiceEntity>, clients: List<ClientEntity>, today: Long, paymentChangedAt: Long = 0): HomeSummary {
+fun buildHome(
+    invoices: List<InvoiceEntity>,
+    clients: List<ClientEntity>,
+    today: Long,
+    paymentChangedAt: Long = 0,
+    dayOf: (Long) -> Long = { Math.floorDiv(it, 86_400_000L) },
+): HomeSummary {
     val clientsById = clients.associateBy { it.id }
     val unpaid = invoices.filter { it.status == InvoiceStatus.ISSUED }
     val overdue = unpaid.filter { isOverdue(it.status, it.dueDate, today) }
@@ -75,13 +81,13 @@ fun buildHome(invoices: List<InvoiceEntity>, clients: List<ClientEntity>, today:
 
     val attentionAll = buildList {
         overdue.sortedWith(compareBy<InvoiceEntity> { it.dueDate }.thenBy { it.id }).forEach {
-            add(AttentionItem(AttentionKind.OVERDUE, it.toRow(clientsById, today), daysOverdue = today - it.dueDate, hasEmail = hasEmail(it)))
+            add(AttentionItem(AttentionKind.OVERDUE, it.toRow(clientsById, today, dayOf), daysOverdue = today - it.dueDate, hasEmail = hasEmail(it)))
         }
         unpaid.filter { it.lastSentAt == null && it !in overdue }.sortedWith(compareBy<InvoiceEntity> { it.issueDate }.thenBy { it.id }).forEach {
-            add(AttentionItem(AttentionKind.UNSENT, it.toRow(clientsById, today), hasEmail = hasEmail(it)))
+            add(AttentionItem(AttentionKind.UNSENT, it.toRow(clientsById, today, dayOf), hasEmail = hasEmail(it)))
         }
         invoices.filter { it.status == InvoiceStatus.DRAFT }.sortedByDescending { it.updatedAt }.forEach {
-            add(AttentionItem(AttentionKind.DRAFT, it.toRow(clientsById, today)))
+            add(AttentionItem(AttentionKind.DRAFT, it.toRow(clientsById, today, dayOf)))
         }
     }
     val attentionFilter = when (attentionAll.firstOrNull()?.kind) {
@@ -102,7 +108,7 @@ fun buildHome(invoices: List<InvoiceEntity>, clients: List<ClientEntity>, today:
         attentionFilter = attentionFilter,
         recent = invoices.sortedWith(compareByDescending<InvoiceEntity> { it.updatedAt }.thenByDescending { it.id })
             .take(HomeSummary.MAX_RECENT)
-            .map { it.toRow(clientsById, today) },
+            .map { it.toRow(clientsById, today, dayOf) },
         noInvoices = invoices.isEmpty(),
         allPaid = unpaid.isEmpty() && invoices.any { it.status == InvoiceStatus.PAID },
         resend = if (paymentChangedAt <= 0) {
@@ -110,7 +116,7 @@ fun buildHome(invoices: List<InvoiceEntity>, clients: List<ClientEntity>, today:
         } else {
             unpaid.filter { it.lastSentAt != null && it.lastSentAt < paymentChangedAt }
                 .sortedWith(compareBy<InvoiceEntity> { it.dueDate }.thenBy { it.id })
-                .map { AttentionItem(AttentionKind.RESEND, it.toRow(clientsById, today), hasEmail = hasEmail(it)) }
+                .map { AttentionItem(AttentionKind.RESEND, it.toRow(clientsById, today, dayOf), hasEmail = hasEmail(it)) }
         },
     )
 }

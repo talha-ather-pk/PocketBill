@@ -18,7 +18,7 @@ android {
         minSdk = 26
         targetSdk = 37
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,6 +40,14 @@ android {
     }
 
     buildTypes {
+        // A second copy of the app for hands-on testing: installs beside the real one with its own
+        // empty data ("PocketBill QA"), so checks never touch the founder's invoices.
+        create("qa") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".qa"
+            versionNameSuffix = "-qa"
+            matchingFallbacks += listOf("debug")
+        }
         release {
             signingConfig = releaseSigning
             // R8 stays off for 1.0 (D-022): the app is small, and an untested shrunk build is a

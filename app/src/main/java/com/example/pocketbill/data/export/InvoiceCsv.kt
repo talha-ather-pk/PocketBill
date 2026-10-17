@@ -23,7 +23,7 @@ object InvoiceCsv {
     /** "PocketBill-invoices-2026-10-17.csv" */
     fun fileName(date: LocalDate): String = "PocketBill-invoices-$date.csv"
 
-    fun build(invoices: List<InvoiceEntity>, clients: List<ClientEntity>): String {
+    fun build(invoices: List<InvoiceEntity>, clients: List<ClientEntity>, dayOf: (Long) -> Long = { Math.floorDiv(it, DAY_MS) }): String {
         val byId = clients.associateBy { it.id }
         val rows = invoices
             .filter { it.status != InvoiceStatus.DRAFT }
@@ -46,7 +46,7 @@ object InvoiceCsv {
                     money(inv.discountMinor),
                     money(inv.taxMinor),
                     money(inv.totalMinor),
-                    inv.lastSentAt?.let { iso(it / DAY_MS) }.orEmpty(),
+                    inv.lastSentAt?.let { iso(dayOf(it)) }.orEmpty(),
                 )
             }
         // A byte-order mark makes Excel read accents (Müller, José) correctly.

@@ -55,6 +55,7 @@ import com.example.pocketbill.R
 import com.example.pocketbill.data.db.InvoiceWithLines
 import com.example.pocketbill.domain.format.DateFormatter
 import com.example.pocketbill.domain.money.CurrencyCode
+import com.example.pocketbill.domain.time.localDayOf
 import com.example.pocketbill.domain.money.MoneyFormatter
 import com.example.pocketbill.ui.appContainer
 import com.example.pocketbill.ui.components.DisplayStatus
@@ -316,7 +317,7 @@ private fun SendBlock(state: InvoiceDetailUiState, vm: InvoiceDetailViewModel, b
         }
     }
     e.lastSentAt?.let { at ->
-        val day = DateFormatter.inList(at / DAY_MS, state.today)
+        val day = DateFormatter.inList(localDayOf(at), state.today)
         val text = e.lastSentVia?.let { stringResource(R.string.send_last_sent_via, day, it) } ?: stringResource(R.string.send_last_sent, day)
         Text(text, style = MaterialTheme.typography.bodyMedium, color = muted)
     }

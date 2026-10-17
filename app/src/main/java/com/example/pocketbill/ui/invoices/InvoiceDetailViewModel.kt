@@ -223,15 +223,14 @@ class InvoiceDetailViewModel(
     }
 
     private fun historyFor(e: InvoiceEntity): List<HistoryEntry> = buildList {
-        add(HistoryEntry.Created(e.createdAt / DAY_MS))
+        add(HistoryEntry.Created(clock.dayOf(e.createdAt)))
         if (e.status != InvoiceStatus.DRAFT) add(HistoryEntry.Issued(e.issueDate))
-        e.lastSentAt?.let { add(HistoryEntry.LastSent(it / DAY_MS, e.lastSentVia)) }
+        e.lastSentAt?.let { add(HistoryEntry.LastSent(clock.dayOf(it), e.lastSentVia)) }
         e.paidDate?.let { add(HistoryEntry.Paid(it)) }
     }
 
     companion object {
         /** UX_SPEC 5: Void can be undone for 6 seconds. */
         const val VOID_UNDO_MS = 6_000L
-        private const val DAY_MS = 86_400_000L
     }
 }

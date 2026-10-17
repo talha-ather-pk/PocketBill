@@ -45,6 +45,7 @@ import com.example.pocketbill.R
 import com.example.pocketbill.data.backup.BackupProblem
 import com.example.pocketbill.data.backup.RestorePreview
 import com.example.pocketbill.domain.format.DateFormatter
+import com.example.pocketbill.domain.time.localDayOf
 import com.example.pocketbill.ui.appContainer
 import com.example.pocketbill.ui.theme.Spacing
 import kotlinx.coroutines.CancellationException
@@ -205,7 +206,7 @@ private fun RestoreDialog(preview: RestorePreview, onConfirm: () -> Unit, onDism
                 text = {
                     Column(verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
                         if (counts.createdAt > 0) {
-                            Text(stringResource(R.string.backup_confirm_made, DateFormatter.full(counts.createdAt / 86_400_000L)))
+                            Text(stringResource(R.string.backup_confirm_made, DateFormatter.full(localDayOf(counts.createdAt))))
                         }
                         Text(
                             listOf(

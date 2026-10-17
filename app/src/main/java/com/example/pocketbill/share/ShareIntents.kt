@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import androidx.core.content.edit
 import androidx.core.net.toUri
 
 /**
@@ -17,19 +18,37 @@ object ShareIntents {
     private const val PDF = "application/pdf"
     private val MAILTO: Uri = "mailto:".toUri()
 
-    /** Apps that can send email. With exactly one (usually Gmail) it opens directly. */
-    fun emailAppLabels(context: Context): List<String> {
+    /** An installed app that can send email. */
+    data class EmailApp(val label: String, val packageName: String)
+
+    /** Apps that handle mailto: links (Gmail, Outlook, …), sorted by name. */
+    fun emailApps(context: Context): List<EmailApp> {
         val pm = context.packageManager
         return pm.queryIntentActivities(Intent(Intent.ACTION_SENDTO, MAILTO), PackageManager.MATCH_DEFAULT_ONLY)
-            .map { it.loadLabel(pm).toString() }
-            .distinct()
+            .map { EmailApp(it.loadLabel(pm).toString(), it.activityInfo.packageName) }
+            .distinctBy { it.packageName }
+            .sortedBy { it.label.lowercase() }
     }
 
-    /** ACTION_SEND limited to email apps by a mailto: selector, with address, subject and message prefilled. */
-    fun email(pkg: SendPackage): Intent = send(pkg).apply {
+    /**
+     * ACTION_SEND sent straight to one email app, with address, subject, message and PDF filled in.
+     * Explicit on purpose: Android 14's share sheet ignores a mailto: selector and shows every app
+     * and contact, which is the confusion "Email to client" exists to avoid (UX_SPEC 4, C2).
+     */
+    fun email(pkg: SendPackage, app: EmailApp): Intent = send(pkg).apply {
         pkg.toEmail?.let { putExtra(Intent.EXTRA_EMAIL, arrayOf(it)) }
-        selector = Intent(Intent.ACTION_SENDTO, MAILTO)
+        setPackage(app.packageName)
     }
+
+    private const val PREFS = "send"
+    private const val KEY_EMAIL_APP = "emailApp"
+
+    /** The email app chosen last time when several are installed, so the next send is one tap. */
+    fun rememberedEmailApp(context: Context): String? =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY_EMAIL_APP, null)
+
+    fun rememberEmailApp(context: Context, packageName: String?) =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit { putString(KEY_EMAIL_APP, packageName) }
 
     /** "Send another way": the standard share sheet, which tells [SentReceiver] which app was picked. */
     fun chooser(context: Context, pkg: SendPackage, title: String): Intent {

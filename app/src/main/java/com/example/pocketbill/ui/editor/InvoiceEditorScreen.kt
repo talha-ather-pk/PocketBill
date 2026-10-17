@@ -60,6 +60,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pocketbill.R
 import com.example.pocketbill.data.db.ClientEntity
 import com.example.pocketbill.domain.format.DateFormatter
+import com.example.pocketbill.domain.time.localDayOf
 import com.example.pocketbill.domain.invoice.DiscountType
 import com.example.pocketbill.domain.money.CurrencyCode
 import com.example.pocketbill.domain.money.MoneyFormatter
@@ -154,7 +155,7 @@ private fun EditorContent(state: EditorUiState, vm: InvoiceEditorViewModel, onNe
     ) {
         if (state.mode == EditorMode.ISSUED) {
             val banner = state.lastSentAt?.let {
-                stringResource(R.string.editor_issued_banner_sent, DateFormatter.full(it / DAY_MS))
+                stringResource(R.string.editor_issued_banner_sent, DateFormatter.full(localDayOf(it)))
             } ?: stringResource(R.string.editor_issued_banner)
             Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = MaterialTheme.shapes.small) {
                 Text(banner, modifier = Modifier.padding(Spacing.m), style = MaterialTheme.typography.bodyMedium)

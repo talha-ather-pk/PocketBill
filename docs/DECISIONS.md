@@ -8,6 +8,14 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-024 — Email app choice, APK now, Play later
+- **Context:** The on-phone walkthrough (2026-10-18) found that with two email apps (Gmail and Outlook), Android 14's share sheet ignored the email-only filter and showed every app and WhatsApp contact. The founder asked for an installable APK now and Google Play later.
+- **Decision:**
+  1. "Email to client" opens the email app **directly**. With several installed, PocketBill shows its own short "Send with" list once and **remembers** the choice; Settings shows "Email app: Gmail" to choose again.
+  2. Ship **PocketBill-1.0.0.apk**, signed with the upload key in `C:\dev\keys` (D-022). Installing it over the founder's current *debug* app isn't possible (different signature): back up, uninstall, install the APK, restore.
+  3. A **qa** build type ("PocketBill QA", `com.example.pocketbill.qa`) installs beside the real app with its own data, for hands-on testing that never touches real invoices.
+- **Status:** Accepted 2026-10-18 (Claude as product owner, founder asked for the APK).
+
 ## D-023 — Completing 1.0: CSV export in, due-date notifications out
 - **Context:** All Must and Should features were built. Two Could features remained (MVP_SPEC): F-17 due-date reminder notification and F-19 CSV export. The founder asked to complete the app before publishing.
 - **Decision:** **F-19 is in 1.0**: Backup screen → "Export invoices (CSV)", for accountants (issued, paid and void invoices; ISO dates; plain amounts; UTF-8 with BOM; formula-like text neutralised). **F-17 is not**: notifications on Android 13+ need a runtime permission, and "no permissions" is part of the privacy promise; Home already shows overdue invoices and Remind in one tap. Also built: the Home "Your payment details changed" card (UX_SPEC 2) listing unpaid invoices sent before the change, each with Email again.

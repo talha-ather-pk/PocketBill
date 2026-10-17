@@ -426,4 +426,10 @@
     <string name="csv_button">Export invoices (CSV)</string>
     <string name="csv_saved">Spreadsheet saved</string>
     <string name="csv_failed">Couldn\'t save the spreadsheet. Please try again.</string>
+
+    <!-- Choosing an email app when several are installed (UX_SPEC 4) -->
+    <string name="send_with_title">Send with</string>
+    <string name="send_with_remember">PocketBill remembers your choice. You can change it in Settings.</string>
+    <string name="settings_email_app">Email app: %1$s</string>
+    <string name="settings_email_app_hint">Tap to choose again next time you send</string>
 </resources>

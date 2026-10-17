@@ -62,7 +62,6 @@ import kotlinx.coroutines.flow.map
 /** Up to this many currency lines before "+2 more currencies" (UX_SPEC 2). */
 private const val MAX_CURRENCY_LINES = 3
 
-private const val DAY_MS = 86_400_000L
 
 /** Home (UX_SPEC 2): answers "who owes me, is anything overdue, what did I leave unfinished" without a tap. */
 @Composable
@@ -298,7 +297,7 @@ private fun AttentionRow(item: AttentionItem, today: Long, onOpen: () -> Unit, o
         AttentionKind.UNSENT -> stringResource(R.string.home_not_sent)
         AttentionKind.RESEND -> amount(row.currency, row.totalMinor)
         AttentionKind.DRAFT -> {
-            val day = row.updatedAt / DAY_MS
+            val day = row.updatedDay
             when (today - day) {
                 0L -> stringResource(R.string.home_started_today)
                 1L -> stringResource(R.string.home_started_yesterday)

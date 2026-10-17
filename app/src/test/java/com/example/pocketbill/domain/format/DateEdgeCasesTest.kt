@@ -37,6 +37,14 @@ class DateEdgeCasesTest {
         assertEquals("7 Jan 2027", DateFormatter.full(day(2026, 12, 24) + 14))
     }
 
+    @Test fun `timestamps become the user's local day, not the UTC day`() {
+        // Found on the phone: a draft edited at 1:54 am in Pakistan showed "edited 17 Oct" / "Started yesterday".
+        val instant = java.time.Instant.parse("2026-10-17T20:54:00Z").toEpochMilli()
+        assertEquals(day(2026, 10, 18), DeviceClock { ZoneId.of("Asia/Karachi") }.dayOf(instant))
+        assertEquals(day(2026, 10, 17), DeviceClock { ZoneId.of("America/New_York") }.dayOf(instant))
+        assertEquals(day(2026, 10, 17), DeviceClock { ZoneId.of("UTC") }.dayOf(instant))
+    }
+
     @Test fun `today follows the phone's own time zone`() {
         // Same instant, different calendar days: Tonga is already on the next day.
         val tonga = DeviceClock { ZoneId.of("Pacific/Tongatapu") }.todayEpochDay()

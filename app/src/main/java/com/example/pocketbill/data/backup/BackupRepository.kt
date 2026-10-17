@@ -63,7 +63,7 @@ class BackupRepository(
         )
     }
 
-    override suspend fun exportCsv(): String = db.withTransaction { InvoiceCsv.build(dao.invoices(), dao.clients()) }
+    override suspend fun exportCsv(): String = db.withTransaction { InvoiceCsv.build(dao.invoices(), dao.clients(), clock::dayOf) }
 
     override suspend fun recordBackup() {
         db.withTransaction {

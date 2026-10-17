@@ -22,6 +22,20 @@ On-phone tests use an in-memory database and test folders: the founder's real da
 | P5-T05 Device & lifecycle | 🟡 Manual | List below. Autosave, transactions and the backup safety copy are tested automatically. |
 | P5-T06 Security & privacy | ✅ | [SECURITY_REVIEW.md](SECURITY_REVIEW.md) |
 
+## On-phone walkthrough by Claude (2026-10-18, PocketBill QA copy, demo data)
+
+| Check | Result |
+|---|---|
+| Setup → first-use Home | ✅ |
+| T1: client created inside the editor, €450 item, Issue → PDF preview | ✅ |
+| T2: 2 × €60 → total €570.00 | ✅ |
+| Draft autosave; Continue from Home | ✅ |
+| T4: Mark paid → PAID stamp, "Total paid", button becomes Email receipt | ✅ |
+| T3: Email to client with Gmail and Outlook installed | 🐞 → fixed: the full share sheet opened (with contacts); now a "Send with" list, remembered |
+| Dates after midnight (UTC+5) | 🐞 → fixed: "edited today" showed yesterday's date |
+
+Not finished by Claude (the phone was in use): the Gmail compose check after the fix, Send another way, backup/restore, CSV, saved items, logo, large font, TalkBack. These are in the list below.
+
 ## Hand checks for the founder (about 20 minutes)
 
 Tick each one; note anything confusing.
