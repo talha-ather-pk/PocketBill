@@ -178,4 +178,11 @@ interface PresetDao {
             "ORDER BY useCount DESC, lastUsedAt DESC LIMIT :limit",
     )
     suspend fun suggestions(prefix: String, limit: Int = 3): List<ItemPresetEntity>
+
+    /** Settings → Saved items: most used first. */
+    @Query("SELECT * FROM item_preset ORDER BY useCount DESC, description COLLATE NOCASE")
+    fun observeAll(): Flow<List<ItemPresetEntity>>
+
+    @Query("DELETE FROM item_preset WHERE id = :id")
+    suspend fun delete(id: Long)
 }

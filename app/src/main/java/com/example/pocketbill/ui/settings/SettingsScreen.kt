@@ -55,7 +55,6 @@ fun SettingsScreen(
     val vm: SettingsViewModel = viewModel { SettingsViewModel(container.profile) }
     val businessName by vm.businessName.collectAsStateWithLifecycle()
     val lastBackupAt by vm.lastBackupAt.collectAsStateWithLifecycle()
-    val comingLater = stringResource(R.string.settings_coming_later)
     // Rows sit on the page background, not on a lighter surface band.
     val rowColors = ListItemDefaults.colors(containerColor = Color.Transparent)
 
@@ -73,7 +72,7 @@ fun SettingsScreen(
         )
         ListItem(
             headlineContent = { Text(stringResource(R.string.title_presets)) },
-            supportingContent = { Text(comingLater) },
+            supportingContent = { Text(stringResource(R.string.settings_presets_hint)) },
             colors = rowColors,
             modifier = Modifier.clickable(onClick = onOpenPresets),
         )

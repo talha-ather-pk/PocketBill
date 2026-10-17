@@ -42,8 +42,8 @@ import com.example.pocketbill.ui.invoices.InvoiceDetailScreen
 import com.example.pocketbill.ui.invoices.InvoiceListScreen
 import com.example.pocketbill.ui.home.HomeScreen
 import com.example.pocketbill.ui.settings.BackupScreen
+import com.example.pocketbill.ui.settings.PresetsScreen
 import com.example.pocketbill.ui.pdf.PdfPreviewScreen
-import com.example.pocketbill.ui.screens.PlaceholderScreen
 import com.example.pocketbill.ui.settings.BusinessProfileScreen
 import com.example.pocketbill.ui.settings.SettingsScreen
 import com.example.pocketbill.ui.setup.SetupScreen
@@ -223,7 +223,7 @@ private fun PocketBillNavigation(startDestination: Any) {
                 )
             }
             composable<BusinessProfile> { BusinessProfileScreen(onBack = { navController.popBackStack() }) }
-            composable<Presets> { PlaceholderScreen(R.string.title_presets) }
+            composable<Presets> { PresetsScreen(onBack = { navController.popBackStack() }) }
             composable<Backup> { BackupScreen(onBack = { navController.popBackStack() }) }
         }
     }

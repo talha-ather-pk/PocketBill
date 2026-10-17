@@ -14,7 +14,6 @@
     <string name="clients_empty_body">Save a client once and reuse their details on every invoice.</string>
 
     <!-- Screens whose routes exist but whose content comes in a later Phase 4 task -->
-    <string name="placeholder_body">This screen is coming in a later build step.</string>
     <string name="title_setup">Set up your business</string>
     <string name="title_new_invoice">New invoice</string>
     <string name="title_pdf_preview">PDF preview</string>
@@ -84,7 +83,6 @@
     <string name="update_unpaid_paid_note">Paid invoices always keep the details they were sent with.</string>
 
     <!-- Settings tab -->
-    <string name="settings_coming_later">Coming in a later build step</string>
     <string name="settings_privacy_title">Your data</string>
     <string name="settings_privacy_body">Your invoices are stored only on this phone. PocketBill has no account and no internet access. A copy leaves the phone only when you send an invoice or make a backup.</string>
 
@@ -370,4 +368,28 @@
     <string name="home_backup_card_body">Your invoices exist only on this phone.</string>
     <string name="home_backup_card_action">Back up now</string>
     <string name="home_backup_card_dismiss">Hide for 7 days</string>
+
+    <!-- Saved items (F-18) -->
+    <string name="settings_presets_hint">Services you bill often, with their usual price</string>
+    <string name="presets_intro">These are suggested when you type an item description on an invoice. Tap one to change or delete it.</string>
+    <string name="presets_empty_title">No saved items yet</string>
+    <string name="presets_empty_body">Add the services you bill often, or save one from an invoice line (⋮ → Save as preset).</string>
+    <string name="presets_add">Add saved item</string>
+    <string name="presets_edit">Edit saved item</string>
+    <string name="presets_description">Description</string>
+    <string name="presets_price">Usual price (optional)</string>
+    <string name="presets_price_hint">Filled in when the invoice uses the same currency.</string>
+    <string name="presets_currency">Currency of the price</string>
+    <string name="presets_no_price">No price</string>
+    <string name="presets_delete">Delete</string>
+    <string name="presets_delete_title">Delete \"%1$s\"?</string>
+    <string name="presets_delete_body">It won\'t be suggested any more. Invoices that already use it don\'t change.</string>
+    <string name="presets_error_duplicate">You already have a saved item with this description.</string>
+    <string name="presets_error_too_long">Keep it under %1$d characters.</string>
+    <string name="presets_error_currency">Choose a currency for the price.</string>
+    <string name="presets_error_decimals">Too many decimal places for this currency.</string>
+    <plurals name="presets_used">
+        <item quantity="one">used %1$d time</item>
+        <item quantity="other">used %1$d times</item>
+    </plurals>
 </resources>

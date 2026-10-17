@@ -105,7 +105,6 @@ A clickable web prototype was built for testing: https://claude.ai/artifact/Uv6w
 - **Settings:** business profile (all fields), and the privacy statement.
 
 **Placeholders for now:**
-- **Saved items** in Settings says "coming in a later build step".
 
 ---
 
