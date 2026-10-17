@@ -1,6 +1,6 @@
 # PocketBill — Progress Report
 
-_Snapshot: 2026-10-17. Last commit before this report: `e9816c9` "Build the Invoices tab and invoice detail (P4-T10, P4-T11)". 41 commits, all pushed to https://github.com/talha-ather-pk/PocketBill (public, D-006)._
+_Snapshot: 2026-10-17 (updated after P4-T08). Last commit before this report: `e9816c9` "Build the Invoices tab and invoice detail (P4-T10, P4-T11)". 41 commits, all pushed to https://github.com/talha-ather-pk/PocketBill (public, D-006)._
 
 This file is a one-place summary. The detailed sources are [PROJECT_STATUS.md](PROJECT_STATUS.md) (next actions, verification log), [ROADMAP.md](ROADMAP.md) (all tasks), [DECISIONS.md](DECISIONS.md) and [TEST_PLAN.md](TEST_PLAN.md).
 
@@ -17,7 +17,7 @@ This file is a one-place summary. The detailed sources are [PROJECT_STATUS.md](P
 | Phase 4 – MVP implementation | 🔨 In progress: 7 of 14 tasks done or largely covered; PDF, sending, backup and Home remain |
 | Phases 5–9 – QA, monetization, analytics, release, launch | ⏳ Not started |
 
-**Tests:** 146 unit tests (all pass, run on the computer) and 31 on-phone tests. 25 of the on-phone tests were verified by Claude on the Galaxy A72, 3 more were reported passing by the founder, and 3 haven't run yet (section 5).
+**Tests:** 171 unit tests and 37 on-phone tests, all passing (verified by Claude on the Galaxy A72, 2026-10-17).
 
 **Database:** version **2** on the founder's phone, which holds a real business profile and clients. Every schema change from now on needs a migration and a test (D-016).
 
@@ -77,10 +77,10 @@ A clickable web prototype was built for testing: https://claude.ai/artifact/Uv6w
 | P4-T05 Clients | Clients tab (search, sort, archived), client page, add/edit, duplicate check, preferred currency/terms (D-015), database v2 migration (D-016) | ✅ Verified | 25 on-phone tests incl. migration; founder checked by hand |
 | P4-T06 Invoice editor | Client defaults, items, live totals, tax, discount, saved items, autosave, issue with checks, number preview, edit issued, duplicate | ✅ Verified | 128 unit tests; on-phone tests and hands-on check **reported passing by the founder** |
 | P4-T07 Numbering & dates | Numbering rules and preview, date formatting | ✅ Largely covered by P4-T03/T06 | Remaining date edge cases go into Phase 5 |
-| P4-T08 PDF generation | Real invoice PDFs (A4/Letter, pages, stamps, character check) | ⏳ Not started | — |
+| P4-T08 PDF generation | Real invoice PDFs (A4/Letter, pages, stamps, character check) and the PDF preview screen | 🟡 Implemented | 25 unit + 6 on-phone tests pass (D-007 glyphs, 50 items < 2 s); visual check by eye and logo still to do |
 | P4-T09 PDF save/share | Save as file; Email to client / Send another way (UX_SPEC 4) | ⏳ Not started | — |
-| P4-T10 Status tracking | Invoice page: mark paid + Undo, change paid date, mark unpaid, void + 6 s Undo, delete draft | 🟡 Implemented | Unit tested; on-phone tests not run yet |
-| P4-T11 History & search | Invoices tab: filters (incl. Void) with counts, search, totals, month groups; history block | 🟡 Implemented | Unit tested; on-phone tests not run yet |
+| P4-T10 Status tracking | Invoice page: mark paid + Undo, change paid date, mark unpaid, void + 6 s Undo, delete draft | 🟡 Implemented | Unit and on-phone tests pass; hands-on check pending |
+| P4-T11 History & search | Invoices tab: filters (incl. Void) with counts, search, totals, month groups; history block | 🟡 Implemented | Unit and on-phone tests pass; hands-on check pending |
 | P4-T12 Backup & restore | Backup file, validated restore, backup reminder | ⏳ Not started | — |
 | P4-T13 Empty/loading/error states | Review across all screens | ⏳ Not started | Many screens already have them |
 | P4-T14 Permissions & manifest | Confirm no permissions, no INTERNET, allowBackup off | ⏳ Not started | Manifest currently has none of them |
@@ -104,7 +104,6 @@ A clickable web prototype was built for testing: https://claude.ai/artifact/Uv6w
 - **Settings:** business profile (all fields), and the privacy statement.
 
 **Placeholders for now:**
-- **PDF preview** shows a "coming later" screen.
 - **Home** is still the early version. It doesn't yet show amounts owed, overdue items, "Needs attention" or recent invoices.
 - **Saved items** and **Backup** in Settings say "coming in a later build step".
 

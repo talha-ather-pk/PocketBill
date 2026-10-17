@@ -41,6 +41,7 @@ import com.example.pocketbill.ui.editor.InvoiceEditorScreen
 import com.example.pocketbill.ui.invoices.InvoiceDetailScreen
 import com.example.pocketbill.ui.invoices.InvoiceListScreen
 import com.example.pocketbill.ui.screens.HomeScreen
+import com.example.pocketbill.ui.pdf.PdfPreviewScreen
 import com.example.pocketbill.ui.screens.PlaceholderScreen
 import com.example.pocketbill.ui.settings.BusinessProfileScreen
 import com.example.pocketbill.ui.settings.SettingsScreen
@@ -172,7 +173,9 @@ private fun PocketBillNavigation(startDestination: Any) {
                     },
                 )
             }
-            composable<PdfPreview> { PlaceholderScreen(R.string.title_pdf_preview) }
+            composable<PdfPreview> { entry ->
+                PdfPreviewScreen(invoiceId = entry.toRoute<PdfPreview>().invoiceId, onBack = { navController.popBackStack() })
+            }
             composable<ClientDetail> { entry ->
                 ClientDetailScreen(
                     clientId = entry.toRoute<ClientDetail>().clientId,

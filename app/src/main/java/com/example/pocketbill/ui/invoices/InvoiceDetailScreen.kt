@@ -64,7 +64,7 @@ import java.math.BigDecimal
 
 private const val DAY_MS = 86_400_000L
 
-/** Invoice detail (UX_SPEC 5). Sending arrives with the PDF (P4-T08/T09); until then, Preview opens a placeholder. */
+/** Invoice detail (UX_SPEC 5). Preview opens the real PDF (P4-T08); sending arrives in P4-T09. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvoiceDetailScreen(

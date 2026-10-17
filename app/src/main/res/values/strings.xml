@@ -257,4 +257,12 @@
     <string name="detail_history_issued">Issued</string>
     <string name="detail_history_sent">Last sent</string>
     <string name="detail_history_paid">Paid</string>
+
+    <!-- PDF preview (MVP_SPEC 6, UX_SPEC 4) -->
+    <string name="pdf_creating">Creating PDF…</string>
+    <string name="pdf_failed">Couldn\'t create the PDF. Your invoice is saved.</string>
+    <string name="pdf_try_again">Try again</string>
+    <string name="pdf_missing">This invoice no longer exists.</string>
+    <string name="pdf_draft_note">Draft preview. The invoice gets its number when you issue it.</string>
+    <string name="pdf_page_label">Page %1$d of %2$d</string>
 </resources>
