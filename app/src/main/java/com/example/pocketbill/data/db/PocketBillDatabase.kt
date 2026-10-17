@@ -33,6 +33,7 @@ abstract class PocketBillDatabase : RoomDatabase() {
     abstract fun clientDao(): ClientDao
     abstract fun invoiceDao(): InvoiceDao
     abstract fun presetDao(): PresetDao
+    abstract fun backupDao(): BackupDao
 
     companion object {
         const val FILE_NAME = "pocketbill.db"

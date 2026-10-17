@@ -8,6 +8,17 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-018 — Backup and restore details (P4-T12)
+- **Context:** MVP_SPEC 7 sets the rules (JSON file, validate first, one transaction, safety copy, reminder) but left some details open.
+- **Decision:**
+  1. **Restore confirmation is a dialog** on the Backup screen (file date, counts of invoices, clients and saved items, "Replace data"), not a separate screen. The unused `RestoreConfirm` route was removed.
+  2. A backup **must contain a business profile**; files without one are refused (the app can't run without it).
+  3. **Logo:** format v1 reserves a `logo` field but leaves it empty until the logo picker exists (F-14). A restored profile has no logo file.
+  4. **Safety copy:** `files/backups/pre-restore-backup.json` in the app's private storage, overwritten by each restore (the last one is kept).
+  5. **Reminder:** the Home card shows when 10+ invoices were created since the last backup, or 30 days have passed since the last backup (or, if never backed up, since the first invoice). ✕ hides it for 7 days; that date is a phone preference, not invoice data, so it isn't in backups.
+  6. **Checks before restore:** the app name, the profile, unique IDs, uuids and invoice numbers, links between tables, statuses (issued, paid and void invoices need a number and client; paid ones a paid date), known currencies, money and quantity limits, and issue/due dates for non-drafts. Half-finished drafts are accepted as they are.
+- **Status:** Accepted 2026-10-17 (Claude as product owner).
+
 ## D-017 — Sending: who gets the email, and drafts
 - **Context:** P4-T09 (UX_SPEC 4). Issued invoices freeze the client's details (DATA_MODEL 5.2), including their email. If the client later changes their billing address, "Email again" would go to the old one. Also, the PDF preview could offer Send for drafts.
 - **Decision:**

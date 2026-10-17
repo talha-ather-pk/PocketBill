@@ -34,7 +34,6 @@ internal val routesWithoutBottomBar: List<KClass<*>> = listOf(
     InvoiceEditor::class,
     PdfPreview::class,
     ClientEditor::class,
-    RestoreConfirm::class,
 )
 
 internal fun NavDestination?.showsBottomBar(): Boolean =

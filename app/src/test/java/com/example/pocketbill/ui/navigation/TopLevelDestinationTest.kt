@@ -33,7 +33,7 @@ class TopLevelDestinationTest {
         val routes: List<KClass<*>> = listOf(
             Setup::class, Home::class, InvoiceList::class, ClientList::class, Settings::class,
             InvoiceDetail::class, InvoiceEditor::class, PdfPreview::class, ClientDetail::class,
-            ClientEditor::class, BusinessProfile::class, Presets::class, Backup::class, RestoreConfirm::class,
+            ClientEditor::class, BusinessProfile::class, Presets::class, Backup::class,
         )
         for (route in routes) {
             assertNotNull(route.simpleName, serializer(route.java))
@@ -43,7 +43,7 @@ class TopLevelDestinationTest {
     @Test
     fun fullScreenTasksHideTheBottomBar() {
         assertEquals(
-            setOf(Setup::class, InvoiceEditor::class, PdfPreview::class, ClientEditor::class, RestoreConfirm::class),
+            setOf(Setup::class, InvoiceEditor::class, PdfPreview::class, ClientEditor::class),
             routesWithoutBottomBar.toSet(),
         )
     }

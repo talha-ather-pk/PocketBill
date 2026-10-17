@@ -2,6 +2,7 @@ package com.example.pocketbill.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pocketbill.app.HomeCardPrefs
 import com.example.pocketbill.data.repository.ClientStore
 import com.example.pocketbill.data.repository.InvoiceBrowser
 import com.example.pocketbill.data.repository.InvoiceSending
@@ -21,6 +22,8 @@ data class HomeUiState(
     val businessName: String = "",
     val today: Long = 0,
     val summary: HomeSummary = HomeSummary(),
+    /** "Back up your invoices" (UX_SPEC 2 cards, MVP_SPEC 7). */
+    val showBackupCard: Boolean = false,
 )
 
 /** Home (UX_SPEC 2): who owes me, what's overdue, what's unfinished; one-tap Remind and Email. */
@@ -31,7 +34,11 @@ class HomeViewModel(
     private val sending: InvoiceSending,
     private val preparer: SendPreparer,
     private val clock: Clock,
+    private val backupDue: suspend () -> Boolean,
+    private val prefs: HomeCardPrefs,
 ) : ViewModel() {
+    private val backupCardHidden = MutableStateFlow(prefs.backupCardHiddenUntil > clock.nowMillis())
+
     private val today = clock.todayEpochDay()
     private val _state = MutableStateFlow(HomeUiState(today = today))
     val state: StateFlow<HomeUiState> = _state.asStateFlow()
@@ -44,10 +51,20 @@ class HomeViewModel(
     init {
         viewModelScope.launch {
             val allClients = combine(clients.observeActive(), clients.observeArchived()) { a, b -> a + b }
-            combine(browser.observeAll(), allClients, businessName) { invoices, cs, name ->
-                HomeUiState(loading = false, businessName = name.orEmpty(), today = today, summary = buildHome(invoices, cs, today))
+            // Recomputed when invoices change or the profile changes (it holds the last backup date).
+            combine(browser.observeAll(), allClients, businessName, backupCardHidden) { invoices, cs, name, hidden ->
+                HomeUiState(
+                    loading = false, businessName = name.orEmpty(), today = today, summary = buildHome(invoices, cs, today),
+                    showBackupCard = !hidden && invoices.isNotEmpty() && backupDue(),
+                )
             }.collect { _state.value = it }
         }
+    }
+
+    /** ✕ on the backup card hides it for 7 days (UX_SPEC 2). */
+    fun onDismissBackupCard() {
+        prefs.backupCardHiddenUntil = clock.nowMillis() + BACKUP_CARD_HIDE_MS
+        backupCardHidden.value = true
     }
 
     /** Remind (overdue) or Email (issued, not sent): the email app with the right template, or Send… without an email. */
@@ -66,5 +83,9 @@ class HomeViewModel(
                 }
             }
         }
+    }
+
+    companion object {
+        const val BACKUP_CARD_HIDE_MS = 7 * 86_400_000L
     }
 }

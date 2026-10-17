@@ -1,5 +1,6 @@
 package com.example.pocketbill.ui.home
 
+import com.example.pocketbill.app.HomeCardPrefs
 import com.example.pocketbill.data.db.ClientEntity
 import com.example.pocketbill.data.db.InvoiceEntity
 import com.example.pocketbill.domain.invoice.InvoiceStatus
@@ -126,10 +127,18 @@ class HomeTest {
         val clients = FakeClientStore()
         browser.put(inv(9, InvoiceStatus.ISSUED, due = today - 3))
         val pkg = SendPackage(9, "INV-0009", "/f", "content://f", "f.pdf", "a@acme.example", null, "s", "b")
-        val vm = HomeViewModel(browser, clients, flowOf("Studio"), browser, { pkg }, FixedClock(today))
+        val prefs = object : HomeCardPrefs { override var backupCardHiddenUntil = 0L }
+        var due = true
+        val vm = HomeViewModel(browser, clients, flowOf("Studio"), browser, { pkg }, FixedClock(today), backupDue = { due }, prefs = prefs)
         val item = vm.state.value.summary.attention.single()
         vm.onSendFromRow(item.copy(hasEmail = true))
         assertTrue(vm.send.value!!.state.value.request is SendRequest.Email)
         assertEquals("Studio", vm.state.value.businessName)
+
+        // Backup card (MVP_SPEC 7): shown when due, ✕ hides it for 7 days.
+        assertTrue(vm.state.value.showBackupCard)
+        vm.onDismissBackupCard()
+        assertFalse(vm.state.value.showBackupCard)
+        assertEquals(FixedClock(today).nowMillis() + HomeViewModel.BACKUP_CARD_HIDE_MS, prefs.backupCardHiddenUntil)
     }
 }

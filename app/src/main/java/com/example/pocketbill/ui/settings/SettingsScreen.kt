@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pocketbill.R
+import com.example.pocketbill.domain.format.DateFormatter
 import com.example.pocketbill.data.repository.ProfileRepository
 import com.example.pocketbill.ui.appContainer
 import com.example.pocketbill.ui.theme.Spacing
@@ -36,6 +37,11 @@ class SettingsViewModel(profile: ProfileRepository) : ViewModel() {
     val businessName: StateFlow<String> = profile.observe()
         .map { it?.name.orEmpty() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), "")
+
+    /** Shown under "Backup and restore": null = never backed up (MVP_SPEC 7). */
+    val lastBackupAt: StateFlow<Long?> = profile.observe()
+        .map { it?.lastBackupAt }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 }
 
 /** Settings tab (UX_SPEC 1): business profile, saved items, backup, and what happens to the user's data. */
@@ -48,6 +54,7 @@ fun SettingsScreen(
     val container = appContainer()
     val vm: SettingsViewModel = viewModel { SettingsViewModel(container.profile) }
     val businessName by vm.businessName.collectAsStateWithLifecycle()
+    val lastBackupAt by vm.lastBackupAt.collectAsStateWithLifecycle()
     val comingLater = stringResource(R.string.settings_coming_later)
     // Rows sit on the page background, not on a lighter surface band.
     val rowColors = ListItemDefaults.colors(containerColor = Color.Transparent)
@@ -72,7 +79,7 @@ fun SettingsScreen(
         )
         ListItem(
             headlineContent = { Text(stringResource(R.string.title_backup)) },
-            supportingContent = { Text(comingLater) },
+            supportingContent = { Text(lastBackupText(lastBackupAt)) },
             colors = rowColors,
             modifier = Modifier.clickable(onClick = onOpenBackup),
         )
@@ -90,3 +97,8 @@ fun SettingsScreen(
         )
     }
 }
+
+/** "Last backup 17 Oct 2026" or "Never backed up". */
+@Composable
+internal fun lastBackupText(at: Long?): String =
+    at?.let { stringResource(R.string.backup_last, DateFormatter.full(it / 86_400_000L)) } ?: stringResource(R.string.backup_never)

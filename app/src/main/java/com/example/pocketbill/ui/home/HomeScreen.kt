@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
@@ -70,10 +71,14 @@ fun HomeScreen(
     onOpenInvoice: (Long) -> Unit,
     onContinueDraft: (Long) -> Unit,
     onOpenInvoices: (InvoiceFilter) -> Unit,
+    onBackUp: () -> Unit,
 ) {
     val c = appContainer()
     val vm: HomeViewModel = viewModel {
-        HomeViewModel(c.invoices, c.clients, c.profile.observe().map { it?.name }, c.invoices, c.sharePreparer, c.clock)
+        HomeViewModel(
+            c.invoices, c.clients, c.profile.observe().map { it?.name }, c.invoices, c.sharePreparer, c.clock,
+            backupDue = c.backup::reminderDue, prefs = c.homePrefs,
+        )
     }
     val state by vm.state.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
@@ -100,6 +105,7 @@ fun HomeScreen(
                 Icon(painterResource(R.drawable.ic_add), contentDescription = null)
                 Text(stringResource(R.string.home_create_invoice), modifier = Modifier.padding(start = Spacing.s))
             }
+            if (state.showBackupCard) BackupCard(onBackUp = onBackUp, onDismiss = vm::onDismissBackupCard)
             if (summary.attention.isNotEmpty()) {
                 SectionHeader(
                     stringResource(R.string.home_needs_attention),
@@ -224,6 +230,25 @@ private fun OutstandingCard(summary: HomeSummary, onOpenInvoices: (InvoiceFilter
                 )
                 Text("›", color = late.content, style = MaterialTheme.typography.titleLarge)
             }
+        }
+    }
+}
+
+/** UX_SPEC 2 card: "Back up your invoices." with Back up now; ✕ hides it for 7 days. */
+@Composable
+private fun BackupCard(onBackUp: () -> Unit, onDismiss: () -> Unit) {
+    OutlinedCard(Modifier.padding(horizontal = Spacing.screen).fillMaxWidth()) {
+        Row(Modifier.padding(start = Spacing.l, top = Spacing.s, end = Spacing.xs)) {
+            Column(Modifier.weight(1f).padding(top = Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
+                Text(stringResource(R.string.home_backup_card_title), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.home_backup_card_body), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            IconButton(onClick = onDismiss) {
+                Icon(painterResource(R.drawable.ic_close), contentDescription = stringResource(R.string.home_backup_card_dismiss))
+            }
+        }
+        TextButton(onClick = onBackUp, modifier = Modifier.padding(start = Spacing.s, bottom = Spacing.xs)) {
+            Text(stringResource(R.string.home_backup_card_action))
         }
     }
 }

@@ -81,7 +81,7 @@ A clickable web prototype was built for testing: https://claude.ai/artifact/Uv6w
 | P4-T09 PDF save/share | Save as file; Email to client / Send another way (UX_SPEC 4) | 🟡 Implemented | 15 unit tests pass; Gmail/WhatsApp/Save check on the phone pending (D-017) |
 | P4-T10 Status tracking | Invoice page: mark paid + Undo, change paid date, mark unpaid, void + 6 s Undo, delete draft | 🟡 Implemented | Unit and on-phone tests pass; hands-on check pending |
 | P4-T11 History & search | Invoices tab: filters (incl. Void) with counts, search, totals, month groups; history block | 🟡 Implemented | Unit and on-phone tests pass; hands-on check pending |
-| P4-T12 Backup & restore | Backup file, validated restore, backup reminder | ⏳ Not started | — |
+| P4-T12 Backup & restore | Backup file, validated restore, backup reminder | 🟡 Implemented | 12 unit tests; 5 on-phone tests written, not yet run (D-018) |
 | P4-T13 Empty/loading/error states | Review across all screens | ⏳ Not started | Many screens already have them |
 | P4-T14 Permissions & manifest | Confirm no permissions, no INTERNET, allowBackup off | ⏳ Not started | Manifest currently has none of them |
 | P4-T15 Home screen | Outstanding, overdue, Needs attention, Recent (UX_SPEC 2) | 🟡 Implemented | 9 unit tests; phone check pending; backup card with P4-T12 |
@@ -105,7 +105,7 @@ A clickable web prototype was built for testing: https://claude.ai/artifact/Uv6w
 - **Settings:** business profile (all fields), and the privacy statement.
 
 **Placeholders for now:**
-- **Saved items** and **Backup** in Settings say "coming in a later build step".
+- **Saved items** in Settings says "coming in a later build step".
 
 ---
 

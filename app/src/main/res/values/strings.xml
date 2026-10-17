@@ -21,7 +21,6 @@
     <string name="title_business_profile">Business profile</string>
     <string name="title_presets">Saved items</string>
     <string name="title_backup">Backup and restore</string>
-    <string name="title_restore">Restore backup</string>
 
     <!-- Draft autosave status (UX_SPEC 3) -->
     <string name="save_status_saving">Saving…</string>
@@ -323,4 +322,52 @@
         <item quantity="one">+%1$d more currency</item>
         <item quantity="other">+%1$d more currencies</item>
     </plurals>
+
+    <!-- Backup and restore (MVP_SPEC 7) -->
+    <string name="backup_last">Last backup %1$s</string>
+    <string name="backup_never">Never backed up</string>
+    <string name="backup_intro">Your invoices exist only on this phone. A backup file keeps them safe if the phone is lost, broken or reset.</string>
+    <string name="backup_now">Back up now</string>
+    <string name="backup_where">Save the file somewhere off the phone, such as Google Drive, or email it to yourself. It is a readable JSON file, so your data is yours even without PocketBill.</string>
+    <string name="backup_restore_title">Restore from a backup</string>
+    <string name="backup_restore_body">Replaces everything on this phone with the backup. You see what the file contains before anything changes, and a safety copy of your current data is kept.</string>
+    <string name="backup_restore_button">Choose backup file</string>
+    <string name="backup_confirm_title">Replace all data?</string>
+    <string name="backup_confirm_made">Backup made on %1$s</string>
+    <string name="backup_confirm_body">Everything now on this phone, including your business profile, will be replaced by this backup. A safety copy of your current data is kept on the phone.</string>
+    <string name="backup_confirm_replace">Replace data</string>
+    <string name="backup_cant_restore">Can\'t restore this file</string>
+    <string name="backup_newer">This backup was made by a newer PocketBill. Please update the app first. Nothing was changed.</string>
+    <string name="backup_unreadable">This file isn\'t a PocketBill backup, or it is damaged. Nothing was changed.</string>
+    <string name="backup_invalid">This backup has problems, so nothing was changed:</string>
+    <string name="backup_problem_not_pocketbill">It wasn\'t made by PocketBill.</string>
+    <string name="backup_problem_profile">The business profile is missing or incomplete.</string>
+    <string name="backup_problem_duplicates">Some records appear twice.</string>
+    <string name="backup_problem_numbers">Two invoices have the same number.</string>
+    <string name="backup_problem_links">Some invoices or items point to records that aren\'t in the file.</string>
+    <string name="backup_problem_status">Some invoices have an impossible status.</string>
+    <string name="backup_problem_currency">Some currencies aren\'t recognised.</string>
+    <string name="backup_problem_amounts">Some amounts are out of range.</string>
+    <string name="backup_problem_dates">Some invoices are due before they were issued.</string>
+    <string name="backup_problem_text">Some names or descriptions are empty.</string>
+    <string name="backup_msg_saved">Backup saved</string>
+    <string name="backup_msg_save_failed">Couldn\'t save the backup. Please try again.</string>
+    <string name="backup_msg_restored">Backup restored</string>
+    <string name="backup_msg_restore_failed">Couldn\'t restore. Your data hasn\'t changed.</string>
+    <plurals name="backup_invoices">
+        <item quantity="one">%1$d invoice</item>
+        <item quantity="other">%1$d invoices</item>
+    </plurals>
+    <plurals name="backup_clients">
+        <item quantity="one">%1$d client</item>
+        <item quantity="other">%1$d clients</item>
+    </plurals>
+    <plurals name="backup_presets">
+        <item quantity="one">%1$d saved item</item>
+        <item quantity="other">%1$d saved items</item>
+    </plurals>
+    <string name="home_backup_card_title">Back up your invoices</string>
+    <string name="home_backup_card_body">Your invoices exist only on this phone.</string>
+    <string name="home_backup_card_action">Back up now</string>
+    <string name="home_backup_card_dismiss">Hide for 7 days</string>
 </resources>

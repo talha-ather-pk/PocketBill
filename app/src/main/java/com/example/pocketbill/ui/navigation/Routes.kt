@@ -36,7 +36,6 @@ const val NO_ID: Long = 0
 @Serializable data object BusinessProfile
 @Serializable data object Presets
 @Serializable data object Backup
-@Serializable data class RestoreConfirm(val fileUri: String)
 
 /** Invoice list filters (UX_SPEC.md section 5). */
 enum class InvoiceFilter { ALL, DRAFTS, UNPAID, OVERDUE, PAID, VOID }
