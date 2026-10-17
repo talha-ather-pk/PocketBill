@@ -4,6 +4,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +43,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -392,7 +395,10 @@ private fun LineCard(index: Int, line: LineForm, state: EditorUiState, vm: Invoi
                 error = if (errors.any { it is EditorError.LineDescription && it.index == index }) stringResource(R.string.editor_error_description) else null,
             )
             state.suggestions?.takeIf { it.lineIndex == index }?.let { s ->
-                Column {
+                // Scroll the suggestions above the keyboard as they appear; found hidden behind it on the phone.
+                val requester = remember { BringIntoViewRequester() }
+                LaunchedEffect(s.presets) { requester.bringIntoView() }
+                Column(Modifier.bringIntoViewRequester(requester)) {
                     s.presets.forEach { preset ->
                         val price = preset.unitPriceMinor?.takeIf { preset.currency == currency }?.let { p ->
                             CurrencyCode.fromCode(currency)?.let { MoneyFormatter.format(p, it) }
