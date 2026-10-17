@@ -69,7 +69,8 @@ class InvoicePdfRenderer(private val outputDir: File) {
         private val descriptionWidth = (qtyRight - QTY_WIDTH - left - CELL_GAP).toInt()
 
         private val body = paint(BODY_SIZE)
-        private val bodyNumbers = paint(BODY_SIZE, numbers = true)
+        // Separate paint for numbers: their alignment changes per column.
+        private val bodyNumbers = paint(BODY_SIZE)
         private val muted = paint(SMALL_SIZE, color = PdfColors.MUTED)
 
         // Paints used by StaticLayouts stay left-aligned: their alignment would shift every line.
@@ -111,7 +112,6 @@ class InvoicePdfRenderer(private val outputDir: File) {
                     }
                 }
                 drawFooter(canvas, index + 1, pages.size)
-                if (index == 0 && (doc.mark == PdfMark.PAID || doc.mark == PdfMark.VOID)) drawStamp(canvas)
                 pdf.finishPage(page)
             }
         }
@@ -200,7 +200,7 @@ class InvoicePdfRenderer(private val outputDir: File) {
 
         /** Subtotal, discount, tax and the total, right-aligned; kept together on one page. */
         private inner class TotalsTail : Tail {
-            private val totalPaint = paint(TOTAL_SIZE, bold = true, numbers = true)
+            private val totalPaint = paint(TOTAL_SIZE, bold = true)
             override val height = (doc.totals.size - 1) * FACT_LINE + 8 + TOTAL_SIZE + 6
 
             override fun draw(canvas: Canvas, top: Float) {
@@ -222,6 +222,10 @@ class InvoicePdfRenderer(private val outputDir: File) {
                 canvas.drawText(total.label, labelX, baseline, totalPaint)
                 totalPaint.textAlign = Paint.Align.RIGHT
                 canvas.drawText(total.value, right, baseline, totalPaint)
+                // Beside the totals, in the space the totals block always leaves free on its left.
+                if (doc.mark == PdfMark.PAID || doc.mark == PdfMark.VOID) {
+                    drawStamp(canvas, cx = left + (contentWidth - TOTALS_WIDTH) / 2, cy = top + height / 2)
+                }
             }
         }
 
@@ -255,8 +259,8 @@ class InvoicePdfRenderer(private val outputDir: File) {
             }
         }
 
-        /** A rotated, outlined "PAID" (with its date) or "VOID" stamp near the top of page 1. */
-        private fun drawStamp(canvas: Canvas) {
+        /** A rotated, outlined "PAID" (with its date) or "VOID" stamp centred on ([cx], [cy]). */
+        private fun drawStamp(canvas: Canvas, cx: Float, cy: Float) {
             val paid = doc.mark == PdfMark.PAID
             val color = if (paid) PdfColors.STAMP_PAID else PdfColors.STAMP_VOID
             val word = if (paid) "PAID" else "VOID"
@@ -265,8 +269,6 @@ class InvoicePdfRenderer(private val outputDir: File) {
             val detail = doc.markDetail
             val width = maxOf(big.measureText(word), detail?.let(small::measureText) ?: 0f) + 28
             val height = STAMP_SIZE + 16 + (if (detail != null) SMALL_SIZE + 4 else 0f)
-            val cx = left + contentWidth * 0.62f
-            val cy = billToTop - SECTION_GAP / 2
 
             val box = Paint().apply { this.color = color; style = Paint.Style.STROKE; strokeWidth = 2.5f; isAntiAlias = true }
             canvas.withRotation(-12f, cx, cy) {
@@ -316,13 +318,13 @@ class InvoicePdfRenderer(private val outputDir: File) {
         private const val STAMP_SIZE = 24f
         private const val WATERMARK_SIZE = 110f
 
-        private fun paint(size: Float, bold: Boolean = false, color: Int = PdfColors.INK, numbers: Boolean = false) =
+        // No "tnum" feature: Roboto's digits are already the same width, and the tabular variants
+        // lost their character mapping in the PDF, so copied or searched amounts dropped 6s and 8s.
+        private fun paint(size: Float, bold: Boolean = false, color: Int = PdfColors.INK) =
             TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
                 textSize = size
                 typeface = if (bold) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
                 this.color = color
-                // Same-width digits so amounts line up (UX_SPEC 8.3).
-                if (numbers) fontFeatureSettings = "tnum"
             }
 
         private fun layout(text: String, paint: TextPaint, width: Int): StaticLayout =
