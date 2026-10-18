@@ -43,6 +43,7 @@ import com.example.pocketbill.domain.invoice.InvoiceNumbering
 import com.example.pocketbill.domain.invoice.PaperSize
 import com.example.pocketbill.ui.appContainer
 import com.example.pocketbill.ui.components.CurrencyField
+import com.example.pocketbill.ui.components.unsavedChangesGuard
 import com.example.pocketbill.ui.theme.Spacing
 
 /** Settings → Business profile: every field of MVP_SPEC F-01, plus the DATA_MODEL 5.5 dialog. */
@@ -55,6 +56,7 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
     }
     val state by vm.state.collectAsStateWithLifecycle()
     LaunchedEffect(state.done) { if (state.done) onBack() }
+    val leave = unsavedChangesGuard(state.hasChanges, onSave = vm::onSave, onLeave = onBack)
 
     // The app's outer Scaffold already handles the status bar; without zero insets here the gap is doubled.
     Scaffold(
@@ -64,7 +66,7 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
                 windowInsets = WindowInsets(0),
                 title = { Text(stringResource(R.string.title_business_profile)) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = leave) {
                         Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = stringResource(R.string.action_back))
                     }
                 },

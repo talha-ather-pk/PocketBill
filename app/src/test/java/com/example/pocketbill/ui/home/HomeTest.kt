@@ -160,4 +160,19 @@ class HomeTest {
         assertFalse(vm.state.value.showBackupCard)
         assertEquals(FixedClock(today).nowMillis() + HomeViewModel.BACKUP_CARD_HIDE_MS, prefs.backupCardHiddenUntil)
     }
+
+    @Test fun `payment details changed in Settings show the resend card when Home is shown again`() {
+        val browser = FakeInvoiceBrowser()
+        browser.put(inv(4, InvoiceStatus.ISSUED, due = today + 10, sentAt = 1_000L))
+        val prefs = object : HomeCardPrefs {
+            override var backupCardHiddenUntil = 0L
+            override var paymentDetailsChangedAt = 0L
+        }
+        val vm = HomeViewModel(browser, FakeClientStore(), flowOf("Studio"), browser, { error("no send") }, FixedClock(today), backupDue = { false }, prefs = prefs)
+        assertTrue(vm.state.value.summary.resend.isEmpty())
+
+        prefs.paymentDetailsChangedAt = 2_000L // saved in Business profile while Home stayed alive
+        vm.onShown()
+        assertEquals(listOf(4L), vm.state.value.summary.resend.map { it.row.id })
+    }
 }

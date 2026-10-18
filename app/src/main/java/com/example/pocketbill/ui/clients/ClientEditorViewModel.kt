@@ -34,12 +34,16 @@ data class ClientEditorUiState(
     val loading: Boolean = true,
     val isNew: Boolean = true,
     val form: ClientForm = ClientForm(),
+    /** The form as last loaded, to tell whether leaving would drop edits. */
+    val savedForm: ClientForm = ClientForm(),
     val errors: Map<ClientField, Problem> = emptyMap(),
     val prompt: ClientPrompt? = null,
     val saving: Boolean = false,
     val failed: Boolean = false,
     val result: ClientEditorResult? = null,
-)
+) {
+    val hasChanges: Boolean get() = !loading && result == null && form != savedForm
+}
 
 /** New client or edit (UX_SPEC 6), with the duplicate-name and update-unpaid questions. */
 class ClientEditorViewModel(private val store: ClientStore, private val clientId: Long) : ViewModel() {
@@ -54,7 +58,8 @@ class ClientEditorViewModel(private val store: ClientStore, private val clientId
             viewModelScope.launch {
                 val existing = store.get(clientId)
                 original = existing
-                _state.update { it.copy(loading = false, form = existing?.toForm() ?: ClientForm()) }
+                val form = existing?.toForm() ?: ClientForm()
+                _state.update { it.copy(loading = false, form = form, savedForm = form) }
             }
         }
     }

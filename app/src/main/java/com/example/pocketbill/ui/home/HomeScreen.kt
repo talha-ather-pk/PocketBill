@@ -41,6 +41,8 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pocketbill.R
@@ -79,6 +81,7 @@ fun HomeScreen(
             backupDue = c.backup::reminderDue, prefs = c.homePrefs,
         )
     }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { vm.onShown() }
     val state by vm.state.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     vm.send.collectAsStateWithLifecycle().value?.let { flow -> SendEffects(flow, snackbar) }

@@ -73,6 +73,19 @@ class ClientViewModelsTest {
         assertEquals(2, store.clients.value.size)
     }
 
+    @Test fun `leaving asks only after an edit, and not once saved`() {
+        val client = store.add("Acme Studio")
+        val vm = ClientEditorViewModel(store, client.id)
+        assertFalse("just opened", vm.state.value.hasChanges)
+        vm.onFormChange { it.copy(email = "pay@acme.example") }
+        assertTrue("edited", vm.state.value.hasChanges)
+        vm.onFormChange { it.copy(email = "") }
+        assertFalse("edit undone by hand", vm.state.value.hasChanges)
+        vm.onFormChange { it.copy(notes = "Net 30") }
+        vm.onSave()
+        assertFalse("saved", vm.state.value.hasChanges)
+    }
+
     // ---- Editor: editing ----------------------------------------------------------------------
 
     @Test fun `editing without renaming never asks about duplicates`() {

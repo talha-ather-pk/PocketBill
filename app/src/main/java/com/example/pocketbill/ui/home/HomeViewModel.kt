@@ -68,6 +68,15 @@ class HomeViewModel(
         backupCardHidden.value = true
     }
 
+    /**
+     * Home stays alive while other tabs are open, so preferences changed there (Business profile
+     * records when payment details changed) are read again each time Home is shown.
+     */
+    fun onShown() {
+        paymentChangedAt.value = prefs.paymentDetailsChangedAt
+        backupCardHidden.value = prefs.backupCardHiddenUntil > clock.nowMillis()
+    }
+
     /** ✕ on the payment-details card: the invoices stay as they are, the card goes away. */
     fun onDismissPaymentCard() {
         prefs.paymentDetailsChangedAt = 0

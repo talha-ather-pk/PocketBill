@@ -42,6 +42,7 @@ import com.example.pocketbill.R
 import com.example.pocketbill.domain.Problem
 import com.example.pocketbill.ui.appContainer
 import com.example.pocketbill.ui.components.CurrencyField
+import com.example.pocketbill.ui.components.unsavedChangesGuard
 import com.example.pocketbill.ui.settings.FormTextField
 import com.example.pocketbill.ui.theme.Spacing
 
@@ -53,6 +54,7 @@ fun ClientEditorScreen(clientId: Long, onCancel: () -> Unit, onDone: (ClientEdit
     val vm: ClientEditorViewModel = viewModel { ClientEditorViewModel(container.clients, clientId) }
     val state by vm.state.collectAsStateWithLifecycle()
     LaunchedEffect(state.result) { state.result?.let(onDone) }
+    val leave = unsavedChangesGuard(state.hasChanges, onSave = vm::onSave, onLeave = onCancel)
 
     // The app's outer Scaffold already handles the status bar (see BusinessProfileScreen).
     Scaffold(
@@ -62,7 +64,7 @@ fun ClientEditorScreen(clientId: Long, onCancel: () -> Unit, onDone: (ClientEdit
                 windowInsets = WindowInsets(0),
                 title = { Text(stringResource(if (state.isNew) R.string.title_new_client else R.string.title_edit_client)) },
                 navigationIcon = {
-                    IconButton(onClick = onCancel) {
+                    IconButton(onClick = leave) {
                         Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = stringResource(R.string.action_back))
                     }
                 },

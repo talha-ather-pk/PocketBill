@@ -206,6 +206,7 @@
     <string name="editor_zero_body">Issue it anyway?</string>
     <string name="editor_unsaved_title">Save your changes?</string>
     <string name="editor_unsaved_body">This invoice has already been issued, so changes aren\'t saved automatically.</string>
+    <string name="form_unsaved_body">You changed some details. Leaving now would lose them.</string>
     <string name="editor_discard">Discard</string>
     <string name="editor_keep_editing">Keep editing</string>
     <string name="editor_delete_draft">Delete draft</string>

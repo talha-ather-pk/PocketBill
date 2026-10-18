@@ -24,13 +24,17 @@ data class UpdateUnpaidPrompt(
 data class BusinessProfileUiState(
     val loading: Boolean = true,
     val form: ProfileForm = ProfileForm(),
+    /** The form as last loaded, to tell whether leaving would drop edits. */
+    val savedForm: ProfileForm = ProfileForm(),
     val errors: Map<ProfileField, ProfileError> = emptyMap(),
     val prompt: UpdateUnpaidPrompt? = null,
     val saving: Boolean = false,
     val failed: Boolean = false,
     /** Set once saved; the screen then goes back to Settings. */
     val done: Boolean = false,
-)
+) {
+    val hasChanges: Boolean get() = !loading && !done && form != savedForm
+}
 
 /** Settings → Business profile: every profile field (MVP_SPEC F-01). */
 class BusinessProfileViewModel(
@@ -48,7 +52,8 @@ class BusinessProfileViewModel(
         viewModelScope.launch {
             val existing = profile.get()
             original = existing
-            _state.update { it.copy(loading = false, form = existing?.toForm() ?: ProfileForm()) }
+            val form = existing?.toForm() ?: ProfileForm()
+            _state.update { it.copy(loading = false, form = form, savedForm = form) }
         }
     }
 
