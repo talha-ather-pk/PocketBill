@@ -37,6 +37,7 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 | 2026-10-15 | JAVA_HOME fixed to `C:\java`; docs moved to `C:\dev\PocketBill` | Read back env var; listed copied files |
 | 2026-10-15 | `winget install Google.AndroidStudio` (v2026.2.1.8 found) **failed, exit 65**: package licence agreement not accepted | Nothing was installed. |
 | 2026-10-15 | Founder accepted the licence; Android Studio 2026.2.1.8 installed (exit 0); `studio64.exe` present | winget output plus file check. SDK not installed yet. |
+| 2026-10-18 | Walkthrough part 2: Gmail with the PDF attached, Send another way, logo, backup → restore pass; 3 more bugs fixed (saved-item suggestions hidden by the keyboard; "Never backed up" after a restore; drafts labelled "Issued"). APK rebuilt and verified | adb |
 | 2026-10-18 | On-phone walkthrough in the QA copy: T1, T2, T4, autosave pass; 2 bugs found and fixed (email opened the full share sheet; UTC dates after midnight). testDebugUnitTest 231/231; `am instrument` OK (53 tests). **PocketBill-1.0.0.apk** built, signed (v2) and verified, saved to `C:\dev\PocketBill-APK` | adb, apksigner |
 | 2026-10-17 | Completing 1.0 (D-023): CSV export for accountants (F-19), Home "payment details changed" card. testDebugUnitTest 230/230; `am instrument` OK (53 tests) | Test reports, adb |
 | 2026-10-17 | Logo import bug found by re-reading (bounds decode always returned null → every pick failed); fixed; LogoStoreTest added. `am instrument` OK (52 tests) | adb |

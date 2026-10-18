@@ -33,8 +33,15 @@ On-phone tests use an in-memory database and test folders: the founder's real da
 | T4: Mark paid → PAID stamp, "Total paid", button becomes Email receipt | ✅ |
 | T3: Email to client with Gmail and Outlook installed | 🐞 → fixed: the full share sheet opened (with contacts); now a "Send with" list, remembered |
 | Dates after midnight (UTC+5) | 🐞 → fixed: "edited today" showed yesterday's date |
+| T3 again after the fix: "Send with" list → Gmail opens with address, subject, message and the PDF attached (draft discarded, nothing sent) | ✅ |
+| T5: Send another way → share sheet with the PDF | ✅ |
+| Saved items: suggestions while typing a line | 🐞 → fixed (b785f0c): the keyboard hid them; they now scroll into view |
+| Logo: pick an image → shown in Settings and on the PDF | ✅ |
+| Backup now → Restore from that file → same invoices and clients | ✅ |
+| Settings after a restore | 🐞 → fixed (da3bd90): said "Never backed up" |
+| Draft detail screen | 🐞 → fixed (da3bd90): said "Issued" for a draft; now "Dated" |
 
-Not finished by Claude (the phone was in use): the Gmail compose check after the fix, Send another way, backup/restore, CSV, saved items, logo, large font, TalkBack. These are in the list below.
+Not finished by Claude (the phone disconnected; low battery): CSV export on the phone, the payment-details card on Home, light mode and largest font, TalkBack. CSV and the Home card are covered by unit tests (InvoiceCsvTest, HomeTest); the rest are in the list below.
 
 ## Hand checks for the founder (about 20 minutes)
 
