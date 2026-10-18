@@ -14,7 +14,7 @@
 - [x] Android App Bundle builds: `gradlew :app:bundleRelease` → `app/build/outputs/bundle/release/app-release.aab`
 - [ ] 👤 Create the upload key once: `powershell -ExecutionPolicy Bypass -File tools\make-upload-key.ps1`, then **back up `C:\dev\keys` and `keystore.properties`** (USB drive / password manager, never GitHub)
 - [ ] Opt in to **Play App Signing** when creating the app (Google keeps the app signing key; a lost upload key can be reset)
-- [ ] 🤖 `versionCode` 1 → bump every upload; `versionName` "1.0.0"
+- [ ] 🤖 `versionCode` 2 → bump every upload; `versionName` "1.0.1"
 - [x] R8/minification off for 1.0 (D-022); debuggable is off in release by default
 - [x] No permissions, no INTERNET, cloud backup off (`ManifestTest`, D-019)
 - [x] Large screens: no locked orientation, edge-to-edge (API 36 rules)

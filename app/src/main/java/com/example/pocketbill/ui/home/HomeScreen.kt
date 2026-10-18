@@ -197,10 +197,25 @@ private fun SendEffects(flow: InvoiceSendFlow, snackbar: SnackbarHostState) {
 
 @Composable
 private fun Welcome(onCreateInvoice: () -> Unit, modifier: Modifier = Modifier) {
-    Column(verticalArrangement = Arrangement.spacedBy(Spacing.m), modifier = modifier.padding(horizontal = Spacing.screen, vertical = Spacing.xl)) {
-        Text(stringResource(R.string.home_welcome_title), style = MaterialTheme.typography.titleLarge)
-        Text(stringResource(R.string.home_welcome_body), style = MaterialTheme.typography.bodyLarge)
-        Button(onClick = onCreateInvoice, modifier = Modifier.fillMaxWidth().heightIn(min = Spacing.buttonHeight)) {
+    // First use gets the same hero card as Outstanding, so the very first screen already looks like the app.
+    val onHero = MaterialTheme.colorScheme.onPrimaryContainer
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.item), modifier = modifier.padding(horizontal = Spacing.screen)) {
+        Card(shape = MaterialTheme.shapes.extraLarge, modifier = Modifier.fillMaxWidth()) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                modifier = Modifier.fillMaxWidth().heroBackground().padding(horizontal = Spacing.xl, vertical = Spacing.xl),
+            ) {
+                Icon(painterResource(R.drawable.ic_add), contentDescription = null, tint = onHero, modifier = Modifier.padding(bottom = Spacing.s))
+                Text(stringResource(R.string.home_welcome_title), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold, color = onHero)
+                Text(stringResource(R.string.home_welcome_body), style = MaterialTheme.typography.bodyLarge, color = onHero.copy(alpha = 0.8f))
+            }
+        }
+        val press = remember { MutableInteractionSource() }
+        Button(
+            onClick = onCreateInvoice,
+            interactionSource = press,
+            modifier = Modifier.fillMaxWidth().heightIn(min = Spacing.buttonHeight).pressScale(press),
+        ) {
             Icon(painterResource(R.drawable.ic_add), contentDescription = null)
             Text(stringResource(R.string.home_create_invoice), modifier = Modifier.padding(start = Spacing.s))
         }
@@ -229,7 +244,6 @@ private fun OutstandingCard(summary: HomeSummary, onOpenInvoices: (InvoiceFilter
     // The hero of Home: a soft two-colour gradient with two faint circles for depth.
     val colors = MaterialTheme.colorScheme
     val onHero = colors.onPrimaryContainer
-    val hero = Brush.linearGradient(listOf(colors.primaryContainer, colors.tertiaryContainer))
     Card(
         shape = MaterialTheme.shapes.extraLarge,
         colors = CardDefaults.cardColors(containerColor = colors.surfaceContainerLow),
@@ -239,11 +253,7 @@ private fun OutstandingCard(summary: HomeSummary, onOpenInvoices: (InvoiceFilter
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             modifier = Modifier
                 .fillMaxWidth()
-                .background(hero)
-                .drawBehind {
-                    drawCircle(onHero.copy(alpha = 0.06f), radius = size.height * 0.9f, center = Offset(size.width * 0.95f, -size.height * 0.15f))
-                    drawCircle(onHero.copy(alpha = 0.05f), radius = size.height * 0.55f, center = Offset(size.width * 0.75f, size.height * 1.1f))
-                }
+                .heroBackground()
                 .clickable(enabled = lines.isNotEmpty()) { onOpenInvoices(InvoiceFilter.UNPAID) }
                 .clearAndSetSemantics { contentDescription = spoken }
                 .padding(horizontal = Spacing.xl, vertical = Spacing.l),
@@ -395,6 +405,18 @@ private fun AttentionRow(item: AttentionItem, today: Long, onOpen: () -> Unit, o
             )
         }
         OutlinedButton(onClick = onAction, modifier = Modifier.heightIn(min = Spacing.touchTarget)) { Text(stringResource(actionLabel)) }
+    }
+}
+
+/** The hero look: a soft primary-to-tertiary gradient with two faint circles for depth. */
+@Composable
+private fun Modifier.heroBackground(): Modifier {
+    val colors = MaterialTheme.colorScheme
+    val onHero = colors.onPrimaryContainer
+    val hero = Brush.linearGradient(listOf(colors.primaryContainer, colors.tertiaryContainer))
+    return background(hero).drawBehind {
+        drawCircle(onHero.copy(alpha = 0.06f), radius = size.height * 0.9f, center = Offset(size.width * 0.95f, -size.height * 0.15f))
+        drawCircle(onHero.copy(alpha = 0.05f), radius = size.height * 0.55f, center = Offset(size.width * 0.75f, size.height * 1.1f))
     }
 }
 
