@@ -41,7 +41,16 @@ On-phone tests use an in-memory database and test folders: the founder's real da
 | Settings after a restore | 🐞 → fixed (da3bd90): said "Never backed up" |
 | Draft detail screen | 🐞 → fixed (da3bd90): said "Issued" for a draft; now "Dated" |
 
-Not finished by Claude (the phone disconnected; low battery): CSV export on the phone, the payment-details card on Home, light mode and largest font, TalkBack. CSV and the Home card are covered by unit tests (InvoiceCsvTest, HomeTest); the rest are in the list below.
+| CSV export → Downloads; pulled to the PC: Excel BOM, header, issued invoice only (draft left out), local dates | ✅ |
+| Business profile: Back after editing | 🐞 → fixed (99ed0db): edits were silently thrown away; now "Save your changes?" (also on the client form) |
+| Payment details changed → "Update unpaid invoices too?" (pre-selected) → Home card "Send it again?" | 🐞 → fixed (99ed0db): the card appeared only after restarting the app |
+| Light mode: Home | ✅ |
+| Largest text (2.0): Home, Clients, invoice editor | ✅ |
+| Largest text: bottom tabs and invoice buttons | 🐞 → fixed: "Invoice/s" broke mid-word, "Previ"/"Dupli" were cut; tab labels now one line, buttons stack |
+| `am instrument` after all fixes | ✅ 53/53 |
+
+Phone settings restored afterwards (dark mode, font 1.1); test files deleted from Downloads.
+Not done by Claude: TalkBack (screen reader). It is in the list below.
 
 ## Hand checks for the founder (about 20 minutes)
 

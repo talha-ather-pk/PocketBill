@@ -45,6 +45,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -264,9 +265,9 @@ private fun Actions(
             DisplayStatus.DRAFT -> {
                 Button(onClick = vm::onIssueAndSendRequest, enabled = !busy, modifier = full) { Text(stringResource(R.string.send_issue_and_send)) }
                 OutlinedButton(onClick = onEdit, modifier = full) { Text(stringResource(R.string.detail_continue_editing)) }
-                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.s), modifier = Modifier.fillMaxWidth()) {
-                    OutlinedButton(onClick = onPreview, modifier = Modifier.weight(1f).heightIn(min = Spacing.buttonHeight)) { Text(stringResource(R.string.detail_preview)) }
-                    OutlinedButton(onClick = vm::onDeleteRequest, modifier = Modifier.weight(1f).heightIn(min = Spacing.buttonHeight)) { Text(stringResource(R.string.editor_delete_draft)) }
+                ButtonRow { cell ->
+                    OutlinedButton(onClick = onPreview, modifier = cell) { Text(stringResource(R.string.detail_preview)) }
+                    OutlinedButton(onClick = vm::onDeleteRequest, modifier = cell) { Text(stringResource(R.string.editor_delete_draft)) }
                 }
             }
             DisplayStatus.UNPAID, DisplayStatus.OVERDUE -> {
@@ -327,14 +328,33 @@ private fun SendBlock(state: InvoiceDetailUiState, vm: InvoiceDetailViewModel, b
 
 @Composable
 private fun SecondaryRow(onPreview: () -> Unit, onEdit: (() -> Unit)?, onDuplicate: () -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(Spacing.s), modifier = Modifier.fillMaxWidth()) {
-        OutlinedButton(onClick = onPreview, modifier = Modifier.weight(1f).heightIn(min = Spacing.buttonHeight)) { Text(stringResource(R.string.detail_preview)) }
+    ButtonRow { cell ->
+        OutlinedButton(onClick = onPreview, modifier = cell) { Text(stringResource(R.string.detail_preview)) }
         if (onEdit != null) {
-            OutlinedButton(onClick = onEdit, modifier = Modifier.weight(1f).heightIn(min = Spacing.buttonHeight)) { Text(stringResource(R.string.client_edit_short)) }
+            OutlinedButton(onClick = onEdit, modifier = cell) { Text(stringResource(R.string.client_edit_short)) }
         }
-        OutlinedButton(onClick = onDuplicate, modifier = Modifier.weight(1f).heightIn(min = Spacing.buttonHeight)) { Text(stringResource(R.string.detail_duplicate)) }
+        OutlinedButton(onClick = onDuplicate, modifier = cell) { Text(stringResource(R.string.detail_duplicate)) }
     }
 }
+
+/**
+ * Side-by-side buttons that stack full-width with very large text, where three across
+ * were cut to "Previ" and "Dupli" (found on the phone at the largest font size).
+ */
+@Composable
+private fun ButtonRow(content: @Composable (cell: Modifier) -> Unit) {
+    if (LocalDensity.current.fontScale > STACK_BUTTONS_FONT_SCALE) {
+        Column(verticalArrangement = Arrangement.spacedBy(Spacing.s), modifier = Modifier.fillMaxWidth()) {
+            content(Modifier.fillMaxWidth().heightIn(min = Spacing.buttonHeight))
+        }
+    } else {
+        Row(horizontalArrangement = Arrangement.spacedBy(Spacing.s), modifier = Modifier.fillMaxWidth()) {
+            content(Modifier.weight(1f).heightIn(min = Spacing.buttonHeight))
+        }
+    }
+}
+
+private const val STACK_BUTTONS_FONT_SCALE = 1.3f
 
 @Composable
 private fun ItemsBlock(invoice: InvoiceWithLines) {

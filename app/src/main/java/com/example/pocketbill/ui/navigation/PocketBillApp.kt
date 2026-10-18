@@ -11,6 +11,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +19,8 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -101,7 +104,14 @@ private fun PocketBillNavigation(startDestination: Any) {
                                 }
                             },
                             icon = { Icon(painterResource(tab.iconRes), contentDescription = null) },
-                            label = { Text(stringResource(tab.labelRes)) },
+                            label = {
+                                // Four tabs share the width: at the largest text sizes "Invoices" broke into
+                                // "Invoice / s". Labels grow up to 1.3×, one line; the icons carry the rest.
+                                val density = LocalDensity.current
+                                CompositionLocalProvider(LocalDensity provides Density(density.density, density.fontScale.coerceAtMost(MAX_TAB_FONT_SCALE))) {
+                                    Text(stringResource(tab.labelRes), maxLines = 1, softWrap = false)
+                                }
+                            },
                         )
                     }
                 }
@@ -254,3 +264,5 @@ private fun NavHostController.navigateToTab(tab: TopLevelDestination) {
         restoreState = true
     }
 }
+
+private const val MAX_TAB_FONT_SCALE = 1.3f

@@ -37,6 +37,7 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 | 2026-10-15 | JAVA_HOME fixed to `C:\java`; docs moved to `C:\dev\PocketBill` | Read back env var; listed copied files |
 | 2026-10-15 | `winget install Google.AndroidStudio` (v2026.2.1.8 found) **failed, exit 65**: package licence agreement not accepted | Nothing was installed. |
 | 2026-10-15 | Founder accepted the licence; Android Studio 2026.2.1.8 installed (exit 0); `studio64.exe` present | winget output plus file check. SDK not installed yet. |
+| 2026-10-18 | Walkthrough part 3: CSV export, payment-details card, light mode, largest text. 4 more bugs fixed (unsaved edits dropped on Back; Home card needed a restart; tab labels broke; detail buttons cut off). Unit tests 233/233, lint OK, `am instrument` 53/53. **PocketBill-1.0.0.apk** rebuilt and verified (v2) | adb, apksigner |
 | 2026-10-18 | Walkthrough part 2: Gmail with the PDF attached, Send another way, logo, backup → restore pass; 3 more bugs fixed (saved-item suggestions hidden by the keyboard; "Never backed up" after a restore; drafts labelled "Issued"). APK rebuilt and verified | adb |
 | 2026-10-18 | On-phone walkthrough in the QA copy: T1, T2, T4, autosave pass; 2 bugs found and fixed (email opened the full share sheet; UTC dates after midnight). testDebugUnitTest 231/231; `am instrument` OK (53 tests). **PocketBill-1.0.0.apk** built, signed (v2) and verified, saved to `C:\dev\PocketBill-APK` | adb, apksigner |
 | 2026-10-17 | Completing 1.0 (D-023): CSV export for accountants (F-19), Home "payment details changed" card. testDebugUnitTest 230/230; `am instrument` OK (53 tests) | Test reports, adb |
@@ -67,7 +68,7 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 
 ## Exact next action
 
-**State (2026-10-17): the app is complete for 1.0.** All MVP features are built (Phases 4–5), plus CSV export for accountants and the payment-details Home card (D-023), 231 unit tests and 53 on-phone tests pass, and the Play release is prepared (Phases 6–9 documents, release bundle builds). What's left needs the founder:
+**State (2026-10-17): the app is complete for 1.0.** All MVP features are built (Phases 4–5), plus CSV export for accountants and the payment-details Home card (D-023), 233 unit tests and 53 on-phone tests pass, and the Play release is prepared (Phases 6–9 documents, release bundle builds). What's left needs the founder:
 
 0. **APK ready:** `C:\dev\PocketBill-APK\PocketBill-1.0.0.apk` (D-024). To move your own data to it: Back up now → uninstall the old PocketBill → install the APK → restore the backup.
 1. **Hand checks** in [QA_REPORT.md](QA_REPORT.md) (~20 min on the phone): sending, Home, backup/restore, saved items, logo, large font, TalkBack, dark mode.
