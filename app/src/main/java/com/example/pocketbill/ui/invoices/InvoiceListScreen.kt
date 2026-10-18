@@ -129,7 +129,7 @@ fun InvoiceListScreen(initialFilter: InvoiceFilter, onOpenInvoice: (Long) -> Uni
 
 /** UX_SPEC 5 row: client and amount on the first line; number, date and status on the second. */
 @Composable
-fun InvoiceRowItem(row: InvoiceRow, today: Long, onClick: () -> Unit) {
+fun InvoiceRowItem(row: InvoiceRow, today: Long, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val (kind, day) = row.datePart()
     val date = DateFormatter.inList(day, today)
     val dateText = when (kind) {
@@ -144,7 +144,7 @@ fun InvoiceRowItem(row: InvoiceRow, today: Long, onClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.m),
-        modifier = Modifier.fillMaxWidth().heightIn(min = Spacing.rowHeight).clickable(onClick = onClick).padding(horizontal = Spacing.screen, vertical = Spacing.s),
+        modifier = modifier.fillMaxWidth().heightIn(min = Spacing.rowHeight).clickable(onClick = onClick).padding(horizontal = Spacing.screen, vertical = Spacing.s),
     ) {
         Column(Modifier.weight(1f)) {
             Text(row.clientName.ifEmpty { stringResource(R.string.invoices_no_client) }, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)

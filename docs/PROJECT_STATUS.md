@@ -37,6 +37,7 @@ See [DECISIONS.md](DECISIONS.md). Accepted: project moved to `C:\dev\PocketBill`
 | 2026-10-15 | JAVA_HOME fixed to `C:\java`; docs moved to `C:\dev\PocketBill` | Read back env var; listed copied files |
 | 2026-10-15 | `winget install Google.AndroidStudio` (v2026.2.1.8 found) **failed, exit 65**: package licence agreement not accepted | Nothing was installed. |
 | 2026-10-15 | Founder accepted the licence; Android Studio 2026.2.1.8 installed (exit 0); `studio64.exe` present | winget output plus file check. SDK not installed yet. |
+| 2026-10-18 | Home motion and hero card (D-025): greeting, gradient Outstanding card with count-up, staggered entrance once per run, animated cards, springy button, reduced-motion respected; launch screen now dark in dark mode. Checked on the phone in dark and light mode. Unit 233/233, lint unchanged, `am instrument` 53/53. APK rebuilt and verified | adb |
 | 2026-10-18 | Walkthrough part 3: CSV export, payment-details card, light mode, largest text. 4 more bugs fixed (unsaved edits dropped on Back; Home card needed a restart; tab labels broke; detail buttons cut off). Unit tests 233/233, lint OK, `am instrument` 53/53. **PocketBill-1.0.0.apk** rebuilt and verified (v2) | adb, apksigner |
 | 2026-10-18 | Walkthrough part 2: Gmail with the PDF attached, Send another way, logo, backup → restore pass; 3 more bugs fixed (saved-item suggestions hidden by the keyboard; "Never backed up" after a restore; drafts labelled "Issued"). APK rebuilt and verified | adb |
 | 2026-10-18 | On-phone walkthrough in the QA copy: T1, T2, T4, autosave pass; 2 bugs found and fixed (email opened the full share sheet; UTC dates after midnight). testDebugUnitTest 231/231; `am instrument` OK (53 tests). **PocketBill-1.0.0.apk** built, signed (v2) and verified, saved to `C:\dev\PocketBill-APK` | adb, apksigner |
@@ -84,7 +85,7 @@ Phone connection: USB is currently not detected; use Wireless debugging (`adb md
 ```
 I'm building PocketBill, an Android invoice app (Kotlin/Compose). Read README.md and
 docs/PROJECT_STATUS.md, docs/RELEASE_CHECKLIST.md, docs/DECISIONS.md, docs/ENVIRONMENT.md first.
-The app is complete for 1.0 (Phases 4-5 done; Phases 6-9 planned and documented). Decisions up to D-024.
+The app is complete for 1.0 (Phases 4-5 done; Phases 6-9 planned and documented). Decisions up to D-025.
 230 unit tests, 53 on-phone tests pass. Remaining: founder hand checks, app ID + support email,
 upload key, Google Play account and closed test (12 testers x 14 days), then launch.
 Project folder: C:\dev\PocketBill. Continue from "Exact next action" in PROJECT_STATUS.md.

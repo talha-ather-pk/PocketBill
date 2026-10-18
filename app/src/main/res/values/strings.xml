@@ -293,6 +293,9 @@
 
     <!-- Home (UX_SPEC 2) -->
     <string name="home_outstanding">Outstanding</string>
+    <string name="home_greeting_morning">Good morning</string>
+    <string name="home_greeting_afternoon">Good afternoon</string>
+    <string name="home_greeting_evening">Good evening</string>
     <string name="home_nothing_outstanding">Nothing outstanding</string>
     <string name="home_all_paid">All invoices are paid.</string>
     <string name="home_welcome_title">Create your first invoice</string>

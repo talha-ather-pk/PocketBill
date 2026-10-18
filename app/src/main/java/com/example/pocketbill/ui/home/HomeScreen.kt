@@ -1,6 +1,14 @@
 package com.example.pocketbill.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,12 +36,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +74,7 @@ import com.example.pocketbill.ui.theme.PocketBillTheme
 import com.example.pocketbill.ui.theme.Spacing
 import com.example.pocketbill.ui.theme.tabular
 import kotlinx.coroutines.flow.map
+import java.time.LocalTime
 
 /** Up to this many currency lines before "+2 more currencies" (UX_SPEC 2). */
 private const val MAX_CURRENCY_LINES = 3
@@ -88,32 +103,48 @@ fun HomeScreen(
 
     if (state.loading) return // the database answers in well under a second (UX_SPEC 2: no spinner)
     val summary = state.summary
+    val intro = rememberPlayIntro()
     Column(Modifier.fillMaxSize()) {
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.item),
-            modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = Spacing.l),
+            modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = Spacing.l).animateContentSize(),
         ) {
-            Text(
-                state.businessName.ifBlank { stringResource(R.string.app_name) },
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(horizontal = Spacing.screen).semantics { heading() },
-            )
+            Column(Modifier.padding(horizontal = Spacing.screen).entrance(0, intro)) {
+                Text(stringResource(greeting()), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    state.businessName.ifBlank { stringResource(R.string.app_name) },
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.semantics { heading() },
+                )
+            }
             if (summary.noInvoices) {
-                Welcome(onCreateInvoice)
+                Welcome(onCreateInvoice, Modifier.entrance(1, intro))
                 return@Column
             }
-            OutstandingCard(summary, onOpenInvoices)
-            Button(onClick = onCreateInvoice, modifier = Modifier.padding(horizontal = Spacing.screen).fillMaxWidth().heightIn(min = Spacing.buttonHeight)) {
+            OutstandingCard(summary, onOpenInvoices, countUp = intro, modifier = Modifier.entrance(1, intro))
+            val press = remember { MutableInteractionSource() }
+            Button(
+                onClick = onCreateInvoice,
+                interactionSource = press,
+                modifier = Modifier.entrance(2, intro).padding(horizontal = Spacing.screen).fillMaxWidth().heightIn(min = Spacing.buttonHeight).pressScale(press),
+            ) {
                 Icon(painterResource(R.drawable.ic_add), contentDescription = null)
                 Text(stringResource(R.string.home_create_invoice), modifier = Modifier.padding(start = Spacing.s))
             }
-            // At most one card (UX_SPEC 2): payment details first, then backup.
-            if (summary.resend.isNotEmpty()) {
-                PaymentChangedCard(summary.resend, state.today, onOpen = onOpenInvoice, onSend = vm::onSendFromRow, onDismiss = vm::onDismissPaymentCard)
-            } else if (state.showBackupCard) {
-                BackupCard(onBackUp = onBackUp, onDismiss = vm::onDismissBackupCard)
+            // At most one card (UX_SPEC 2): payment details first, then backup. Cards slide open and closed;
+            // the last rows are kept while the payment card closes, so it doesn't empty before it shrinks.
+            var lastResend by remember { mutableStateOf(summary.resend) }
+            if (summary.resend.isNotEmpty()) lastResend = summary.resend
+            Column(Modifier.entrance(3, intro)) {
+                AnimatedVisibility(visible = summary.resend.isNotEmpty(), enter = cardEnter, exit = cardExit) {
+                    PaymentChangedCard(lastResend, state.today, onOpen = onOpenInvoice, onSend = vm::onSendFromRow, onDismiss = vm::onDismissPaymentCard)
+                }
+                AnimatedVisibility(visible = summary.resend.isEmpty() && state.showBackupCard, enter = cardEnter, exit = cardExit) {
+                    BackupCard(onBackUp = onBackUp, onDismiss = vm::onDismissBackupCard)
+                }
             }
-            if (summary.attention.isNotEmpty()) {
+            if (summary.attention.isNotEmpty()) Column(Modifier.entrance(4, intro)) {
                 SectionHeader(
                     stringResource(R.string.home_needs_attention),
                     action = if (summary.attentionTotal > summary.attention.size) {
@@ -123,15 +154,25 @@ fun HomeScreen(
                     },
                 )
                 summary.attention.forEach { item ->
-                    AttentionRow(item, state.today, onOpen = { onOpenInvoice(item.row.id) }, onAction = {
-                        if (item.kind == AttentionKind.DRAFT) onContinueDraft(item.row.id) else vm.onSendFromRow(item)
-                    })
+                    key(item.kind, item.row.id) {
+                        AttentionRow(item, state.today, onOpen = { onOpenInvoice(item.row.id) }, onAction = {
+                            if (item.kind == AttentionKind.DRAFT) onContinueDraft(item.row.id) else vm.onSendFromRow(item)
+                        })
+                    }
                 }
             }
             if (summary.recent.isNotEmpty()) {
-                SectionHeader(stringResource(R.string.home_recent), action = stringResource(R.string.home_see_all) to { onOpenInvoices(InvoiceFilter.ALL) })
+                SectionHeader(
+                    stringResource(R.string.home_recent),
+                    action = stringResource(R.string.home_see_all) to { onOpenInvoices(InvoiceFilter.ALL) },
+                    modifier = Modifier.entrance(5, intro),
+                )
                 Column {
-                    summary.recent.forEach { row -> InvoiceRowItem(row, state.today, onClick = { onOpenInvoice(row.id) }) }
+                    summary.recent.forEachIndexed { i, row ->
+                        key(row.id) {
+                            InvoiceRowItem(row, state.today, onClick = { onOpenInvoice(row.id) }, modifier = Modifier.entrance(6 + i, intro))
+                        }
+                    }
                 }
             }
         }
@@ -155,8 +196,8 @@ private fun SendEffects(flow: InvoiceSendFlow, snackbar: SnackbarHostState) {
 }
 
 @Composable
-private fun Welcome(onCreateInvoice: () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(Spacing.m), modifier = Modifier.padding(horizontal = Spacing.screen, vertical = Spacing.xl)) {
+private fun Welcome(onCreateInvoice: () -> Unit, modifier: Modifier = Modifier) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.m), modifier = modifier.padding(horizontal = Spacing.screen, vertical = Spacing.xl)) {
         Text(stringResource(R.string.home_welcome_title), style = MaterialTheme.typography.titleLarge)
         Text(stringResource(R.string.home_welcome_body), style = MaterialTheme.typography.bodyLarge)
         Button(onClick = onCreateInvoice, modifier = Modifier.fillMaxWidth().heightIn(min = Spacing.buttonHeight)) {
@@ -169,7 +210,7 @@ private fun Welcome(onCreateInvoice: () -> Unit) {
 
 /** Outstanding per currency, never added together, with the overdue row under it (UX_SPEC 2). */
 @Composable
-private fun OutstandingCard(summary: HomeSummary, onOpenInvoices: (InvoiceFilter) -> Unit) {
+private fun OutstandingCard(summary: HomeSummary, onOpenInvoices: (InvoiceFilter) -> Unit, countUp: Boolean, modifier: Modifier = Modifier) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     val lines = summary.outstanding
     val shown = if (expanded) lines else lines.take(MAX_CURRENCY_LINES)
@@ -185,24 +226,46 @@ private fun OutstandingCard(summary: HomeSummary, onOpenInvoices: (InvoiceFilter
         "$outstandingLabel: ${amounts.joinToString(", ")}. $unpaidText." + if (summary.overdueCount > 0) " $overdueText." else ""
     }
 
-    OutlinedCard(Modifier.padding(horizontal = Spacing.screen).fillMaxWidth()) {
+    // The hero of Home: a soft two-colour gradient with two faint circles for depth.
+    val colors = MaterialTheme.colorScheme
+    val onHero = colors.onPrimaryContainer
+    val hero = Brush.linearGradient(listOf(colors.primaryContainer, colors.tertiaryContainer))
+    Card(
+        shape = MaterialTheme.shapes.extraLarge,
+        colors = CardDefaults.cardColors(containerColor = colors.surfaceContainerLow),
+        modifier = modifier.padding(horizontal = Spacing.screen).fillMaxWidth(),
+    ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             modifier = Modifier
                 .fillMaxWidth()
+                .background(hero)
+                .drawBehind {
+                    drawCircle(onHero.copy(alpha = 0.06f), radius = size.height * 0.9f, center = Offset(size.width * 0.95f, -size.height * 0.15f))
+                    drawCircle(onHero.copy(alpha = 0.05f), radius = size.height * 0.55f, center = Offset(size.width * 0.75f, size.height * 1.1f))
+                }
                 .clickable(enabled = lines.isNotEmpty()) { onOpenInvoices(InvoiceFilter.UNPAID) }
                 .clearAndSetSemantics { contentDescription = spoken }
-                .padding(Spacing.l),
+                .padding(horizontal = Spacing.xl, vertical = Spacing.l),
         ) {
-            Text(outstandingLabel, style = MaterialTheme.typography.titleMedium)
+            Text(outstandingLabel, style = MaterialTheme.typography.titleMedium, color = onHero.copy(alpha = 0.8f))
             if (lines.isEmpty()) {
-                Text(nothing, style = MaterialTheme.typography.headlineSmall)
+                Text(nothing, style = MaterialTheme.typography.headlineSmall, color = onHero)
                 if (summary.allPaid) {
-                    Text(stringResource(R.string.home_all_paid), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.home_all_paid), color = onHero.copy(alpha = 0.8f))
                 }
             } else {
-                shown.forEach { Text(amount(it.currency, it.totalMinor), style = MaterialTheme.typography.headlineSmall.tabular) }
-                Text(unpaidText, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                shown.forEachIndexed { i, line ->
+                    val minor = rememberCountUp(line.totalMinor, fromZero = countUp)
+                    Text(
+                        amount(line.currency, minor),
+                        // The first currency is the headline figure; others are a step smaller.
+                        style = (if (i == 0) MaterialTheme.typography.displaySmall else MaterialTheme.typography.headlineSmall).tabular,
+                        fontWeight = FontWeight.SemiBold,
+                        color = onHero,
+                    )
+                }
+                Text(unpaidText, style = MaterialTheme.typography.bodyMedium, color = onHero.copy(alpha = 0.8f))
             }
         }
         if (lines.size > MAX_CURRENCY_LINES) {
@@ -282,8 +345,8 @@ private fun BackupCard(onBackUp: () -> Unit, onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun SectionHeader(title: String, action: Pair<String, () -> Unit>?) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(start = Spacing.screen, end = Spacing.s, top = Spacing.m)) {
+private fun SectionHeader(title: String, action: Pair<String, () -> Unit>?, modifier: Modifier = Modifier) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier.fillMaxWidth().padding(start = Spacing.screen, end = Spacing.s, top = Spacing.m)) {
         Text(title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f).semantics { heading() })
         if (action != null) TextButton(onClick = action.second) { Text(action.first) }
     }
@@ -333,6 +396,17 @@ private fun AttentionRow(item: AttentionItem, today: Long, onOpen: () -> Unit, o
         }
         OutlinedButton(onClick = onAction, modifier = Modifier.heightIn(min = Spacing.touchTarget)) { Text(stringResource(actionLabel)) }
     }
+}
+
+/** Cards on Home open downwards and close upwards, fading as they go. */
+private val cardEnter = expandVertically(expandFrom = Alignment.Top) + fadeIn()
+private val cardExit = shrinkVertically(shrinkTowards = Alignment.Top) + fadeOut()
+
+/** "Good morning" before noon, "Good afternoon" until 6 pm, then "Good evening" (phone's local time). */
+private fun greeting(hour: Int = LocalTime.now().hour): Int = when (hour) {
+    in 5..11 -> R.string.home_greeting_morning
+    in 12..17 -> R.string.home_greeting_afternoon
+    else -> R.string.home_greeting_evening
 }
 
 private fun amount(currency: String, minor: Long): String =

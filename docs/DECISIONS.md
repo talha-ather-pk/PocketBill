@@ -8,6 +8,17 @@ Each entry: context, options, decision, reason, status. "Proposed" decisions are
 - **Decision:** (b). Source code is backed up by Git commits pushed to a private remote, not by OneDrive.
 - **Status:** Accepted by founder 2026-10-15. Files moved; the old OneDrive folder is now empty. Private remote created and pushed 2026-10-15: https://github.com/talha-ather-pk/PocketBill.
 
+## D-025 — Home gets motion and a hero card
+- **Context:** The founder asked for a cooler Home screen with animation (2026-10-18).
+- **Decision:** Motion that explains, never delays:
+  1. A time-of-day greeting above the business name.
+  2. Outstanding becomes a gradient "hero" card; the amount counts up when Home first opens and eases to the new figure when it changes (e.g. Mark as paid). Exact once settled; TalkBack reads the real amount.
+  3. Sections rise in one after another (60 ms apart, 480 ms, Material emphasized-decelerate) — **once per app run**, so switching tabs never waits.
+  4. The payment/backup cards slide open and closed; Create invoice springs under the finger.
+  5. All motion is skipped when the phone's animations are off (Accessibility → Remove animations).
+  6. The launch screen follows dark mode (it flashed white before) and matches the app background.
+- **Status:** Accepted 2026-10-18 (Claude as product owner / UX).
+
 ## D-024 — Email app choice, APK now, Play later
 - **Context:** The on-phone walkthrough (2026-10-18) found that with two email apps (Gmail and Outlook), Android 14's share sheet ignored the email-only filter and showed every app and WhatsApp contact. The founder asked for an installable APK now and Google Play later.
 - **Decision:**

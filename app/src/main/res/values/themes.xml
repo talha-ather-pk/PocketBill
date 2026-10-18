@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Window theme only. All app colors come from the Compose theme in ui/theme. -->
-    <style name="Theme.PocketBill" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Window theme only. All app colors come from the Compose theme in ui/theme.
+         The window background matches the Compose background, so the launch screen and the
+         first frame are the same colour (a dark-mode version is in values-night). -->
+    <style name="Theme.PocketBill" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
 </resources>
