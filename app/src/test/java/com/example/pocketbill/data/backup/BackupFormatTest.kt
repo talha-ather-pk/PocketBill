@@ -41,7 +41,8 @@ class BackupFormatTest {
     @Test fun `round trip keeps every field, accents included`() {
         val text = BackupFormat.encode(file())
         val back = BackupFormat.toEntities(decoded(text))
-        assertEquals(profile.copy(logoFile = null), back.profile)
+        // lastBackupAt becomes the file's own date (1234), later than the stored 5.
+        assertEquals(profile.copy(logoFile = null, lastBackupAt = 1234), back.profile)
         assertEquals(listOf(client), back.clients)
         assertEquals(invoices, back.invoices)
         assertEquals(lines, back.lines)

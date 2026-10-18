@@ -237,7 +237,9 @@ private fun SummaryCard(state: InvoiceDetailUiState, onOpenClient: (Long) -> Uni
             }
             Text(MoneyFormatter.format(e.totalMinor, currency), style = MaterialTheme.typography.headlineSmall.tabular)
             val dates = buildList {
-                add(stringResource(R.string.detail_issued_on, DateFormatter.full(e.issueDate)))
+                // A draft isn't issued yet; its date only becomes the issue date when it is.
+                val dateLabel = if (state.status == DisplayStatus.DRAFT) R.string.detail_dated_on else R.string.detail_issued_on
+                add(stringResource(dateLabel, DateFormatter.full(e.issueDate)))
                 add(stringResource(R.string.detail_due_on, DateFormatter.full(e.dueDate)))
             }
             dates.forEach { Text(it, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant) }

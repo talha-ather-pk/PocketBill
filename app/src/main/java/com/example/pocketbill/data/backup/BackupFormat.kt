@@ -230,7 +230,10 @@ object BackupFormat {
                 logoFile = null,
                 defaultCurrency = defaultCurrency, defaultTermsDays = defaultTermsDays, defaultTaxRateBp = defaultTaxRateBp,
                 invoicePrefix = invoicePrefix, nextInvoiceNumber = nextInvoiceNumber, paperSize = PaperSize.valueOf(paperSize),
-                lastBackupAt = lastBackupAt, createdAt = createdAt, updatedAt = updatedAt,
+                // Restored data is backed up by definition: at least as of the moment the file was made.
+                // (The file is written just before the app records that date, so it can't contain it.)
+                lastBackupAt = maxOf(lastBackupAt ?: 0L, file.createdAt).takeIf { it > 0 },
+                createdAt = createdAt, updatedAt = updatedAt,
             )
         },
         clients = file.clients.map {

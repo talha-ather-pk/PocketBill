@@ -231,6 +231,7 @@
     <string name="invoice_row_issued">Issued %1$s</string>
     <string name="invoice_row_not_sent">Not sent yet</string>
     <string name="detail_issued_on">Issued %1$s</string>
+    <string name="detail_dated_on">Dated %1$s</string>
     <string name="detail_due_on">Due %1$s</string>
     <string name="detail_continue_editing">Continue editing</string>
     <string name="detail_mark_paid">Mark as paid</string>

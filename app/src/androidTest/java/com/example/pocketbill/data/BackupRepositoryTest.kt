@@ -91,7 +91,8 @@ class BackupRepositoryTest {
         backup.restore(ready(text))
 
         val after = snapshot()
-        assertEquals(before.profile!!.copy(logoFile = null), after.profile)
+        // Restored data counts as backed up as of the file's date (found on the phone: it said "Never backed up").
+        assertEquals(before.profile!!.copy(logoFile = null, lastBackupAt = clock.nowMillis()), after.profile)
         assertEquals(before.clients, after.clients)
         assertEquals(before.invoices, after.invoices)
         assertEquals(before.lines, after.lines)
